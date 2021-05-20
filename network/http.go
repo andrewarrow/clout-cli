@@ -9,7 +9,7 @@ import (
 )
 
 func BaseUrl() string {
-	return "http://144.202.114.251:17001/"
+	return "http://wolf-4849.wolfschedule.com:17001/"
 	//return "https://bitclout.com/"
 }
 
