@@ -13,4 +13,9 @@ func main() {
 	var rate models.Rate
 	json.Unmarshal([]byte(jsonString), &rate)
 	fmt.Println(rate)
+	jsonString = network.DoGet("api/v0/health-check")
+	fmt.Println(jsonString)
+	jsonString = `{"PublicKeyBase58Check": "hi"}`
+	jsonString = network.DoPost("api/v0/get-app-state", []byte(jsonString))
+	fmt.Println(jsonString)
 }

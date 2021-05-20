@@ -1,15 +1,16 @@
 package network
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"time"
 )
 
 func BaseUrl() string {
-	return "https://bitclout.com/"
+	return "http://144.202.114.251:17001/"
+	//return "https://bitclout.com/"
 }
 
 func DoGet(route string) string {
@@ -31,18 +32,26 @@ func DoHttpRead(verb, route string, client *http.Client, request *http.Request) 
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Printf("\n\nERROR: %d %s\n\n", resp.StatusCode, err.Error())
-			os.Exit(1)
 			return ""
 		}
 		if resp.StatusCode == 200 || resp.StatusCode == 201 || resp.StatusCode == 204 {
 			return string(body)
 		} else {
 			fmt.Printf("\n\nERROR: %d %s\n\n", resp.StatusCode, string(body))
-			os.Exit(1)
 			return ""
 		}
 	}
 	fmt.Printf("\n\nERROR: %s\n\n", err.Error())
-	os.Exit(1)
 	return ""
+}
+
+func DoPost(route string, payload []byte) string {
+	body := bytes.NewBuffer(payload)
+	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
+	request, _ := http.NewRequest("POST", urlString, body)
+	request.Header.Set("Content-Type", "application/json")
+	//request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", pat))
+	client := &http.Client{Timeout: time.Second * 50}
+
+	return DoHttpRead("POST", route, client, request)
 }
