@@ -1,59 +1,34 @@
 package main
 
 import (
-	"clout-cli/display"
-	"clout-cli/models"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"math/rand"
+	"os"
 	"time"
-
-	"github.com/justincampbell/timeago"
 	//"github.com/tyler-smith/go-bip32"
 )
 
-func main() {
-	fmt.Println("clout-cli")
+func PrintHelp() {
 	fmt.Println("")
+	fmt.Println("  clout-cli help         # this menu")
+	fmt.Println("  clout-cli ls           # list posts")
+	fmt.Println("")
+}
 
-	b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
-	var ps models.PostsStateless
-	json.Unmarshal(b, &ps)
+func main() {
+	rand.Seed(time.Now().UnixNano())
 
-	for _, p := range ps.PostsFound {
-		ts := time.Unix(p.TimestampNanos/1000000000, 0)
-		ago := timeago.FromDuration(time.Since(ts))
-		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
-			display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
-			ago)
+	if len(os.Args) == 1 {
+		PrintHelp()
+		return
+	}
+	command := os.Args[1]
+
+	if command == "ls" {
+		ListPosts()
+	} else if command == "" {
+	} else if command == "help" {
+		PrintHelp()
 	}
 
 }
-
-/*
-		jsonString := network.DoGet("api/v0/get-exchange-rate")
-		var rate models.Rate
-		json.Unmarshal([]byte(jsonString), &rate)
-		fmt.Println(rate)
-		jsonString = network.DoGet("api/v0/health-check")
-		fmt.Println(jsonString)
-		jsonString = `{"PublicKeyBase58Check": "hi"}`
-		jsonString = network.DoPost("api/v0/get-app-state", []byte(jsonString))
-		fmt.Println(jsonString)
-	seed, _ := bip32.NewSeed()
-	s, _ := bip32.NewMasterKey(seed)
-	fmt.Println(s, s.PublicKey())
-
-	    const network = this.globalVars.network;
-	const keychain = this.cryptoService.mnemonicToKeychain(this.mnemonicCheck, this.extraTextCheck);
-	const seedHex = this.cryptoService.keychainToSeedHex(keychain);
-	const btcDepositAddress = this.cryptoService.keychainToBtcAddress(keychain, network);
-
-	this.publicKeyAdded = this.accountService.addUser({
-	  seedHex,
-	  mnemonic: this.mnemonicCheck,
-	  extraText: this.extraTextCheck,
-	  btcDepositAddress,
-	  network,
-	});
-*/
