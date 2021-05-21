@@ -28,9 +28,10 @@ func PostsForPublicKey() {
 }
 
 func ListPosts() {
-	b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
+	js := GetPostsStateless()
+	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
-	json.Unmarshal(b, &ps)
+	json.Unmarshal([]byte(js), &ps)
 
 	for _, p := range ps.PostsFound {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
@@ -49,6 +50,12 @@ func GetUsersStateless() {
 	jsonString = `{"PublicKeyBase58Check": "", "Username":"katramdeen"}`
 	jsonString = network.DoPost("api/v0/get-single-profile", []byte(jsonString))
 	fmt.Println(jsonString)
+}
+
+func GetPostsStateless() string {
+	jsonString := `{"ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
+	jsonString = network.DoPost("api/v0/get-posts-stateless", []byte(jsonString))
+	return jsonString
 }
 
 /*
