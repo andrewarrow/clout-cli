@@ -1,8 +1,8 @@
 package main
 
 import (
-	"clout-cli/display"
-	"clout-cli/models"
+	"clout/display"
+	"clout/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

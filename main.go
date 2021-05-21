@@ -10,8 +10,8 @@ import (
 
 func PrintHelp() {
 	fmt.Println("")
-	fmt.Println("  clout-cli help         # this menu")
-	fmt.Println("  clout-cli ls           # list posts")
+	fmt.Println("  clout help         # this menu")
+	fmt.Println("  clout ls           # list posts")
 	fmt.Println("")
 }
 

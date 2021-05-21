@@ -1,4 +1,4 @@
-module clout-cli
+module clout
 
 go 1.16
 
