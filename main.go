@@ -30,6 +30,7 @@ func main() {
 	argMap = args.ToMap()
 
 	if argMap["username"] != "" {
+		PostsForPublicKey()
 		return
 	}
 

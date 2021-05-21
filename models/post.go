@@ -4,6 +4,10 @@ type PostsStateless struct {
 	PostsFound []Post
 }
 
+type PostsPublicKey struct {
+	Posts []Post
+}
+
 type Post struct {
 	PostHashHex                string
 	PosterPublicKeyBase58Check string

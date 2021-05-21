@@ -11,6 +11,18 @@ import (
 	"github.com/justincampbell/timeago"
 )
 
+func PostsForPublicKey() {
+	b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
+	var ppk models.PostsPublicKey
+	json.Unmarshal(b, &ppk)
+	for _, p := range ppk.Posts {
+		ts := time.Unix(p.TimestampNanos/1000000000, 0)
+		ago := timeago.FromDuration(time.Since(ts))
+		fmt.Println(display.LeftAligned(p.Body, 60),
+			ago)
+	}
+}
+
 func ListPosts() {
 	b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
