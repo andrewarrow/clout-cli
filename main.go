@@ -24,6 +24,7 @@ func main() {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
 		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
+			display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
 			ago)
 	}
 
