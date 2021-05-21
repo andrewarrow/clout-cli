@@ -1,12 +1,14 @@
 package main
 
 import (
+	"clout-cli/display"
 	"clout-cli/models"
 	"encoding/json"
 	"fmt"
-	"github.com/justincampbell/timeago"
 	"io/ioutil"
 	"time"
+
+	"github.com/justincampbell/timeago"
 	//"github.com/tyler-smith/go-bip32"
 )
 
@@ -21,7 +23,8 @@ func main() {
 	for _, p := range ps.PostsFound {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
-		fmt.Println(ago, p.ProfileEntryResponse.Username)
+		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
+			ago)
 	}
 
 }
