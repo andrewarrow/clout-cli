@@ -18,8 +18,11 @@ func PostsForPublicKey() {
 	for _, p := range ppk.Posts {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
-		fmt.Println(display.LeftAligned(p.Body, 60),
-			ago)
+		if p.Body != "" {
+			fmt.Println(display.LeftAligned(p.Body, 60), ago)
+		} else {
+			fmt.Println(display.LeftAligned(p.RecloutedPostEntryResponse.Body, 60), ago)
+		}
 	}
 }
 

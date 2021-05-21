@@ -15,6 +15,14 @@ type Post struct {
 	Body                       string
 	TimestampNanos             int64
 	ProfileEntryResponse       ProfileEntryResponse
+	RecloutedPostEntryResponse RecloutedPostEntryResponse
+}
+
+type RecloutedPostEntryResponse struct {
+	PostHashHex                string
+	PosterPublicKeyBase58Check string
+	Body                       string
+	ProfileEntryResponse       ProfileEntryResponse
 }
 
 type ProfileEntryResponse struct {
