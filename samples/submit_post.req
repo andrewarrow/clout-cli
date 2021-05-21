@@ -1,0 +1,9 @@
+POST
+	https://bitclout.com/api/v0/submit-post
+
+{"UpdaterPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"This song by Paul Wasterberg was in the 1992 film \"Singles\" https://www.youtube.com/watch?v=MVhBEtTSEcE","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}
+
+----
+
+{"TstampNanos":1621563612240697508,"PostHashHex":"09a0e99283e8c77329df8d0e48150a8912f28d46b52c4a85eacfa408c3dfa7df","TotalInputNanos":85406,"ChangeAmountNanos":85068,"FeeNanos":338,"Transaction":{"TxInputs":[{"TxID":[97,210,203,128,116,53,70,80,200,195,78,96,119,55,208,239,20,11,254,135,31,143,66,116,196,48,183,129,140,232,225,225],"Index":0}],"TxOutputs":[{"PublicKey":"AqYkD7ZBALOKOtt0np7NqO8L3McWoUFXuBa/U2uabiCV","AmountNanos":85068}],"TxnMeta":{"PostHashToModify":null,"ParentStakeID":null,"Body":"eyJCb2R5IjoiVGhpcyBzb25nIGJ5IFBhdWwgV2FzdGVyYmVyZyB3YXMgaW4gdGhlIDE5OTIgZmlsbSBcIlNpbmdsZXNcIiBodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PU1WaEJFdFRTRWNFIiwiSW1hZ2VVUkxzIjpbXX0=","CreatorBasisPoints":1000,"StakeMultipleBasisPoints":12500,"TimestampNanos":1621563612240697508,"IsHidden":false},"PublicKey":"AqYkD7ZBALOKOtt0np7NqO8L3McWoUFXuBa/U2uabiCV","ExtraData":null,"Signature":null,"TxnTypeJSON":5},"TransactionHex":"0161d2cb8074354650c8c34e607737d0ef140bfe871f8f4274c430b7818ce8e1e1000102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e2095cc9805059501000083017b22426f6479223a225468697320736f6e67206279205061756c20576173746572626572672077617320696e2074686520313939322066696c6d205c2253696e676c65735c222068747470733a2f2f7777772e796f75747562652e636f6d2f77617463683f763d4d56684245745453456345222c22496d61676555524c73223a5b5d7de807d461a4b1b982b9f0bcc016002102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e20950000"}
+
