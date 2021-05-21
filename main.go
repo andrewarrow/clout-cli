@@ -13,6 +13,8 @@ func PrintHelp() {
 	fmt.Println("  clout help                  # this menu")
 	fmt.Println("  clout ls                    # list global posts")
 	fmt.Println("  clout [username]            # that username")
+	fmt.Println("  clout login                 # enter secret phrase")
+	fmt.Println("  clout logout                # delete secret from drive")
 	fmt.Println("")
 }
 
@@ -37,6 +39,8 @@ func main() {
 		ListPosts()
 	} else if command == "seal" {
 		Seal()
+	} else if command == "login" {
+		Login()
 	} else if command == "gus" {
 		GetUsersStateless()
 	} else if command == "help" {

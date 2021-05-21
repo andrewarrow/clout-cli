@@ -1,14 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"clout/display"
+	"clout/files"
 	"clout/models"
 	"clout/network"
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -25,11 +29,21 @@ func PostsForPublicKey(key string) {
 	for _, p := range ppk.Posts {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
+		body := ""
 		if p.Body != "" {
-			fmt.Println(display.LeftAligned(p.Body, 60), ago)
+			body = p.Body
 		} else {
-			fmt.Println(display.LeftAligned(p.RecloutedPostEntryResponse.Body, 60), ago)
+			body = p.RecloutedPostEntryResponse.Body
 		}
+		tokens := strings.Split(body, "\n")
+		for i, t := range tokens {
+			if strings.TrimSpace(t) == "" {
+				continue
+			}
+			fmt.Println("    ", i, t)
+		}
+		fmt.Println(ago)
+		fmt.Println("")
 	}
 }
 
@@ -89,6 +103,20 @@ func Seal() {
 	encrypted := secretbox.Seal(nonce[:], []byte(tx), &nonce, &a)
 
 	log.Println(rootPublicKey, fmt.Sprintf("%x", encrypted))
+}
+
+func Login() {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter text: ")
+	text, _ := reader.ReadString('\n')
+
+	home := files.UserHomeDir()
+	dir := "clout-cli-data"
+	os.Mkdir(home+"/"+dir, 0700)
+	path := home + "/" + dir + "/secret.txt"
+	ioutil.WriteFile(path, []byte(text), 0700)
+	fmt.Println("Secret stored at:", path)
+	fmt.Println("")
 }
 
 /*
