@@ -4,7 +4,9 @@ import (
 	"clout-cli/models"
 	"encoding/json"
 	"fmt"
+	"github.com/justincampbell/timeago"
 	"io/ioutil"
+	"time"
 	//"github.com/tyler-smith/go-bip32"
 )
 
@@ -17,7 +19,9 @@ func main() {
 	json.Unmarshal(b, &ps)
 
 	for _, p := range ps.PostsFound {
-		fmt.Println(p.Body)
+		ts := time.Unix(p.TimestampNanos/1000000000, 0)
+		ago := timeago.FromDuration(time.Since(ts))
+		fmt.Println(ago, p.ProfileEntryResponse.Username)
 	}
 
 }

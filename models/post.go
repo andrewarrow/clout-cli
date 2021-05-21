@@ -9,4 +9,12 @@ type Post struct {
 	PosterPublicKeyBase58Check string
 	ParentStakeID              string
 	Body                       string
+	TimestampNanos             int64
+	ProfileEntryResponse       ProfileEntryResponse
+}
+
+type ProfileEntryResponse struct {
+	PublicKeyBase58Check string
+	Username             string
+	Description          string
 }
