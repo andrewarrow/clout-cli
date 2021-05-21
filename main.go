@@ -36,7 +36,8 @@ func main() {
 
 	if command == "ls" {
 		ListPosts()
-	} else if command == "" {
+	} else if command == "gus" {
+		GetUsersStateless()
 	} else if command == "help" {
 		PrintHelp()
 	}

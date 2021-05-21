@@ -9,8 +9,8 @@ import (
 )
 
 func BaseUrl() string {
-	return "http://wolf-4849.wolfschedule.com:17001/"
-	//return "https://bitclout.com/"
+	//return "http://wolf-4849.wolfschedule.com:17001/"
+	return "https://bitclout.com/"
 }
 
 func DoGet(route string) string {

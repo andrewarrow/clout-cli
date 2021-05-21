@@ -3,6 +3,7 @@ package main
 import (
 	"clout/display"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -38,6 +39,16 @@ func ListPosts() {
 			display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
 			ago)
 	}
+}
+
+func GetUsersStateless() {
+	jsonString := `{"PublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
+	jsonString = network.DoPost("api/v0/get-users-stateless", []byte(jsonString))
+	fmt.Println(jsonString)
+
+	jsonString = `{"PublicKeyBase58Check": "", "Username":"katramdeen"}`
+	jsonString = network.DoPost("api/v0/get-single-profile", []byte(jsonString))
+	fmt.Println(jsonString)
 }
 
 /*
