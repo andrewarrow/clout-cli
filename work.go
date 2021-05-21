@@ -4,12 +4,17 @@ import (
 	"clout/display"
 	"clout/models"
 	"clout/network"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"time"
 
 	"github.com/justincampbell/timeago"
+	"github.com/tyler-smith/go-bip32"
+	"golang.org/x/crypto/nacl/secretbox"
 )
 
 func PostsForPublicKey() {
@@ -58,6 +63,21 @@ func GetPostsStateless() string {
 	return jsonString
 }
 
+func Seal() {
+	seed, _ := bip32.NewSeed()
+	rootPrivateKey, _ := bip32.NewMasterKey(seed)
+	rootPublicKey := rootPrivateKey.PublicKey()
+	key, _ := rootPrivateKey.NewChildKey(0)
+	var nonce [24]byte
+	io.ReadFull(rand.Reader, nonce[:])
+	var a [32]byte
+	copy(a[:], key.Key)
+	tx := "0161d2cb8074354650c8c34e607737d0ef140bfe871f8f4274c430b7818ce8e1e1000102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e2095cc9805059501000083017b22426f6479223a225468697320736f6e67206279205061756c20576173746572626572672077617320696e2074686520313939322066696c6d205c2253696e676c65735c222068747470733a2f2f7777772e796f75747562652e636f6d2f77617463683f763d4d56684245745453456345222c22496d61676555524c73223a5b5d7de807d461a4b1b982b9f0bcc016002102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e20950000"
+	encrypted := secretbox.Seal(nonce[:], []byte(tx), &nonce, &a)
+
+	log.Println(rootPublicKey, fmt.Sprintf("%x", encrypted))
+}
+
 /*
 		jsonString := network.DoGet("api/v0/get-exchange-rate")
 		var rate models.Rate
@@ -68,9 +88,6 @@ func GetPostsStateless() string {
 		jsonString = `{"PublicKeyBase58Check": "hi"}`
 		jsonString = network.DoPost("api/v0/get-app-state", []byte(jsonString))
 		fmt.Println(jsonString)
-	seed, _ := bip32.NewSeed()
-	s, _ := bip32.NewMasterKey(seed)
-	fmt.Println(s, s.PublicKey())
 
 	    const network = this.globalVars.network;
 	const keychain = this.cryptoService.mnemonicToKeychain(this.mnemonicCheck, this.extraTextCheck);

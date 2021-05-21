@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"os"
 	"time"
-	//"github.com/tyler-smith/go-bip32"
 )
 
 func PrintHelp() {
@@ -36,6 +35,8 @@ func main() {
 
 	if command == "ls" {
 		ListPosts()
+	} else if command == "seal" {
+		Seal()
 	} else if command == "gus" {
 		GetUsersStateless()
 	} else if command == "help" {
