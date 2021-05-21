@@ -2,3 +2,13 @@ POST
 	https://bitclout.com/api/v0/get-single-profile
 
 {"PublicKeyBase58Check":"","Username":"andrewarrow"}
+
+
+---
+
+
+{
+  "Profile": {
+    "PublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v",
+    "Username": "andrewarrow",
+    "Description": "golang engineer - i write articles like https://andrewarrow.substack.com/p/market-demand-for-electricity_use",

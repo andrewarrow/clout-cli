@@ -3,3 +3,13 @@ POST
 
 {"PublicKeysBase58Check":["BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"]
 }
+
+-------
+
+  "UserList": [
+    {
+      "PublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v",
+      "ProfileEntryResponse": {
+        "PublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v",
+        "Username": "andrewarrow",
+        "Description": "golang engineer - i write articles like https://andrewarrow.substack.com/p/market-demand-for-electricity_use",

@@ -1,14 +1,28 @@
 package main
 
 import (
+	"clout-cli/models"
+	"encoding/json"
 	"fmt"
-
-	"github.com/tyler-smith/go-bip32"
+	"io/ioutil"
+	//"github.com/tyler-smith/go-bip32"
 )
 
 func main() {
 	fmt.Println("clout-cli")
-	/*
+	fmt.Println("")
+
+	b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
+	var ps models.PostsStateless
+	json.Unmarshal(b, &ps)
+
+	for _, p := range ps.PostsFound {
+		fmt.Println(p.Body)
+	}
+
+}
+
+/*
 		jsonString := network.DoGet("api/v0/get-exchange-rate")
 		var rate models.Rate
 		json.Unmarshal([]byte(jsonString), &rate)
@@ -18,12 +32,11 @@ func main() {
 		jsonString = `{"PublicKeyBase58Check": "hi"}`
 		jsonString = network.DoPost("api/v0/get-app-state", []byte(jsonString))
 		fmt.Println(jsonString)
-	*/
 	seed, _ := bip32.NewSeed()
 	s, _ := bip32.NewMasterKey(seed)
 	fmt.Println(s, s.PublicKey())
 
-	/*    const network = this.globalVars.network;
+	    const network = this.globalVars.network;
 	const keychain = this.cryptoService.mnemonicToKeychain(this.mnemonicCheck, this.extraTextCheck);
 	const seedHex = this.cryptoService.keychainToSeedHex(keychain);
 	const btcDepositAddress = this.cryptoService.keychainToBtcAddress(keychain, network);
@@ -35,5 +48,4 @@ func main() {
 	  btcDepositAddress,
 	  network,
 	});
-	*/
-}
+*/
