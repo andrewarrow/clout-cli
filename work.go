@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/justincampbell/timeago"
@@ -44,6 +45,9 @@ func ListPosts() {
 		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
 			display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
 			ago)
+		tokens := strings.Split(p.Body, "\n")
+		fmt.Println("        ", display.LeftAligned(tokens[0], 40))
+		fmt.Println("")
 	}
 }
 
