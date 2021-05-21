@@ -41,6 +41,8 @@ func main() {
 		Seal()
 	} else if command == "login" {
 		Login()
+	} else if command == "logout" {
+		Logout()
 	} else if command == "gus" {
 		GetUsersStateless()
 	} else if command == "help" {

@@ -118,6 +118,14 @@ func Login() {
 	fmt.Println("Secret stored at:", path)
 	fmt.Println("")
 }
+func Logout() {
+	home := files.UserHomeDir()
+	dir := "clout-cli-data"
+	path := home + "/" + dir + "/secret.txt"
+	os.Remove(path)
+	fmt.Println("Secret removed.")
+	fmt.Println("")
+}
 
 /*
 		jsonString := network.DoGet("api/v0/get-exchange-rate")
