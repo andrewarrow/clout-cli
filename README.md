@@ -3,15 +3,29 @@ golang cli for BitClout
 
 ```
 clout-cli $ ./clout ls
-diamondhands                   3184                 2 days
-diamondhands                   3184                 about 1 month
-DuaneMiller                    10                   about 1 hour
-danliving                      32                   about 1 hour
-VIPCLUB                        14                   about 1 hour
-locdog                         26                   about 1 hour
-BitcloutNodeList               49                   about 1 hour
-HKrassenstein                  152                  about 1 hour
-MemeGod                        144                  about 2 hours
+uditsonkhiya                   16                   less than a minute
+         This so real😁😁😁😂😂😂🤣
+
+LeighannBrindley               1                    less than a minute
+         “Freedom begins with owning your flaws
+
+ArtHero                        4                    less than a minute
+         can i share my talent here?
+
+Alexa_kim                      3                    less than a minute
+         Thank you so much @teddybear! 😄
+
+HenriA                         3                    less than a minute
+         It`s all energy!
+
+munny                          48                   less than a minute
+         Joe Scarborough steadily warping into a
+
+Phylanit                       4                    1 minute
+         Who is your least favorite actor?
+
+jefferydavid                   63                   1 minute
+         I literally have "Boom Boom Boom let's g
 ```
 
 ```
