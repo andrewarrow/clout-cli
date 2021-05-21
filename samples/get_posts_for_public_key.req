@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/get-posts-for-public-key
+
+{"PublicKeyBase58Check":"","Username":"andrewarrow","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LastPostHashHex":"","NumToFetch":10}
