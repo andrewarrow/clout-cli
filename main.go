@@ -11,8 +11,8 @@ import (
 func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clout help                  # this menu")
-	fmt.Println("  clout ls                    # list posts")
-	fmt.Println("  clout --username=x          # ")
+	fmt.Println("  clout ls                    # list global posts")
+	fmt.Println("  clout [username]            # that username")
 	fmt.Println("")
 }
 
@@ -29,7 +29,7 @@ func main() {
 	argMap = args.ToMap()
 
 	if argMap["username"] != "" {
-		PostsForPublicKey()
+		PostsForPublicKey("")
 		return
 	}
 
@@ -41,6 +41,8 @@ func main() {
 		GetUsersStateless()
 	} else if command == "help" {
 		PrintHelp()
+	} else {
+		PostsForPublicKey(command)
 	}
 
 }

@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"strings"
 	"time"
@@ -18,10 +17,11 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
-func PostsForPublicKey() {
-	b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
+func PostsForPublicKey(key string) {
+	js := GetPostsForPublicKey(key)
+	//b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
 	var ppk models.PostsPublicKey
-	json.Unmarshal(b, &ppk)
+	json.Unmarshal([]byte(js), &ppk)
 	for _, p := range ppk.Posts {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
@@ -39,7 +39,7 @@ func ListPosts() {
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
-	for _, p := range ps.PostsFound {
+	for i, p := range ps.PostsFound {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
 		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
@@ -48,6 +48,9 @@ func ListPosts() {
 		tokens := strings.Split(p.Body, "\n")
 		fmt.Println("        ", display.LeftAligned(tokens[0], 40))
 		fmt.Println("")
+		if i > 6 {
+			break
+		}
 	}
 }
 
@@ -64,6 +67,12 @@ func GetUsersStateless() {
 func GetPostsStateless() string {
 	jsonString := `{"ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
 	jsonString = network.DoPost("api/v0/get-posts-stateless", []byte(jsonString))
+	return jsonString
+}
+func GetPostsForPublicKey(key string) string {
+	jsonString := `{"PublicKeyBase58Check":"","Username":"%s","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LastPostHashHex":"","NumToFetch":10}`
+	jsonString = network.DoPost("api/v0/get-posts-for-public-key",
+		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
 
