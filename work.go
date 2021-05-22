@@ -22,7 +22,14 @@ import (
 )
 
 func PostsForPublicKey(key string) {
-	js := GetPostsForPublicKey(key)
+	js := GetSingleProfile(key)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+	fmt.Println("---")
+	fmt.Println(sp.Profile.Description)
+	fmt.Println("---")
+
+	js = GetPostsForPublicKey(key)
 	//b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)
@@ -86,6 +93,12 @@ func GetPostsStateless() string {
 func GetPostsForPublicKey(key string) string {
 	jsonString := `{"PublicKeyBase58Check":"","Username":"%s","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LastPostHashHex":"","NumToFetch":10}`
 	jsonString = network.DoPost("api/v0/get-posts-for-public-key",
+		[]byte(fmt.Sprintf(jsonString, key)))
+	return jsonString
+}
+func GetSingleProfile(key string) string {
+	jsonString := `{"PublicKeyBase58Check":"","Username":"%s"}`
+	jsonString = network.DoPost("api/v0/get-single-profile",
 		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
