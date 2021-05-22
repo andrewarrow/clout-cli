@@ -1,0 +1,6 @@
+POST
+	https://bitclout.com/api/v0/send-diamonds
+
+{"SenderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","ReceiverPublicKeyBase58Check":"BC1YLjEbXyFMHf3QtA5cKVHUVvc3R4foFVhYFQwV8o3q6XehKhjhMpA","DiamondPostHashHex":"2baaac0e33f196266c06eeefdf08c23423e4a6bf796e61ac612e2f3f7c005e7a","DiamondLevel":1,"MinFeeRateNanosPerKB":1000}
+
+

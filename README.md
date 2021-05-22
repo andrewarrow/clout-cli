@@ -2,6 +2,16 @@
 golang cli for BitClout
 
 ```
+clout-cli $ ./clout
+
+  clout help                  # this menu
+  clout ls                    # list global posts
+  clout [username]            # that username
+  clout login                 # enter secret phrase
+  clout logout                # delete secret from drive
+```
+
+```
 clout-cli $ ./clout ls
 uditsonkhiya                   16                   less than a minute
          This so real😁😁😁😂😂😂🤣
@@ -29,16 +39,18 @@ jefferydavid                   63                   1 minute
 ```
 
 ```
-clout-cli $ ./clout --username=andrewarrow
-https://www.youtube.com/watch?v=OaqeH9_yQBw                  about 7 hours
-@BitcloutNodeList up and running with my first node http://w about 13 hours
-If you have successfully launched your own NODE, please let  about 13 hours
-started running a node and I had to ask https://bitcloutforu about 13 hours
-pretty impressive up and to the right!                       about 13 hours
-hey @davemackey i like your bitclout resource list. I just u 1 day
-The Mad Ned Memo https://madned.substack.com/p/a-teenagers-g 1 day
-Most creative? That’s interesting metric to optimize for i 1 day
-That’s a German data center scanning your cpu use for ille 1 day
-is this fair? I wanted to retweet a tweet, but i want to swi 1 day
+clout-cli $ ./clout diamondhands
+     0 Sounds awesome. Quintuple 💎💎💎💎💎 from me for the first person who does this.
+3 days
+
+     0 Today, we take the decentralization of social media further than any other project has in the past.
+     2 Today, BitClout does to social media what Bitcoin is doing to the traditional financial system.
+     4 Today, 100% of the BitClout code goes public.
+     6 https://github.com/bitclout/core
+4 days
+
+     0 The more feedback you give us, the better the product gets. And the shipping never stops, not even on a beautiful sunny Saturday.
+     2 Click to learn about some important upgrades to your Wallet and Creator Coin pages that we hope will promote HODLing and minimize scams. 👇
+13 days
 ```
 
