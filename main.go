@@ -10,11 +10,16 @@ import (
 
 func PrintHelp() {
 	fmt.Println("")
-	fmt.Println("  clout help                  # this menu")
-	fmt.Println("  clout ls                    # list global posts")
-	fmt.Println("  clout [username]            # that username")
-	fmt.Println("  clout login                 # enter secret phrase")
-	fmt.Println("  clout logout                # delete secret from drive")
+	fmt.Println("  clout help                   # this menu")
+	fmt.Println("  clout ls                     # list global posts")
+	fmt.Println("  clout ls --follow            # filter by follow")
+	fmt.Println("  clout [username]             # that username")
+	fmt.Println("  clout login                  # enter secret phrase")
+	fmt.Println("  clout logout                 # delete secret from drive")
+	fmt.Println("  clout like [postHash]        # like/unlike a post")
+	fmt.Println("  clout diamond [postHash]     # send 1 diamond")
+	fmt.Println("  clout post --reply=postHash  # post or reply")
+	fmt.Println("  clout reclout [postHash]     # reclout specific post")
 	fmt.Println("")
 }
 
