@@ -54,13 +54,8 @@ func PostsForPublicKey(key string) {
 	}
 }
 
-func ListPosts(follows bool) {
-	js := ""
-	if follows == false {
-		js = GetPostsStateless()
-	} else {
-		js = GetFollowsStateless()
-	}
+func ListPosts(follow bool) {
+	js := GetPostsStateless(follow)
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
@@ -112,9 +107,15 @@ func GetUsersStateless() {
 	fmt.Println(jsonString)
 }
 
-func GetPostsStateless() string {
-	jsonString := `{"ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
-	jsonString = network.DoPost("api/v0/get-posts-stateless", []byte(jsonString))
+func GetPostsStateless(follow bool) string {
+	jsonString := `{"GetPostsForGlobalWhitelist":%s,"GetPostsForFollowFeed":%s, "OrderBy":"newest", "ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
+
+	withFollow := fmt.Sprintf(jsonString, "true", "false")
+	if follow {
+		withFollow = fmt.Sprintf(jsonString, "false", "true")
+	}
+	jsonString = network.DoPost("api/v0/get-posts-stateless",
+		[]byte(withFollow))
 	return jsonString
 }
 func GetFollowsStateless() string {
