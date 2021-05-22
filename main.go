@@ -24,6 +24,7 @@ func PrintHelp() {
 	fmt.Println("  clout notifications          # list notifications")
 	fmt.Println("  clout followers [username]   # who follows username")
 	fmt.Println("  clout following              # who you follow")
+	fmt.Println("  clout whoami                 # base58 pubkey logged in")
 	fmt.Println("")
 }
 
@@ -55,8 +56,8 @@ func main() {
 		Logout()
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
-	} else if command == "seal" {
-		LoggedInAs()
+	} else if command == "whoami" {
+		fmt.Println("\n" + LoggedInAs() + "\n")
 	} else {
 		PostsForPublicKey(command)
 	}

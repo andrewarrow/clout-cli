@@ -19,6 +19,7 @@ clout-cli $ ./clout help
   clout notifications          # list notifications
   clout followers [username]   # who follows username
   clout following              # who you follow
+  clout whoami                 # base58 pubkey logged in
 ```
 
 ```
