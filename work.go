@@ -102,10 +102,16 @@ func ListNotifications() {
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
 	}
 }
+func Pub58ToUsername(key string) string {
+	js := GetUsersStateless(key)
+	var us models.UsersStateless
+	json.Unmarshal([]byte(js), &us)
+	return us.UserList[0].ProfileEntryResponse.Username
+}
 
 var dir = "clout-cli-data"
 
-func LoggedInAs() string {
+func LoggedInAs() (string, string) {
 	home := files.UserHomeDir()
 	path := home + "/" + dir + "/secret.txt"
 	b, _ := ioutil.ReadFile(path)
@@ -118,7 +124,9 @@ func LoggedInAs() string {
 	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
 	//fmt.Printf("%x\n", seedBytes)
 
-	return keys.ComputeKeysFromSeed(seedBytes)
+	pub58 := keys.ComputeKeysFromSeed(seedBytes)
+	return pub58, Pub58ToUsername(pub58)
+
 	//params := &lib.BitCloutMainnetParams
 	//fmt.Println("Network type set:", params.NetworkType.String())
 
@@ -164,8 +172,10 @@ func Login() {
 	ioutil.WriteFile(path, []byte(text), 0700)
 	fmt.Println("Secret stored at:", path)
 	fmt.Println("")
-	fmt.Println("Logged in as pubkey58:")
-	fmt.Println(LoggedInAs())
+	fmt.Println("Logged in as:")
+	pub58, username := LoggedInAs()
+	fmt.Println(pub58)
+	fmt.Println(username)
 	fmt.Println("")
 }
 func Logout() {

@@ -46,8 +46,6 @@ func main() {
 		ListFollowing(os.Args)
 	} else if command == "following" {
 		ListFollowing([]string{})
-	} else if command == "gus" {
-		GetUsersStateless()
 	} else if command == "help" {
 		PrintHelp()
 	} else if command == "login" {
@@ -57,7 +55,7 @@ func main() {
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "whoami" {
-		fmt.Println("\n" + LoggedInAs() + "\n")
+		//fmt.Println("\n" + LoggedInAs() + "\n")
 	} else {
 		PostsForPublicKey(command)
 	}
