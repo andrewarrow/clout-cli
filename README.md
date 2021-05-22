@@ -4,7 +4,7 @@ golang cli for BitClout
 [they own your coin](https://andrewarrow.substack.com/p/they-own-your-coin)
 
 ```
- clout help                   # this menu
+  clout help                   # this menu
   clout ls                     # list global posts
   clout ls --follow            # filter by follow
   clout [username]             # username's profile & posts
