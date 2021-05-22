@@ -203,12 +203,12 @@ func Login() {
 	text, _ := reader.ReadString('\n')
 	text = strings.TrimSpace(text)
 
-	b, e := bip39.MnemonicToByteArray(text)
+	_, e := bip39.MnemonicToByteArray(text)
 	if e != nil {
 		fmt.Println(e)
 		return
 	}
-	fmt.Printf("%x\n", b)
+	//fmt.Printf("%x\n", b)
 
 	home := files.UserHomeDir()
 	os.Mkdir(home+"/"+dir, 0700)
@@ -217,7 +217,7 @@ func Login() {
 	fmt.Println("Secret stored at:", path)
 	fmt.Println("")
 	fmt.Println("Logged in as pubkey58:")
-	LoggedInAs()
+	fmt.Println(LoggedInAs())
 	fmt.Println("")
 }
 func Logout() {
