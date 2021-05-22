@@ -22,6 +22,7 @@ func PrintHelp() {
 	fmt.Println("  clout reclout [postHash]     # reclout specific post")
 	fmt.Println("  clout follow [username]      # toggle follow")
 	fmt.Println("  clout notifications          # list notifications")
+	fmt.Println("  clout following              # list of users")
 	fmt.Println("")
 }
 
@@ -43,19 +44,21 @@ func main() {
 	}
 
 	if command == "ls" {
-		ListPosts()
-	} else if command == "seal" {
-		Seal()
+		ListPosts(argMap["follow"] == "true")
+	} else if command == "following" {
+		ListFollowing()
+	} else if command == "gus" {
+		GetUsersStateless()
+	} else if command == "help" {
+		PrintHelp()
 	} else if command == "login" {
 		Login()
 	} else if command == "logout" {
 		Logout()
-	} else if command == "gus" {
-		GetUsersStateless()
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
-	} else if command == "help" {
-		PrintHelp()
+	} else if command == "seal" {
+		Seal()
 	} else {
 		PostsForPublicKey(command)
 	}

@@ -54,8 +54,13 @@ func PostsForPublicKey(key string) {
 	}
 }
 
-func ListPosts() {
-	js := GetPostsStateless()
+func ListPosts(follows bool) {
+	js := ""
+	if follows == false {
+		js = GetPostsStateless()
+	} else {
+		js = GetFollowsStateless()
+	}
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
@@ -72,6 +77,17 @@ func ListPosts() {
 		if i > 6 {
 			break
 		}
+	}
+}
+
+func ListFollowing() {
+	js := GetFollowsStateless()
+	var pktpe models.PublicKeyToProfileEntry
+	json.Unmarshal([]byte(js), &pktpe)
+	for _, v := range pktpe.PublicKeyToProfileEntry {
+		tokens := strings.Split(v.Description, "\n")
+		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
+			display.LeftAligned(tokens[0], 30))
 	}
 }
 
@@ -99,6 +115,12 @@ func GetUsersStateless() {
 func GetPostsStateless() string {
 	jsonString := `{"ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
 	jsonString = network.DoPost("api/v0/get-posts-stateless", []byte(jsonString))
+	return jsonString
+}
+func GetFollowsStateless() string {
+	jsonString := `{"Username":"","PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","GetEntriesFollowingUsername":false,"LastPublicKeyBase58Check":"","NumToFetch":50}`
+
+	jsonString = network.DoPost("api/v0/get-follows-stateless", []byte(jsonString))
 	return jsonString
 }
 func GetPostsForPublicKey(key string) string {
