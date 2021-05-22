@@ -26,7 +26,7 @@ func ComputeKeysFromSeed(seedBytes []byte) {
 	btcDepositAddress := addressObj.EncodeAddress()
 
 	prefix := [3]byte{0xcd, 0x14, 0x0}
-	input := pubKey.SerializeUncompressed()
+	input := pubKey.SerializeCompressed()
 
 	b := []byte{}
 	b = append(b, prefix[:]...)
