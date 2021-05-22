@@ -75,8 +75,8 @@ func ListPosts(follow bool) {
 	}
 }
 
-func ListFollowing() {
-	js := GetFollowsStateless()
+func ListFollowing(username string) {
+	js := GetFollowsStateless(username)
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
 	for _, v := range pktpe.PublicKeyToProfileEntry {
@@ -118,10 +118,16 @@ func GetPostsStateless(follow bool) string {
 		[]byte(withFollow))
 	return jsonString
 }
-func GetFollowsStateless() string {
-	jsonString := `{"Username":"","PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","GetEntriesFollowingUsername":false,"LastPublicKeyBase58Check":"","NumToFetch":50}`
+func GetFollowsStateless(username string) string {
+	jsonString := `{"Username":"%s","PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","GetEntriesFollowingUsername":%s,"LastPublicKeyBase58Check":"","NumToFetch":50}`
 
-	jsonString = network.DoPost("api/v0/get-follows-stateless", []byte(jsonString))
+	withDirection := fmt.Sprintf(jsonString, username, "false")
+	if username != "" {
+		withDirection = fmt.Sprintf(jsonString, username, "true")
+	}
+
+	jsonString = network.DoPost("api/v0/get-follows-stateless",
+		[]byte(withDirection))
 	return jsonString
 }
 func GetPostsForPublicKey(key string) string {

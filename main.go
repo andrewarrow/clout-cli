@@ -38,15 +38,10 @@ func main() {
 	command := os.Args[1]
 	argMap = args.ToMap()
 
-	if argMap["username"] != "" {
-		PostsForPublicKey("")
-		return
-	}
-
 	if command == "ls" {
 		ListPosts(argMap["follow"] == "true")
 	} else if command == "following" {
-		ListFollowing()
+		ListFollowing(argMap["username"])
 	} else if command == "gus" {
 		GetUsersStateless()
 	} else if command == "help" {
