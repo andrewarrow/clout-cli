@@ -155,17 +155,22 @@ func GetNotifications() string {
 	return jsonString
 }
 
-func Seal() {
+var dir = "clout-cli-data"
 
-	entropy, _ := bip39.NewEntropy(128)
-	mnemonic, _ := bip39.NewMnemonic(entropy)
-	fmt.Println(mnemonic)
-	b, _ := bip39.MnemonicToByteArray(mnemonic)
-	fmt.Printf("%x\n", b)
+func LoggedInAs() string {
+	home := files.UserHomeDir()
+	path := home + "/" + dir + "/secret.txt"
+	b, _ := ioutil.ReadFile(path)
+	mnemonic := strings.TrimSpace(string(b))
+
+	//entropy, _ := bip39.NewEntropy(128)
+	//mnemonic, _ := bip39.NewMnemonic(entropy)
+	b, _ = bip39.MnemonicToByteArray(mnemonic)
+	//fmt.Printf("%x\n", b)
 	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
-	fmt.Printf("%x\n", seedBytes)
+	//fmt.Printf("%x\n", seedBytes)
 
-	keys.ComputeKeysFromSeed(seedBytes)
+	return keys.ComputeKeysFromSeed(seedBytes)
 	//params := &lib.BitCloutMainnetParams
 	//fmt.Println("Network type set:", params.NetworkType.String())
 
@@ -206,16 +211,17 @@ func Login() {
 	fmt.Printf("%x\n", b)
 
 	home := files.UserHomeDir()
-	dir := "clout-cli-data"
 	os.Mkdir(home+"/"+dir, 0700)
 	path := home + "/" + dir + "/secret.txt"
 	ioutil.WriteFile(path, []byte(text), 0700)
 	fmt.Println("Secret stored at:", path)
 	fmt.Println("")
+	fmt.Println("Logged in as pubkey58:")
+	LoggedInAs()
+	fmt.Println("")
 }
 func Logout() {
 	home := files.UserHomeDir()
-	dir := "clout-cli-data"
 	path := home + "/" + dir + "/secret.txt"
 	os.Remove(path)
 	fmt.Println("Secret removed.")

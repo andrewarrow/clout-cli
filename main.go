@@ -56,7 +56,7 @@ func main() {
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "seal" {
-		Seal()
+		LoggedInAs()
 	} else {
 		PostsForPublicKey(command)
 	}
