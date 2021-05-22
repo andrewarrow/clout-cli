@@ -1,11 +1,13 @@
 package keys
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	"github.com/btcsuite/btcutil/hdkeychain"
 
 	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcutil/base58"
 )
 
 func ComputeKeysFromSeed(seedBytes []byte) {
@@ -23,8 +25,24 @@ func ComputeKeysFromSeed(seedBytes []byte) {
 	addressObj, _ := addressKey.Address(netParams)
 	btcDepositAddress := addressObj.EncodeAddress()
 
-	fmt.Println("pubKey", pubKey)
+	prefix := [3]byte{0xcd, 0x14, 0x0}
+	input := pubKey.SerializeUncompressed()
+
+	b := []byte{}
+	b = append(b, prefix[:]...)
+	b = append(b, input[:]...)
+	cksum := _checksum(b)
+	b = append(b, cksum[:]...)
+	fmt.Println("pub58", base58.Encode(b))
+
 	fmt.Println("privKey", privKey)
 	fmt.Println("addressObj", addressObj)
 	fmt.Println("btcDepositAddress", btcDepositAddress)
+}
+
+func _checksum(input []byte) (cksum [4]byte) {
+	h := sha256.Sum256(input)
+	h2 := sha256.Sum256(h[:])
+	copy(cksum[:], h2[:4])
+	return
 }
