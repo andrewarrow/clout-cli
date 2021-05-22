@@ -4,13 +4,20 @@ golang cli for BitClout
 [https://andrewarrow.substack.com/p/they-own-your-coin](they own your coin.)
 
 ```
-clout-cli $ ./clout
-
-  clout help                  # this menu
-  clout ls                    # list global posts
-  clout [username]            # that username
-  clout login                 # enter secret phrase
-  clout logout                # delete secret from drive
+ clout help                   # this menu
+  clout ls                     # list global posts
+  clout ls --follow            # filter by follow
+  clout [username]             # username's profile & posts
+  clout login                  # enter secret phrase
+  clout logout                 # delete secret from drive
+  clout like [postHash]        # like/unlike a post
+  clout diamond [postHash]     # send 1 diamond
+  clout post --reply=postHash  # post or reply
+  clout reclout [postHash]     # reclout specific post
+  clout follow [username]      # toggle follow
+  clout notifications          # list notifications
+  clout followers [username]   # who follows username
+  clout following              # who you follow
 ```
 
 ```
