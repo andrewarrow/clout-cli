@@ -21,6 +21,7 @@ func PrintHelp() {
 	fmt.Println("  clout post --reply=postHash  # post or reply")
 	fmt.Println("  clout reclout [postHash]     # reclout specific post")
 	fmt.Println("  clout follow [username]      # toggle follow")
+	fmt.Println("  clout notifications          # list notifications")
 	fmt.Println("")
 }
 

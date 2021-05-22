@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/create-follow-txn-stateless
+
+{"FollowerPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","FollowedPublicKeyBase58Check":"BC1YLjKhcPFKea5qivZ2Y8nX8Rt77wZg2h1gPfKnXSP3KNtMzuc4WyX","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}
