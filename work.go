@@ -75,8 +75,16 @@ func ListPosts(follow bool) {
 	}
 }
 
-func ListFollowing(username string) {
-	js := GetFollowsStateless(username)
+func ListFollowing(args []string) {
+	js := ""
+	if len(args) == 0 {
+		js = GetFollowsStateless("")
+	} else if len(args) == 2 {
+		fmt.Println("command missing username")
+		return
+	} else {
+		js = GetFollowsStateless(args[2])
+	}
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
 	for _, v := range pktpe.PublicKeyToProfileEntry {
