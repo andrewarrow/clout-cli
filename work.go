@@ -75,6 +75,15 @@ func ListPosts() {
 	}
 }
 
+func ListNotifications() {
+	b, _ := ioutil.ReadFile("samples/get_notifications.list")
+	var list models.NotificationList
+	json.Unmarshal(b, &list)
+	for i, n := range list.Notifications {
+		fmt.Println(i, n.Metadata.TxnType)
+	}
+}
+
 func GetUsersStateless() {
 	jsonString := `{"PublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
 	jsonString = network.DoPost("api/v0/get-users-stateless", []byte(jsonString))

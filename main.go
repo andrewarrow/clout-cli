@@ -52,6 +52,8 @@ func main() {
 		Logout()
 	} else if command == "gus" {
 		GetUsersStateless()
+	} else if command == "notifications" || command == "notification" {
+		ListNotifications()
 	} else if command == "help" {
 		PrintHelp()
 	} else {
