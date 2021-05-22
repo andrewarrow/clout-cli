@@ -4,22 +4,18 @@ import (
 	"bufio"
 	"clout/display"
 	"clout/files"
+	"clout/keys"
 	"clout/models"
 	"clout/network"
-	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/justincampbell/timeago"
-	"github.com/tyler-smith/go-bip32"
 	"github.com/tyler-smith/go-bip39"
-	"golang.org/x/crypto/nacl/secretbox"
 )
 
 func PostsForPublicKey(key string) {
@@ -166,6 +162,15 @@ func Seal() {
 	fmt.Println(mnemonic)
 	b, _ := bip39.MnemonicToByteArray(mnemonic)
 	fmt.Printf("%x\n", b)
+	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
+	fmt.Printf("%x\n", seedBytes)
+
+	keys.ComputeKeysFromSeed(seedBytes)
+	//params := &lib.BitCloutMainnetParams
+	//fmt.Println("Network type set:", params.NetworkType.String())
+
+	//pubKey, privKey, _, _ = lib.ComputeKeysFromSeed(seedBytes, 0, &params)
+	//fmt.Printf("%v\n", pubKey)
 
 	//const privateKey = this.cryptoService.seedHexToPrivateKey(seedHex);
 	//const signature = privateKey.sign(transactionHash);
@@ -173,19 +178,18 @@ func Seal() {
 	//seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
 	//pubKey, privKey, _, _ = lib.ComputeKeysFromSeed(seedBytes, 0, params)
 
-	seed, _ := bip32.NewSeed()
-	rootPrivateKey, _ := bip32.NewMasterKey(seed)
-	rootPublicKey := rootPrivateKey.PublicKey()
-	key, _ := rootPrivateKey.NewChildKey(0)
-	var nonce [24]byte
-	io.ReadFull(rand.Reader, nonce[:])
-	var a [32]byte
-	copy(a[:], key.Key)
-	tx := "0161d2cb8074354650c8c34e607737d0ef140bfe871f8f4274c430b7818ce8e1e1000102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e2095cc9805059501000083017b22426f6479223a225468697320736f6e67206279205061756c20576173746572626572672077617320696e2074686520313939322066696c6d205c2253696e676c65735c222068747470733a2f2f7777772e796f75747562652e636f6d2f77617463683f763d4d56684245745453456345222c22496d61676555524c73223a5b5d7de807d461a4b1b982b9f0bcc016002102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e20950000"
-	encrypted := secretbox.Seal(nonce[:], []byte(tx), &nonce, &a)
+	//seed, _ := bip32.NewSeed()
+	//rootPrivateKey, _ := bip32.NewMasterKey(seed)
+	//rootPublicKey := rootPrivateKey.PublicKey()
+	//key, _ := rootPrivateKey.NewChildKey(0)
+	//var nonce [24]byte
+	//io.ReadFull(rand.Reader, nonce[:])
+	//var a [32]byte
+	//copy(a[:], key.Key)
+	//encrypted := secretbox.Seal(nonce[:], []byte(tx), &nonce, &a)
 	// ec.sign(msg, privateKey, {canonical: true}
 
-	log.Println(rootPublicKey, fmt.Sprintf("%x", encrypted))
+	//log.Println(rootPublicKey, fmt.Sprintf("%x", encrypted))
 }
 
 func Login() {
