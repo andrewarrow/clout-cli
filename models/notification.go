@@ -8,5 +8,13 @@ type Notification struct {
 }
 
 type Metadata struct {
-	TxnType string
+	TxnType                            string
+	CreatorCoinTransferTxindexMetadata CreatorCoinTransferTxindexMetadata
+}
+
+type CreatorCoinTransferTxindexMetadata struct {
+	CreatorUsername            string
+	CreatorCoinToTransferNanos int64
+	DiamondLevel               int64
+	PostHashHex                string
 }

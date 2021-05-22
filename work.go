@@ -80,7 +80,8 @@ func ListNotifications() {
 	var list models.NotificationList
 	json.Unmarshal(b, &list)
 	for i, n := range list.Notifications {
-		fmt.Println(i, n.Metadata.TxnType)
+		fmt.Printf("%02d %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
+			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
 	}
 }
 
