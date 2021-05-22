@@ -1,7 +1,7 @@
 # clout-cli
 golang cli for BitClout
 
-[https://andrewarrow.substack.com/p/they-own-your-coin](they own your coin.)
+[they own your coin](https://andrewarrow.substack.com/p/they-own-your-coin)
 
 ```
  clout help                   # this menu
