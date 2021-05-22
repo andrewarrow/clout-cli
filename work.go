@@ -76,9 +76,10 @@ func ListPosts() {
 }
 
 func ListNotifications() {
-	b, _ := ioutil.ReadFile("samples/get_notifications.list")
+	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
+	js := GetNotifications()
 	var list models.NotificationList
-	json.Unmarshal(b, &list)
+	json.Unmarshal([]byte(js), &list)
 	for i, n := range list.Notifications {
 		fmt.Printf("%02d %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
@@ -110,6 +111,11 @@ func GetSingleProfile(key string) string {
 	jsonString := `{"PublicKeyBase58Check":"","Username":"%s"}`
 	jsonString = network.DoPost("api/v0/get-single-profile",
 		[]byte(fmt.Sprintf(jsonString, key)))
+	return jsonString
+}
+func GetNotifications() string {
+	jsonString := `{"PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","FetchStartIndex":-1,"NumToFetch":50}`
+	jsonString = network.DoPost("api/v0/get-notifications", []byte(jsonString))
 	return jsonString
 }
 
