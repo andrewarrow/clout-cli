@@ -18,6 +18,7 @@ import (
 
 	"github.com/justincampbell/timeago"
 	"github.com/tyler-smith/go-bip32"
+	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
@@ -159,6 +160,19 @@ func GetNotifications() string {
 }
 
 func Seal() {
+
+	entropy, _ := bip39.NewEntropy(128)
+	mnemonic, _ := bip39.NewMnemonic(entropy)
+	fmt.Println(mnemonic)
+	b, _ := bip39.MnemonicToByteArray(mnemonic)
+	fmt.Printf("%x\n", b)
+
+	//const privateKey = this.cryptoService.seedHexToPrivateKey(seedHex);
+	//const signature = privateKey.sign(transactionHash);
+
+	//seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
+	//pubKey, privKey, _, _ = lib.ComputeKeysFromSeed(seedBytes, 0, params)
+
 	seed, _ := bip32.NewSeed()
 	rootPrivateKey, _ := bip32.NewMasterKey(seed)
 	rootPublicKey := rootPrivateKey.PublicKey()
@@ -169,14 +183,23 @@ func Seal() {
 	copy(a[:], key.Key)
 	tx := "0161d2cb8074354650c8c34e607737d0ef140bfe871f8f4274c430b7818ce8e1e1000102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e2095cc9805059501000083017b22426f6479223a225468697320736f6e67206279205061756c20576173746572626572672077617320696e2074686520313939322066696c6d205c2253696e676c65735c222068747470733a2f2f7777772e796f75747562652e636f6d2f77617463683f763d4d56684245745453456345222c22496d61676555524c73223a5b5d7de807d461a4b1b982b9f0bcc016002102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e20950000"
 	encrypted := secretbox.Seal(nonce[:], []byte(tx), &nonce, &a)
+	// ec.sign(msg, privateKey, {canonical: true}
 
 	log.Println(rootPublicKey, fmt.Sprintf("%x", encrypted))
 }
 
 func Login() {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter text: ")
+	fmt.Print("Enter mnenomic: ")
 	text, _ := reader.ReadString('\n')
+	text = strings.TrimSpace(text)
+
+	b, e := bip39.MnemonicToByteArray(text)
+	if e != nil {
+		fmt.Println(e)
+		return
+	}
+	fmt.Printf("%x\n", b)
 
 	home := files.UserHomeDir()
 	dir := "clout-cli-data"
