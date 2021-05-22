@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/get-notifications
+
+{"PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","FetchStartIndex":-1,"NumToFetch":50}

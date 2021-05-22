@@ -22,7 +22,14 @@ import (
 )
 
 func PostsForPublicKey(key string) {
-	js := GetPostsForPublicKey(key)
+	js := GetSingleProfile(key)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+	fmt.Println("---", sp.Profile.CoinEntry.CreatorBasisPoints)
+	fmt.Println(sp.Profile.Description)
+	fmt.Println("---")
+
+	js = GetPostsForPublicKey(key)
 	//b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)
@@ -47,8 +54,8 @@ func PostsForPublicKey(key string) {
 	}
 }
 
-func ListPosts() {
-	js := GetPostsStateless()
+func ListPosts(follow bool) {
+	js := GetPostsStateless(follow)
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
@@ -68,6 +75,36 @@ func ListPosts() {
 	}
 }
 
+func ListFollowing(args []string) {
+	js := ""
+	if len(args) == 0 {
+		js = GetFollowsStateless("")
+	} else if len(args) == 2 {
+		fmt.Println("command missing username")
+		return
+	} else {
+		js = GetFollowsStateless(args[2])
+	}
+	var pktpe models.PublicKeyToProfileEntry
+	json.Unmarshal([]byte(js), &pktpe)
+	for _, v := range pktpe.PublicKeyToProfileEntry {
+		tokens := strings.Split(v.Description, "\n")
+		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
+			display.LeftAligned(tokens[0], 30))
+	}
+}
+
+func ListNotifications() {
+	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
+	js := GetNotifications()
+	var list models.NotificationList
+	json.Unmarshal([]byte(js), &list)
+	for i, n := range list.Notifications {
+		fmt.Printf("%02d %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
+			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
+	}
+}
+
 func GetUsersStateless() {
 	jsonString := `{"PublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
 	jsonString = network.DoPost("api/v0/get-users-stateless", []byte(jsonString))
@@ -78,15 +115,44 @@ func GetUsersStateless() {
 	fmt.Println(jsonString)
 }
 
-func GetPostsStateless() string {
-	jsonString := `{"ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
-	jsonString = network.DoPost("api/v0/get-posts-stateless", []byte(jsonString))
+func GetPostsStateless(follow bool) string {
+	jsonString := `{"GetPostsForGlobalWhitelist":%s,"GetPostsForFollowFeed":%s, "OrderBy":"newest", "ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
+
+	withFollow := fmt.Sprintf(jsonString, "true", "false")
+	if follow {
+		withFollow = fmt.Sprintf(jsonString, "false", "true")
+	}
+	jsonString = network.DoPost("api/v0/get-posts-stateless",
+		[]byte(withFollow))
+	return jsonString
+}
+func GetFollowsStateless(username string) string {
+	jsonString := `{"Username":"%s","PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","GetEntriesFollowingUsername":%s,"LastPublicKeyBase58Check":"","NumToFetch":50}`
+
+	withDirection := fmt.Sprintf(jsonString, username, "false")
+	if username != "" {
+		withDirection = fmt.Sprintf(jsonString, username, "true")
+	}
+
+	jsonString = network.DoPost("api/v0/get-follows-stateless",
+		[]byte(withDirection))
 	return jsonString
 }
 func GetPostsForPublicKey(key string) string {
 	jsonString := `{"PublicKeyBase58Check":"","Username":"%s","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LastPostHashHex":"","NumToFetch":10}`
 	jsonString = network.DoPost("api/v0/get-posts-for-public-key",
 		[]byte(fmt.Sprintf(jsonString, key)))
+	return jsonString
+}
+func GetSingleProfile(key string) string {
+	jsonString := `{"PublicKeyBase58Check":"","Username":"%s"}`
+	jsonString = network.DoPost("api/v0/get-single-profile",
+		[]byte(fmt.Sprintf(jsonString, key)))
+	return jsonString
+}
+func GetNotifications() string {
+	jsonString := `{"PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","FetchStartIndex":-1,"NumToFetch":50}`
+	jsonString = network.DoPost("api/v0/get-notifications", []byte(jsonString))
 	return jsonString
 }
 

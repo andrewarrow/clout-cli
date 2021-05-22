@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/create-like-stateless
+
+{"ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LikedPostHashHex":"816431f287ef0d237f0ee72b6a6e1b3f925c63360cf92874f7330fa354aab0dd","IsUnlike":false,"MinFeeRateNanosPerKB":1000}
