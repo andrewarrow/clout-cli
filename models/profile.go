@@ -1,8 +1,11 @@
 package models
 
 type SingleProfile struct {
-	Profile Profile
+	Profile ProfileEntryResponse
 }
-type Profile struct {
-	Description string
+type ProfileEntryResponse struct {
+	PublicKeyBase58Check string
+	Username             string
+	Description          string
+	CoinEntry            CoinEntry
 }

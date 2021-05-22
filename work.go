@@ -25,7 +25,7 @@ func PostsForPublicKey(key string) {
 	js := GetSingleProfile(key)
 	var sp models.SingleProfile
 	json.Unmarshal([]byte(js), &sp)
-	fmt.Println("---")
+	fmt.Println("---", sp.Profile.CoinEntry.CreatorBasisPoints)
 	fmt.Println(sp.Profile.Description)
 	fmt.Println("---")
 
