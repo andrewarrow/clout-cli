@@ -87,6 +87,8 @@ func ListFollowing(args []string) {
 	}
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
+	fmt.Println("NumFollowers", pktpe.NumFollowers)
+	fmt.Println("")
 	for _, v := range pktpe.PublicKeyToProfileEntry {
 		tokens := strings.Split(v.Description, "\n")
 		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
