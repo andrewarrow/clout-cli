@@ -6,9 +6,10 @@ import (
 )
 
 func GetUsersStateless(key string) string {
-	jsonString := `{"PublicKeyBase58Check":"%s"}`
+	jsonString := `{"PublicKeysBase58Check":["%s"],"SkipHodlings":false}`
+	send := fmt.Sprintf(jsonString, key)
 	jsonString = network.DoPost("api/v0/get-users-stateless",
-		[]byte(fmt.Sprintf(jsonString, key)))
+		[]byte(send))
 	return jsonString
 }
 

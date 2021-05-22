@@ -111,6 +111,15 @@ func Pub58ToUsername(key string) string {
 
 var dir = "clout-cli-data"
 
+func Whoami() {
+	fmt.Println("Logged in as:")
+	fmt.Println("")
+	pub58, username := LoggedInAs()
+	fmt.Println(pub58)
+	fmt.Println(username)
+	fmt.Println("")
+}
+
 func LoggedInAs() (string, string) {
 	home := files.UserHomeDir()
 	path := home + "/" + dir + "/secret.txt"
@@ -172,11 +181,7 @@ func Login() {
 	ioutil.WriteFile(path, []byte(text), 0700)
 	fmt.Println("Secret stored at:", path)
 	fmt.Println("")
-	fmt.Println("Logged in as:")
-	pub58, username := LoggedInAs()
-	fmt.Println(pub58)
-	fmt.Println(username)
-	fmt.Println("")
+	Whoami()
 }
 func Logout() {
 	home := files.UserHomeDir()

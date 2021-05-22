@@ -55,6 +55,7 @@ func main() {
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "whoami" {
+		Whoami()
 		//fmt.Println("\n" + LoggedInAs() + "\n")
 	} else {
 		PostsForPublicKey(command)
