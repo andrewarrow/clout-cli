@@ -1,6 +1,8 @@
 # clout-cli
 golang cli for BitClout
 
+[https://andrewarrow.substack.com/p/they-own-your-coin](they own your coin.)
+
 ```
 clout-cli $ ./clout ls
 uditsonkhiya                   16                   less than a minute
