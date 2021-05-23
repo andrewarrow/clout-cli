@@ -24,7 +24,11 @@ func RunV8() {
 	ctx.RunScript(vendor, "vendor.js")
 	ctx.RunScript(main, "main.js")
 
-	ctx.RunScript("const result = 18", "more.js")
+	js := `var cc = new CryptoService('');
+	var ss = new SigningService(cc);
+	var result = ss.signTransaction("ABC123", "XYZ456");`
+
+	ctx.RunScript(js, "value.js")
 
 	val, _ := ctx.RunScript("result", "value.js")
 	fmt.Printf("addition result: %s", val)
