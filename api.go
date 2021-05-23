@@ -13,7 +13,8 @@ import (
 func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	jsonString := `{"TransactionHex": "%s"}`
 	transactionBytes, _ := hex.DecodeString(hexString)
-	transactionHash := fmt.Sprintf("%x", sha256.Sum256(transactionBytes))
+	first := sha256.Sum256(transactionBytes)
+	transactionHash := fmt.Sprintf("%x", sha256.Sum256(first[:]))
 
 	sig, _ := priv.Sign([]byte(transactionHash))
 	signatureBytes := sig.Serialize()
@@ -22,7 +23,7 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	binary.LittleEndian.PutUint64(signatureLength, uint64(len(signatureBytes)))
 
 	buff := []byte{}
-	buff = append(buff, transactionBytes[0:len(transactionBytes)-1]...)
+	buff = append(buff, transactionBytes[0:len(transactionBytes)-2]...)
 	buff = append(buff, signatureLength...)
 	buff = append(buff, signatureBytes...)
 
