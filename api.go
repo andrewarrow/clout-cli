@@ -9,8 +9,9 @@ import (
 
 func SubmitTx(hex string, priv *btcec.PrivateKey) string {
 	jsonString := `{"TransactionHex": "%s"}`
-	signedHex, e := priv.Sign([]byte(hex))
-	fmt.Println("signedHex", signedHex, e)
+	sig, _ := priv.Sign([]byte(hex))
+	signedHex := fmt.Sprintf("%x", sig.Serialize())
+	fmt.Println("signedHex", signedHex)
 	send := fmt.Sprintf(jsonString, signedHex)
 	jsonString = network.DoPost("api/v0/submit-transaction",
 		[]byte(send))
