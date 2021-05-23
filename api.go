@@ -61,12 +61,12 @@ func GetPostsStateless(follow bool) string {
 		[]byte(withFollow))
 	return jsonString
 }
-func GetFollowsStateless(username string) string {
-	jsonString := `{"Username":"%s","PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","GetEntriesFollowingUsername":%s,"LastPublicKeyBase58Check":"","NumToFetch":50}`
+func GetFollowsStateless(pub58, username string) string {
+	jsonString := `{"Username":"%s","PublicKeyBase58Check":"%s","GetEntriesFollowingUsername":%s,"LastPublicKeyBase58Check":"","NumToFetch":50}`
 
-	withDirection := fmt.Sprintf(jsonString, username, "false")
+	withDirection := fmt.Sprintf(jsonString, username, pub58, "false")
 	if username != "" {
-		withDirection = fmt.Sprintf(jsonString, username, "true")
+		withDirection = fmt.Sprintf(jsonString, username, pub58, "true")
 	}
 
 	jsonString = network.DoPost("api/v0/get-follows-stateless",

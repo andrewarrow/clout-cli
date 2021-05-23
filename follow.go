@@ -9,7 +9,8 @@ import (
 )
 
 func ListFollowing() {
-	js := GetFollowsStateless("")
+	pub58, _ := LoggedInAs()
+	js := GetFollowsStateless(pub58, "")
 
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
@@ -22,8 +23,8 @@ func ListFollowing() {
 	}
 }
 func ListFollowers() {
-	_, username := LoggedInAs()
-	js := GetFollowsStateless(username)
+	pub58, username := LoggedInAs()
+	js := GetFollowsStateless(pub58, username)
 
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
