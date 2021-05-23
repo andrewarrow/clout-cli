@@ -71,27 +71,6 @@ func ListPosts(follow bool) {
 	}
 }
 
-func ListFollowing(args []string) {
-	js := ""
-	if len(args) == 0 {
-		js = GetFollowsStateless("")
-	} else if len(args) == 2 {
-		fmt.Println("command missing username")
-		return
-	} else {
-		js = GetFollowsStateless(args[2])
-	}
-	var pktpe models.PublicKeyToProfileEntry
-	json.Unmarshal([]byte(js), &pktpe)
-	fmt.Println("NumFollowers", pktpe.NumFollowers)
-	fmt.Println("")
-	for _, v := range pktpe.PublicKeyToProfileEntry {
-		tokens := strings.Split(v.Description, "\n")
-		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
-			display.LeftAligned(tokens[0], 30))
-	}
-}
-
 func ListNotifications() {
 	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
 	js := GetNotifications()

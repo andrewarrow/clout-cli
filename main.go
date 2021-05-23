@@ -22,7 +22,7 @@ func PrintHelp() {
 	fmt.Println("  clout reclout [postHash]     # reclout specific post")
 	fmt.Println("  clout follow [username]      # toggle follow")
 	fmt.Println("  clout notifications          # list notifications")
-	fmt.Println("  clout followers [username]   # who follows username")
+	fmt.Println("  clout followers              # who follows you")
 	fmt.Println("  clout following              # who you follow")
 	fmt.Println("  clout whoami                 # base58 pubkey logged in")
 	fmt.Println("")
@@ -43,9 +43,9 @@ func main() {
 	if command == "ls" {
 		ListPosts(argMap["follow"] == "true")
 	} else if command == "followers" {
-		ListFollowing(os.Args)
+		ListFollowers()
 	} else if command == "following" {
-		ListFollowing([]string{})
+		ListFollowing()
 	} else if command == "help" {
 		PrintHelp()
 	} else if command == "login" {
