@@ -1,5 +1,10 @@
 package models
 
+type TxReady struct {
+	TstampNanos    int64
+	TransactionHex string
+}
+
 type Tx struct {
 	//TxIns     []TxInput
 	//TxOuts    []TxOutput

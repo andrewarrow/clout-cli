@@ -123,7 +123,11 @@ func Whoami() {
 func LoggedInAs() (string, string) {
 	home := files.UserHomeDir()
 	path := home + "/" + dir + "/secret.txt"
-	b, _ := ioutil.ReadFile(path)
+	b, e := ioutil.ReadFile(path)
+	if e != nil {
+		fmt.Println("    --- not logged in yet, run clout login")
+		return "", ""
+	}
 	mnemonic := strings.TrimSpace(string(b))
 
 	//entropy, _ := bip39.NewEntropy(128)
@@ -160,6 +164,23 @@ func LoggedInAs() (string, string) {
 	// ec.sign(msg, privateKey, {canonical: true}
 
 	//log.Println(rootPublicKey, fmt.Sprintf("%x", encrypted))
+}
+func Post() {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Say: ")
+	text, _ := reader.ReadString('\n')
+	text = strings.TrimSpace(text)
+
+	pub58, _ := LoggedInAs()
+	jsonString := SubmitPost(pub58, text)
+	var tx models.TxReady
+	json.Unmarshal([]byte(jsonString), &tx)
+
+	tsUnix := tx.TstampNanos / 1000000000
+	ts := time.Unix(tsUnix, 0)
+
+	fmt.Println(ts)
+	fmt.Println(tx.TransactionHex)
 }
 
 func Login() {

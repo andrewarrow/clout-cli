@@ -52,6 +52,8 @@ func main() {
 		Login()
 	} else if command == "logout" {
 		Logout()
+	} else if command == "post" {
+		Post()
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "whoami" {

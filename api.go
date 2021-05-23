@@ -5,6 +5,14 @@ import (
 	"fmt"
 )
 
+func SubmitPost(pub58, body string) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, body)
+	jsonString = network.DoPost("api/v0/submit-post",
+		[]byte(send))
+	return jsonString
+}
+
 func GetUsersStateless(key string) string {
 	jsonString := `{"PublicKeysBase58Check":["%s"],"SkipHodlings":false}`
 	send := fmt.Sprintf(jsonString, key)
