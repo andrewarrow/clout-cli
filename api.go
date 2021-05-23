@@ -86,8 +86,9 @@ func GetSingleProfile(key string) string {
 		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
-func GetNotifications() string {
-	jsonString := `{"PublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","FetchStartIndex":-1,"NumToFetch":50}`
-	jsonString = network.DoPost("api/v0/get-notifications", []byte(jsonString))
+func GetNotifications(pub58 string) string {
+	jsonString := `{"PublicKeyBase58Check":"%s","FetchStartIndex":-1,"NumToFetch":50}`
+	sendString := fmt.Sprintf(jsonString, pub58)
+	jsonString = network.DoPost("api/v0/get-notifications", []byte(sendString))
 	return jsonString
 }

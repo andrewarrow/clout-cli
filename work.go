@@ -72,16 +72,6 @@ func ListPosts(follow bool) {
 	}
 }
 
-func ListNotifications() {
-	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
-	js := GetNotifications()
-	var list models.NotificationList
-	json.Unmarshal([]byte(js), &list)
-	for i, n := range list.Notifications {
-		fmt.Printf("%02d %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
-			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
-	}
-}
 func Pub58ToUsername(key string) string {
 	js := GetUsersStateless(key)
 	var us models.UsersStateless
