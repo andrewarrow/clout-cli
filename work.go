@@ -181,9 +181,10 @@ func Post() {
 	text = strings.TrimSpace(text)
 
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes())
-	jsonString := SubmitPost(pub58, text)
+	bigString := SubmitPost(pub58, text)
+
 	var tx models.TxReady
-	json.Unmarshal([]byte(jsonString), &tx)
+	json.Unmarshal([]byte(bigString), &tx)
 
 	tsUnix := tx.TstampNanos / 1000000000
 	ts := time.Unix(tsUnix, 0)
@@ -191,7 +192,7 @@ func Post() {
 	fmt.Println(ts)
 	fmt.Println(tx.TransactionHex)
 
-	jsonString = SubmitTx(tx.TransactionHex, priv)
+	jsonString := SubmitTx(tx.TransactionHex, priv)
 	fmt.Println(jsonString)
 }
 

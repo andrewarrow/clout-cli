@@ -2,15 +2,32 @@ package main
 
 import (
 	"clout/network"
+	"crypto/sha256"
+	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 
 	"github.com/btcsuite/btcd/btcec"
 )
 
-func SubmitTx(hex string, priv *btcec.PrivateKey) string {
+func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	jsonString := `{"TransactionHex": "%s"}`
-	sig, _ := priv.Sign([]byte(hex))
-	signedHex := fmt.Sprintf("%x", sig.Serialize())
+	transactionBytes, _ := hex.DecodeString(hexString)
+	transactionHash := fmt.Sprintf("%x", sha256.Sum256(transactionBytes))
+
+	sig, _ := priv.Sign([]byte(transactionHash))
+	signatureBytes := sig.Serialize()
+
+	signatureLength := make([]byte, 8)
+	binary.LittleEndian.PutUint64(signatureLength, uint64(len(signatureBytes)))
+
+	buff := []byte{}
+	buff = append(buff, transactionBytes[0:len(transactionBytes)-1]...)
+	buff = append(buff, signatureLength...)
+	buff = append(buff, signatureBytes...)
+
+	signedHex := fmt.Sprintf("%x", buff)
+
 	fmt.Println("signedHex", signedHex)
 	send := fmt.Sprintf(jsonString, signedHex)
 	jsonString = network.DoPost("api/v0/submit-transaction",
