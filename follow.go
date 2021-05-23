@@ -9,7 +9,7 @@ import (
 )
 
 func ListFollowing() {
-	pub58, _ := LoggedInAs()
+	pub58 := LoggedInPub58()
 	js := GetFollowsStateless(pub58, "")
 
 	var pktpe models.PublicKeyToProfileEntry

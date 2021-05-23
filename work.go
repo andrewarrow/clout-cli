@@ -120,6 +120,11 @@ func SeedBytes() []byte {
 	return seedBytes
 }
 
+func LoggedInPub58() string {
+	seedBytes := SeedBytes()
+	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
+	return pub58
+}
 func LoggedInAs() (string, string) {
 
 	seedBytes := SeedBytes()
