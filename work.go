@@ -51,7 +51,8 @@ func PostsForPublicKey(key string) {
 }
 
 func ListPosts(follow bool) {
-	js := GetPostsStateless(follow)
+	pub58 := LoggedInPub58()
+	js := GetPostsStateless(pub58, follow)
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)

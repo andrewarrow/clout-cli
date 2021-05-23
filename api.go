@@ -51,12 +51,12 @@ func GetUsersStateless(key string) string {
 	return jsonString
 }
 
-func GetPostsStateless(follow bool) string {
-	jsonString := `{"GetPostsForGlobalWhitelist":%s,"GetPostsForFollowFeed":%s, "OrderBy":"newest", "ReaderPublicKeyBase58Check": "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"}`
+func GetPostsStateless(pub58 string, follow bool) string {
+	jsonString := `{"GetPostsForGlobalWhitelist":%s,"GetPostsForFollowFeed":%s, "OrderBy":"newest", "ReaderPublicKeyBase58Check": "%s"}`
 
-	withFollow := fmt.Sprintf(jsonString, "true", "false")
+	withFollow := fmt.Sprintf(jsonString, "true", "false", pub58)
 	if follow {
-		withFollow = fmt.Sprintf(jsonString, "false", "true")
+		withFollow = fmt.Sprintf(jsonString, "false", "true", pub58)
 	}
 	jsonString = network.DoPost("api/v0/get-posts-stateless",
 		[]byte(withFollow))

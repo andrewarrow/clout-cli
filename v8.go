@@ -26,8 +26,10 @@ func RunV8() {
 
 	js := `var cc = new CryptoService('');
 	var ss = new SigningService(cc);
-	var result = ss.signTransaction("ABC123", "XYZ456");`
+	var result = ss.signTransaction("ABC123", "XYZ456");
+	var result = 'thisdocVars';`
 
+	js = `var result = window;`
 	ctx.RunScript(js, "value.js")
 
 	val, _ := ctx.RunScript("result", "value.js")
