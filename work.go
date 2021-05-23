@@ -120,24 +120,33 @@ func Whoami() {
 	fmt.Println("")
 }
 
-func LoggedInAs() (string, string) {
+func ReadLoggedInWords() string {
 	home := files.UserHomeDir()
 	path := home + "/" + dir + "/secret.txt"
 	b, e := ioutil.ReadFile(path)
 	if e != nil {
 		fmt.Println("    --- not logged in yet, run clout login")
-		return "", ""
+		return ""
 	}
 	mnemonic := strings.TrimSpace(string(b))
-
+	return mnemonic
+}
+func SeedBytes() []byte {
+	mnemonic := ReadLoggedInWords()
 	//entropy, _ := bip39.NewEntropy(128)
 	//mnemonic, _ := bip39.NewMnemonic(entropy)
-	b, _ = bip39.MnemonicToByteArray(mnemonic)
+	//b, _ := bip39.MnemonicToByteArray(mnemonic)
 	//fmt.Printf("%x\n", b)
 	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
+	return seedBytes
+}
+
+func LoggedInAs() (string, string) {
+
+	seedBytes := SeedBytes()
 	//fmt.Printf("%x\n", seedBytes)
 
-	pub58 := keys.ComputeKeysFromSeed(seedBytes)
+	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
 	return pub58, Pub58ToUsername(pub58)
 
 	//params := &lib.BitCloutMainnetParams
@@ -171,7 +180,7 @@ func Post() {
 	text, _ := reader.ReadString('\n')
 	text = strings.TrimSpace(text)
 
-	pub58, _ := LoggedInAs()
+	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes())
 	jsonString := SubmitPost(pub58, text)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
@@ -181,6 +190,9 @@ func Post() {
 
 	fmt.Println(ts)
 	fmt.Println(tx.TransactionHex)
+
+	jsonString = SubmitTx(tx.TransactionHex, priv)
+	fmt.Println(jsonString)
 }
 
 func Login() {

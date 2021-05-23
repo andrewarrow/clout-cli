@@ -3,8 +3,19 @@ package main
 import (
 	"clout/network"
 	"fmt"
+
+	"github.com/btcsuite/btcd/btcec"
 )
 
+func SubmitTx(hex string, priv *btcec.PrivateKey) string {
+	jsonString := `{"TransactionHex": "%s"}`
+	signedHex, e := priv.Sign([]byte(hex))
+	fmt.Println("signedHex", signedHex, e)
+	send := fmt.Sprintf(jsonString, signedHex)
+	jsonString = network.DoPost("api/v0/submit-transaction",
+		[]byte(send))
+	return jsonString
+}
 func SubmitPost(pub58, body string) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, body)

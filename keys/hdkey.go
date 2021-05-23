@@ -5,11 +5,12 @@ import (
 
 	"github.com/btcsuite/btcutil/hdkeychain"
 
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil/base58"
 )
 
-func ComputeKeysFromSeed(seedBytes []byte) string {
+func ComputeKeysFromSeed(seedBytes []byte) (string, *btcec.PrivateKey) {
 	netParams := &chaincfg.MainNetParams
 	masterKey, _ := hdkeychain.NewMaster(seedBytes, netParams)
 	index := uint32(0)
@@ -20,7 +21,7 @@ func ComputeKeysFromSeed(seedBytes []byte) string {
 	changeKey, _ := accountKey.Child(0)
 	addressKey, _ := changeKey.Child(index)
 	pubKey, _ := addressKey.ECPubKey()
-	//privKey, _ := addressKey.ECPrivKey()
+	privKey, _ := addressKey.ECPrivKey()
 	//addressObj, _ := addressKey.Address(netParams)
 	//btcDepositAddress := addressObj.EncodeAddress()
 
@@ -32,7 +33,7 @@ func ComputeKeysFromSeed(seedBytes []byte) string {
 	b = append(b, input[:]...)
 	cksum := _checksum(b)
 	b = append(b, cksum[:]...)
-	return base58.Encode(b)
+	return base58.Encode(b), privKey
 }
 
 func _checksum(input []byte) (cksum [4]byte) {
