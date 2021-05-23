@@ -23,7 +23,7 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	binary.LittleEndian.PutUint64(signatureLength, uint64(len(signatureBytes)))
 
 	buff := []byte{}
-	buff = append(buff, transactionBytes[0:len(transactionBytes)-2]...)
+	buff = append(buff, transactionBytes[0:len(transactionBytes)-1]...)
 	buff = append(buff, signatureLength...)
 	buff = append(buff, signatureBytes...)
 

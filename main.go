@@ -56,6 +56,8 @@ func main() {
 		Post()
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
+	} else if command == "v8" {
+		RunV8()
 	} else if command == "whoami" {
 		Whoami()
 		//fmt.Println("\n" + LoggedInAs() + "\n")
