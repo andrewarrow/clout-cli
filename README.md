@@ -1,4 +1,7 @@
 # clout-cli
+
+![image](https://user-images.githubusercontent.com/127054/119290208-f4527a80-bc00-11eb-9458-c29d828e4df0.png)
+
 golang cli for BitClout
 
 [they own your coin](https://andrewarrow.substack.com/p/they-own-your-coin)
