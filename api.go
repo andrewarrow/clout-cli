@@ -14,30 +14,30 @@ import (
 func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	jsonString := `{"TransactionHex": "%s"}`
 	transactionBytes, _ := hex.DecodeString(hexString)
-	fmt.Println("transactionBytes", transactionBytes)
+	//fmt.Println("transactionBytes", transactionBytes)
 	first := sha256.Sum256(transactionBytes)
 	transactionHash := sha256.Sum256(first[:])
-	fmt.Println("transactionHash", transactionHash[:])
+	//fmt.Println("transactionHash", transactionHash[:])
 
 	sig, _ := priv.Sign(transactionHash[:])
 	signatureBytes := keys.SerializeToDer(sig)
 
-	fmt.Println("signatureBytes", signatureBytes)
+	//fmt.Println("signatureBytes", signatureBytes)
 
 	signatureLength := make([]byte, 8)
 	binary.LittleEndian.PutUint64(signatureLength, uint64(len(signatureBytes)))
-	fmt.Println("signatureLength", signatureLength)
+	//fmt.Println("signatureLength", signatureLength)
 
 	buff := []byte{}
 	buff = append(buff, transactionBytes[0:len(transactionBytes)-1]...)
 	buff = append(buff, signatureLength[0])
 	buff = append(buff, signatureBytes...)
 
-	fmt.Println("buff", buff)
+	//fmt.Println("buff", buff)
 
 	signedHex := fmt.Sprintf("%x", buff)
 
-	fmt.Println("signedHex", signedHex)
+	//fmt.Println("signedHex", signedHex)
 	send := fmt.Sprintf(jsonString, signedHex)
 	jsonString = network.DoPost("api/v0/submit-transaction",
 		[]byte(send))
