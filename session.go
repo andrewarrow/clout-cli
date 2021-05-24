@@ -23,6 +23,16 @@ func Whoami() {
 	fmt.Println("")
 }
 
+func SecretFileExists() bool {
+	home := files.UserHomeDir()
+	path := home + "/" + dir + "/secret.txt"
+	_, e := ioutil.ReadFile(path)
+	if e != nil {
+		return false
+	}
+	return true
+}
+
 func ReadLoggedInWords() string {
 	home := files.UserHomeDir()
 	path := home + "/" + dir + "/secret.txt"
