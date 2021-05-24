@@ -29,7 +29,7 @@ func RunV8() {
 	var result = ss.signTransaction("ABC123", "XYZ456");
 	var result = 'thisdocVars';`
 
-	js = `var result = window;`
+	js = `var result = getOwnMetadataKeys;`
 	ctx.RunScript(js, "value.js")
 
 	val, _ := ctx.RunScript("result", "value.js")

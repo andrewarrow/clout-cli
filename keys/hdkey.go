@@ -2,6 +2,7 @@ package keys
 
 import (
 	"crypto/sha256"
+	"math"
 
 	"github.com/btcsuite/btcutil/hdkeychain"
 
@@ -9,6 +10,70 @@ import (
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil/base58"
 )
+
+func constructLength(orig []byte, l byte) []byte {
+	arr := []byte{}
+	arr = append(arr, orig...)
+	if l < 0x80 {
+		arr = append(arr, l)
+		return arr
+	}
+	log1 := byte(math.Log(float64(l) / math.Ln2))
+
+	octets := 1 + log1 //>> 3;
+	arr = append(arr, (octets>>3)|0x80)
+	for {
+		arr = append(arr, (l>>(octets<<3))&0xff)
+		octets--
+		if octets == 0 {
+			break
+		}
+	}
+	arr = append(arr, l)
+	return arr
+}
+
+func rmPadding(buf []byte) []byte {
+	i := 0
+	l := len(buf) - 1
+	for buf[i] != 0 && (buf[i+1]&0x80) != 0 && i < l {
+		i++
+	}
+	if i == 0 {
+		return buf
+	}
+	return buf[i:]
+}
+
+func SerializeToDer(sig *btcec.Signature) []byte {
+	r := sig.R.Bytes()
+	s := sig.S.Bytes()
+
+	if (r[0] & 0x80) != 0 {
+		r = append([]byte{0}, r...)
+	}
+	if (s[0] & 0x80) != 0 {
+		s = append([]byte{0}, s...)
+	}
+
+	r = rmPadding(r)
+	s = rmPadding(s)
+
+	for s[0] != 0 && (s[1]&0x80) != 0 {
+		s = s[1:]
+	}
+	arr := []byte{0x02}
+
+	arr = constructLength(arr, byte(len(r)))
+	arr = append(arr, r...)
+	arr = append(arr, 0x02)
+	arr = constructLength(arr, byte(len(s)))
+	backHalf := append(arr, s...)
+	res := []byte{0x30}
+	res = constructLength(res, byte(len(backHalf)))
+	res = append(res, backHalf...)
+	return res
+}
 
 func ComputeKeysFromSeed(seedBytes []byte) (string, *btcec.PrivateKey) {
 	netParams := &chaincfg.MainNetParams

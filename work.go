@@ -106,8 +106,8 @@ func SeedBytes() []byte {
 	//entropy, _ := bip39.NewEntropy(128)
 	//mnemonic, _ := bip39.NewMnemonic(entropy)
 	//b, _ := bip39.MnemonicToByteArray(mnemonic)
-	//fmt.Printf("%x\n", b)
 	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
+	//fmt.Printf("\n\nPRIVATE\n%x\n\n", seedBytes)
 	return seedBytes
 }
 
