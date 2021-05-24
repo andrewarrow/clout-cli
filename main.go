@@ -60,7 +60,6 @@ func main() {
 		RunV8()
 	} else if command == "whoami" {
 		Whoami()
-		//fmt.Println("\n" + LoggedInAs() + "\n")
 	} else {
 		PostsForPublicKey(command)
 	}
