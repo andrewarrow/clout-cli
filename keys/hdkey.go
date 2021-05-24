@@ -2,6 +2,7 @@ package keys
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"math"
 
 	"github.com/btcsuite/btcutil/hdkeychain"
@@ -49,6 +50,9 @@ func SerializeToDer(sig *btcec.Signature) []byte {
 	r := sig.R.Bytes()
 	s := sig.S.Bytes()
 
+	fmt.Printf("ok starting with %x for r\n", r)
+	fmt.Printf("ok starting with %x for s\n", s)
+
 	if (r[0] & 0x80) != 0 {
 		r = append([]byte{0}, r...)
 	}
@@ -59,18 +63,24 @@ func SerializeToDer(sig *btcec.Signature) []byte {
 	r = rmPadding(r)
 	s = rmPadding(s)
 
+	fmt.Printf("s before %x\n", s)
 	for s[0] != 0 && (s[1]&0x80) != 0 {
 		s = s[1:]
 	}
+	fmt.Printf("s after %x\n", s)
 	arr := []byte{0x02}
 
 	arr = constructLength(arr, byte(len(r)))
+	fmt.Printf("arr1 after %x\n", arr)
 	arr = append(arr, r...)
 	arr = append(arr, 0x02)
+	fmt.Printf("arr2 after %x\n", arr)
 	arr = constructLength(arr, byte(len(s)))
+	fmt.Printf("arr3 after %x\n", arr)
 	backHalf := append(arr, s...)
 	res := []byte{0x30}
 	res = constructLength(res, byte(len(backHalf)))
+	fmt.Printf("res %x\n", res)
 	res = append(res, backHalf...)
 	return res
 }

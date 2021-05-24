@@ -161,14 +161,14 @@ func Post() {
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)
 
-	tsUnix := tx.TstampNanos / 1000000000
-	ts := time.Unix(tsUnix, 0)
+	//tsUnix := tx.TstampNanos / 1000000000
+	//ts := time.Unix(tsUnix, 0)
 
-	fmt.Println(ts)
-	fmt.Println(tx.TransactionHex)
+	//fmt.Println(ts)
+	//fmt.Println(tx.TransactionHex)
 
 	jsonString := SubmitTx(tx.TransactionHex, priv)
-	fmt.Println(jsonString)
+	fmt.Println(len(jsonString))
 }
 
 func Login() {
