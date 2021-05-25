@@ -61,7 +61,7 @@ func main() {
 		HandlePosts()
 	} else if command == "post" {
 		Post(argMap["reply"])
-	} else if command == "notifications" || command == "notification" {
+	} else if command == "n" || command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "reclout" {
 		HandleReclout()

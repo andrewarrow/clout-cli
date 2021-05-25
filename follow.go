@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func UsernameToPub58(s string) string {
@@ -73,16 +74,20 @@ func ListFollowers() {
 }
 func LoopThruAllFollowing(pub58 string) {
 	last := ""
+	//f, _ := os.OpenFile("i.follow", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	//defer f.Close()
 	for {
 		js := GetFollowsStateless(pub58, "", last)
 		var pktpe models.PublicKeyToProfileEntry
 		json.Unmarshal([]byte(js), &pktpe)
 		fmt.Println("NumFollowers", pktpe.NumFollowers)
 		fmt.Println("")
-		for pub58, v := range pktpe.PublicKeyToProfileEntry {
-			last = pub58
+		for key, v := range pktpe.PublicKeyToProfileEntry {
+			last = key
+			//f.WriteString(v.Username + "\n")
 			fmt.Println(v.Username)
 		}
 		fmt.Println(len(pktpe.PublicKeyToProfileEntry))
+		time.Sleep(time.Second * 1)
 	}
 }
