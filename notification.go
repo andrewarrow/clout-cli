@@ -7,12 +7,17 @@ import (
 	"fmt"
 )
 
-func ParseUserList(js string) map[string]string {
+func ParseUserList(js string, buff []string) map[string]string {
 	m := map[string]string{}
 	var us models.UsersStateless
 	json.Unmarshal([]byte(js), &us)
 	for _, u := range us.UserList {
 		m[u.ProfileEntryResponse.PublicKeyBase58Check] = u.ProfileEntryResponse.Username
+	}
+	for _, b := range buff {
+		if m[b] == "" {
+			m[b] = "anonymous"
+		}
 	}
 	return m
 }
@@ -20,23 +25,28 @@ func ListNotifications() {
 	pub58 := LoggedInPub58()
 	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
 	js := GetNotifications(pub58)
+	//ioutil.WriteFile("samples/get_notifications.list", []byte(js), 0755)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
 	mapOfUsers := map[string]bool{}
-	pub58ToUsernames := map[string]string{}
 	buff := []string{}
 	for _, n := range list.Notifications {
 		mapOfUsers[n.Metadata.TransactorPublicKeyBase58Check] = true
 	}
-	fmt.Println("mapOfUsers length", len(mapOfUsers))
+	cache := ReadCache()
+	for pub58, _ := range mapOfUsers {
+		if cache[pub58] != "" {
+			delete(mapOfUsers, pub58)
+		}
+	}
 	for k, _ := range mapOfUsers {
 		buff = append(buff, k)
 		if len(buff) == 10 {
 			fmt.Println("fetching 10...")
 			js = GetManyUsersStateless(buff)
-			m := ParseUserList(js)
+			m := ParseUserList(js, buff)
 			for k, v := range m {
-				pub58ToUsernames[k] = v
+				cache[k] = v
 			}
 			buff = []string{}
 		}
@@ -44,15 +54,16 @@ func ListNotifications() {
 	if len(buff) > 0 {
 		fmt.Println("fetching ", len(buff))
 		js = GetManyUsersStateless(buff)
-		m := ParseUserList(js)
+		m := ParseUserList(js, buff)
 		for k, v := range m {
-			pub58ToUsernames[k] = v
+			cache[k] = v
 		}
 	}
+	WriteCache(cache)
 
 	for i, n := range list.Notifications {
 		fmt.Printf("%02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
-			pub58ToUsernames[n.Metadata.TransactorPublicKeyBase58Check],
+			cache[n.Metadata.TransactorPublicKeyBase58Check],
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
 	}
 }
