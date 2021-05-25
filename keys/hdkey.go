@@ -12,6 +12,12 @@ import (
 	"github.com/btcsuite/btcutil/base58"
 )
 
+func UnsignedRightShift(b, size byte) byte {
+	n := uint(b)
+	n = n >> size
+	return byte(n)
+}
+
 func constructLength(orig []byte, l byte) []byte {
 	arr := []byte{}
 	arr = append(arr, orig...)
@@ -19,12 +25,14 @@ func constructLength(orig []byte, l byte) []byte {
 		arr = append(arr, l)
 		return arr
 	}
-	log1 := byte(math.Log(float64(l) / math.Ln2))
 
-	octets := 1 + log1 //>> 3;
-	arr = append(arr, (octets>>3)|0x80)
+	log1 := byte(math.Log(float64(l)) / math.Ln2)
+
+	octets := 1 + UnsignedRightShift(log1, 3)
+	arr = append(arr, octets|0x80)
 	for {
-		arr = append(arr, (l>>(octets<<3))&0xff)
+		foo := octets << 3
+		arr = append(arr, UnsignedRightShift(l, foo)&0xff)
 		octets--
 		if octets == 0 {
 			break
@@ -82,6 +90,7 @@ func SerializeToDer(sig *btcec.Signature) []byte {
 	res = constructLength(res, byte(len(backHalf)))
 	res = append(res, backHalf...)
 	fmt.Printf("res %x\n", res)
+
 	return res
 }
 
