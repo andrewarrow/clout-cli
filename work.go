@@ -81,7 +81,8 @@ func Post() {
 	text, _ := reader.ReadString('\n')
 	text = strings.TrimSpace(text)
 
-	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes())
+	mnemonic := ReadLoggedInWords()
+	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
 	bigString := SubmitPost(pub58, text)
 
 	var tx models.TxReady

@@ -41,8 +41,8 @@ func main() {
 	command := os.Args[1]
 	argMap = args.ToMap()
 
-	if command == "ls" {
-		ListPosts(argMap["follow"] == "true")
+	if command == "account" || command == "accounts" {
+		ListAccounts()
 	} else if command == "followers" {
 		ListFollowers()
 	} else if command == "following" {
@@ -53,6 +53,8 @@ func main() {
 		Login()
 	} else if command == "logout" {
 		Logout()
+	} else if command == "ls" {
+		ListPosts(argMap["follow"] == "true")
 	} else if command == "post" {
 		Post()
 	} else if command == "notifications" || command == "notification" {

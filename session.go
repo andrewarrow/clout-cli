@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"clout/files"
 	"clout/keys"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,19 +14,31 @@ import (
 )
 
 var dir = "clout-cli-data"
+var file = "secrets.txt"
 
-func Whoami() {
+func JustReadFile() string {
+	home := files.UserHomeDir()
+	path := home + "/" + dir + "/" + file
+	b, _ := ioutil.ReadFile(path)
+	return strings.TrimSpace(string(b))
+}
+
+func ListAccounts() {
+}
+
+func Whoami() string {
 	fmt.Println("Logged in as:")
 	fmt.Println("")
 	pub58, username := LoggedInAs()
 	fmt.Println(pub58)
 	fmt.Println(username)
 	fmt.Println("")
+	return username
 }
 
 func SecretFileExists() bool {
 	home := files.UserHomeDir()
-	path := home + "/" + dir + "/secret.txt"
+	path := home + "/" + dir + "/" + file
 	_, e := ioutil.ReadFile(path)
 	if e != nil {
 		return false
@@ -35,7 +48,7 @@ func SecretFileExists() bool {
 
 func ReadLoggedInWords() string {
 	home := files.UserHomeDir()
-	path := home + "/" + dir + "/secret.txt"
+	path := home + "/" + dir + "/" + file
 	b, e := ioutil.ReadFile(path)
 	if e != nil {
 		fmt.Println("    --- not logged in yet, run clout login")
@@ -44,16 +57,6 @@ func ReadLoggedInWords() string {
 	mnemonic := strings.TrimSpace(string(b))
 	return mnemonic
 }
-func SeedBytes() []byte {
-	mnemonic := ReadLoggedInWords()
-	//entropy, _ := bip39.NewEntropy(128)
-	//mnemonic, _ := bip39.NewMnemonic(entropy)
-	//b, _ := bip39.MnemonicToByteArray(mnemonic)
-	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
-	//fmt.Printf("\n\nPRIVATE\n%x\n\n", seedBytes)
-	return seedBytes
-}
-
 func Login() {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter mnenomic: ")
@@ -67,32 +70,71 @@ func Login() {
 	}
 	//fmt.Printf("%x\n", b)
 
+	username := UsernameFromSecret(text)
+	usernames := ReadAccounts()
+	usernames[username] = text
+	WriteAccounts(usernames)
+
+	//fmt.Println("")
+	//Whoami()
+}
+
+func ReadAccounts() map[string]string {
+	m := map[string]string{}
+	asBytes := []byte(JustReadFile())
+	if len(asBytes) == 0 {
+		return m
+	}
+
+	json.Unmarshal(asBytes, &m)
+
+	return m
+}
+
+func WriteAccounts(m map[string]string) {
+	b, _ := json.Marshal(m)
 	home := files.UserHomeDir()
 	os.Mkdir(home+"/"+dir, 0700)
-	path := home + "/" + dir + "/secret.txt"
-	ioutil.WriteFile(path, []byte(text), 0700)
+	path := home + "/" + dir + "/" + file
+	ioutil.WriteFile(path, b, 0700)
 	fmt.Println("Secret stored at:", path)
-	fmt.Println("")
-	Whoami()
 }
+
 func Logout() {
 	home := files.UserHomeDir()
-	path := home + "/" + dir + "/secret.txt"
+	path := home + "/" + dir + "/" + file
 	os.Remove(path)
 	fmt.Println("Secret removed.")
 	fmt.Println("")
 }
 
 func LoggedInPub58() string {
-	seedBytes := SeedBytes()
+	mnemonic := ReadLoggedInWords()
+	seedBytes := SeedBytes(mnemonic)
 	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
 	return pub58
 }
+func SeedBytes(mnemonic string) []byte {
+	//entropy, _ := bip39.NewEntropy(128)
+	//mnemonic, _ := bip39.NewMnemonic(entropy)
+	//b, _ := bip39.MnemonicToByteArray(mnemonic)
+	seedBytes, _ := bip39.NewSeedWithErrorChecking(mnemonic, "")
+	//fmt.Printf("\n\nPRIVATE\n%x\n\n", seedBytes)
+	return seedBytes
+}
+
 func LoggedInAs() (string, string) {
 
-	seedBytes := SeedBytes()
+	mnemonic := ReadLoggedInWords()
+	seedBytes := SeedBytes(mnemonic)
 	//fmt.Printf("%x\n", seedBytes)
 
 	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
 	return pub58, Pub58ToUsername(pub58)
+}
+
+func UsernameFromSecret(s string) string {
+	seedBytes := SeedBytes(s)
+	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
+	return Pub58ToUsername(pub58)
 }
