@@ -43,6 +43,13 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 		[]byte(send))
 	return jsonString
 }
+func CreateFollow(follower, followed string) string {
+	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, follower, followed)
+	jsonString = network.DoPost("api/v0/create-follow-txn-stateless",
+		[]byte(send))
+	return jsonString
+}
 func SubmitPost(pub58, body string) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, body)

@@ -5,9 +5,25 @@ import (
 	"clout/models"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 )
 
+func UsernameToPub58(s string) string {
+	return ""
+}
+
+func HandleFollow() {
+	if len(os.Args) < 3 {
+		fmt.Println("missing username")
+		return
+	}
+	username := os.Args[2]
+	follower := LoggedInPub58()
+	followed := UsernameToPub58(username)
+	jsonString := CreateFollow(follower, followed)
+	fmt.Println(jsonString)
+}
 func ListFollowing() {
 	pub58 := LoggedInPub58()
 	js := GetFollowsStateless(pub58, "")

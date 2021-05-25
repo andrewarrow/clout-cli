@@ -43,6 +43,8 @@ func main() {
 
 	if command == "account" || command == "accounts" {
 		HandleAccounts()
+	} else if command == "follow" {
+		HandleFollow()
 	} else if command == "followers" {
 		ListFollowers()
 	} else if command == "following" {
