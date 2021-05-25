@@ -82,6 +82,9 @@ func Post() {
 	text = strings.TrimSpace(text)
 
 	mnemonic := ReadLoggedInWords()
+	if mnemonic == "" {
+		return
+	}
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
 	bigString := SubmitPost(pub58, text)
 

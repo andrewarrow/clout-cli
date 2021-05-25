@@ -2,6 +2,7 @@ package main
 
 import (
 	"clout/display"
+	"clout/keys"
 	"clout/models"
 	"encoding/json"
 	"fmt"
@@ -25,7 +26,15 @@ func HandleFollow() {
 	follower := LoggedInPub58()
 	followed := UsernameToPub58(username)
 	jsonString := CreateFollow(follower, followed)
-	fmt.Println(jsonString)
+	var tx models.TxReady
+	json.Unmarshal([]byte(jsonString), &tx)
+	mnemonic := ReadLoggedInWords()
+	if mnemonic == "" {
+		return
+	}
+	_, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	jsonString = SubmitTx(tx.TransactionHex, priv)
+	fmt.Println(len(jsonString))
 }
 func ListFollowing() {
 	pub58 := LoggedInPub58()
