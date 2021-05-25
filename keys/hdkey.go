@@ -80,8 +80,8 @@ func SerializeToDer(sig *btcec.Signature) []byte {
 	backHalf := append(arr, s...)
 	res := []byte{0x30}
 	res = constructLength(res, byte(len(backHalf)))
-	fmt.Printf("res %x\n", res)
 	res = append(res, backHalf...)
+	fmt.Printf("res %x\n", res)
 	return res
 }
 
