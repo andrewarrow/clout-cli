@@ -65,7 +65,7 @@ func main() {
 	} else if command == "update" {
 		HandleUpdateProfile()
 	} else if command == "v8" {
-		RunV8()
+		//RunV8()
 	} else if command == "whoami" {
 		Whoami()
 	} else {
