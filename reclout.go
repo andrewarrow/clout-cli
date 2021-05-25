@@ -36,5 +36,7 @@ func HandleReclout() {
 	json.Unmarshal([]byte(bigString), &tx)
 
 	jsonString := SubmitTx(tx.TransactionHex, priv)
-	fmt.Println(len(jsonString))
+	if jsonString != "" {
+		fmt.Println("Success.")
+	}
 }

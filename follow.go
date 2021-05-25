@@ -34,7 +34,9 @@ func HandleFollow() {
 	}
 	_, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
 	jsonString = SubmitTx(tx.TransactionHex, priv)
-	fmt.Println(len(jsonString))
+	if jsonString != "" {
+		fmt.Println("Success.")
+	}
 }
 func ListFollowing() {
 	pub58 := LoggedInPub58()
