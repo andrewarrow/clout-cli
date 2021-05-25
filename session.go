@@ -110,6 +110,9 @@ func Logout() {
 
 func LoggedInPub58() string {
 	mnemonic := ReadLoggedInWords()
+	if mnemonic == "" {
+		return ""
+	}
 	seedBytes := SeedBytes(mnemonic)
 	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
 	return pub58
@@ -126,6 +129,9 @@ func SeedBytes(mnemonic string) []byte {
 func LoggedInAs() (string, string) {
 
 	mnemonic := ReadLoggedInWords()
+	if mnemonic == "" {
+		return "", ""
+	}
 	seedBytes := SeedBytes(mnemonic)
 	//fmt.Printf("%x\n", seedBytes)
 
