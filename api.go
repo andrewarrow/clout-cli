@@ -80,6 +80,17 @@ func SubmitPost(pub58, body, reply string) string {
 	return jsonString
 }
 
+func GetManyUsersStateless(keys []string) string {
+	keyBuff := []string{}
+	for _, k := range keys {
+		keyBuff = append(keyBuff, fmt.Sprintf("\"%s\"", k))
+	}
+	jsonString := `{"PublicKeysBase58Check":[%s],"SkipHodlings":false}`
+	send := fmt.Sprintf(jsonString, strings.Join(keyBuff, ","))
+	jsonString = network.DoPost("api/v0/get-users-stateless",
+		[]byte(send))
+	return jsonString
+}
 func GetUsersStateless(key string) string {
 	jsonString := `{"PublicKeysBase58Check":["%s"],"SkipHodlings":false}`
 	send := fmt.Sprintf(jsonString, key)
