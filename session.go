@@ -124,11 +124,25 @@ func WriteAccounts(m map[string]string) {
 }
 
 func Logout() {
-	home := files.UserHomeDir()
-	path := home + "/" + dir + "/" + file
-	os.Remove(path)
-	fmt.Println("Secret removed.")
-	fmt.Println("")
+	m := ReadAccounts()
+	if len(m) == 0 {
+		return
+	}
+	if len(m) == 1 {
+		home := files.UserHomeDir()
+		path := home + "/" + dir + "/" + file
+		os.Remove(path)
+		fmt.Println("Secret removed.")
+		fmt.Println("")
+		return
+	}
+	username := JustReadFile(selected)
+	if username == "" {
+		fmt.Println("Please run `clout account [username]` to select account first.")
+		return
+	}
+	delete(m, username)
+	WriteAccounts(m)
 }
 
 func LoggedInPub58() string {
