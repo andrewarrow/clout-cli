@@ -9,6 +9,7 @@ type Notification struct {
 
 type Metadata struct {
 	TxnType                            string
+	TransactorPublicKeyBase58Check     string
 	CreatorCoinTransferTxindexMetadata CreatorCoinTransferTxindexMetadata
 }
 
