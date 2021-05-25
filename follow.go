@@ -10,7 +10,10 @@ import (
 )
 
 func UsernameToPub58(s string) string {
-	return ""
+	js := GetSingleProfile(s)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+	return sp.Profile.PublicKeyBase58Check
 }
 
 func HandleFollow() {
