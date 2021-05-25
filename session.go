@@ -24,6 +24,14 @@ func JustReadFile() string {
 }
 
 func ListAccounts() {
+	m := ReadAccounts()
+	fmt.Println("")
+	for k, _ := range m {
+		fmt.Printf("%s\n", k)
+	}
+	fmt.Println("")
+	fmt.Println("To select account, run `clout account [username]`")
+	fmt.Println("")
 }
 
 func Whoami() string {
