@@ -19,13 +19,6 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	transactionHash := sha256.Sum256(first[:])
 	//fmt.Println("transactionHash", transactionHash[:])
 
-	// some transactionHash work fine in sig that will goto keys.SerializeToDer
-	// some transactionHash have R is negative issue
-	// some transactionHash have S is negative issue
-	// i think it's because the logic in keys.SerializeToDer does some truncating
-	// or floating point math or wrong >>> vs >> bit shifting
-	// if you keep trying you get a transactionHash that makes sig of right length
-	// but this needs to be fixed to work each and every time.
 	sig, _ := priv.Sign(transactionHash[:])
 	signatureBytes := keys.SerializeToDer(sig)
 
@@ -65,6 +58,13 @@ func CreateFollow(follower, followed string) string {
 	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, follower, followed)
 	jsonString = network.DoPost("api/v0/create-follow-txn-stateless",
+		[]byte(send))
+	return jsonString
+}
+func SubmitReclout(pub58, RecloutedPostHashHex string) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{},"RecloutedPostHashHex":"%s","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, RecloutedPostHashHex)
+	jsonString = network.DoPost("api/v0/submit-post",
 		[]byte(send))
 	return jsonString
 }
