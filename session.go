@@ -15,15 +15,23 @@ import (
 
 var dir = "clout-cli-data"
 var file = "secrets.txt"
+var selected = "selected.account"
 
-func JustReadFile() string {
+func JustReadFile(s string) string {
 	home := files.UserHomeDir()
-	path := home + "/" + dir + "/" + file
+	path := home + "/" + dir + "/" + s
 	b, _ := ioutil.ReadFile(path)
 	return strings.TrimSpace(string(b))
 }
 
-func ListAccounts() {
+func HandleAccounts() {
+	if len(os.Args) > 2 {
+		username := os.Args[2]
+		home := files.UserHomeDir()
+		path := home + "/" + dir + "/" + selected
+		ioutil.WriteFile(path, []byte(username), 0700)
+		return
+	}
 	m := ReadAccounts()
 	fmt.Println("")
 	for k, _ := range m {
@@ -60,6 +68,12 @@ func ReadLoggedInWords() string {
 		fmt.Println("    --- not logged in yet, run clout login")
 		return ""
 	}
+	username := JustReadFile(selected)
+	for k, v := range m {
+		if k == username {
+			return v
+		}
+	}
 	for _, v := range m {
 		return v
 	}
@@ -89,7 +103,7 @@ func Login() {
 
 func ReadAccounts() map[string]string {
 	m := map[string]string{}
-	asBytes := []byte(JustReadFile())
+	asBytes := []byte(JustReadFile(file))
 	if len(asBytes) == 0 {
 		return m
 	}

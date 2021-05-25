@@ -42,7 +42,7 @@ func main() {
 	argMap = args.ToMap()
 
 	if command == "account" || command == "accounts" {
-		ListAccounts()
+		HandleAccounts()
 	} else if command == "followers" {
 		ListFollowers()
 	} else if command == "following" {
