@@ -12,27 +12,32 @@ import (
 	"github.com/btcsuite/btcutil/base58"
 )
 
-func UnsignedRightShift(b, size byte) byte {
-	n := int(b)
-	n = int(uint(n) >> size)
+func UnsignedRightShift(thing uint, size byte) byte {
+	n := int(thing >> size)
 	return byte(n)
 }
 
 func constructLength(orig []byte, l byte) []byte {
 	arr := []byte{}
 	arr = append(arr, orig...)
+	fmt.Println("length", l)
 	if l < 0x80 {
 		arr = append(arr, l)
 		return arr
 	}
+	fmt.Println("length", math.Log(float64(l)))
+	fmt.Println("length", math.Ln2)
+	fmt.Println("length", math.Log(float64(l))/math.Ln2)
 
-	log1 := byte(math.Log(float64(l)) / math.Ln2)
+	log1 := uint(math.Log(float64(l)) / math.Ln2)
+	fmt.Println("length", log1)
 
 	octets := 1 + UnsignedRightShift(log1, 3)
+	fmt.Println("length", octets)
 	arr = append(arr, octets|0x80)
 	for {
 		foo := octets << 3
-		arr = append(arr, UnsignedRightShift(l, foo)&0xff)
+		arr = append(arr, UnsignedRightShift(uint(l), foo)&0xff)
 		octets--
 		if octets == 0 {
 			break
@@ -45,7 +50,14 @@ func constructLength(orig []byte, l byte) []byte {
 func rmPadding(buf []byte) []byte {
 	i := 0
 	l := len(buf) - 1
-	for buf[i] != 0 && (buf[i+1]&0x80) != 0 && i < l {
+	fmt.Println("rmPadding", len(buf), buf)
+	for {
+		fmt.Println("buf[i]", i, buf[i])
+		fmt.Println("buf[i]", buf[i+1])
+		fmt.Println("buf[i]", buf[i+1]&0x80)
+		if buf[i] != 0 && (buf[i+1]&0x80) != 0 && i < l {
+			break
+		}
 		i++
 	}
 	if i == 0 {
@@ -71,11 +83,11 @@ func SerializeToDer(sig *btcec.Signature) []byte {
 	r = rmPadding(r)
 	s = rmPadding(s)
 
-	fmt.Printf("s before %x\n", s)
+	fmt.Printf("s before %x (%d)\n", s, len(s))
 	for s[0] != 0 && (s[1]&0x80) != 0 {
 		s = s[1:]
 	}
-	fmt.Printf("s after %x\n", s)
+	fmt.Printf("s after %x (%d)\n", s, len(s))
 	arr := []byte{0x02}
 
 	arr = constructLength(arr, byte(len(r)))
