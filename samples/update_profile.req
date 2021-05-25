@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/update-profile
+
+{"UpdaterPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","ProfilePublicKeyBase58Check":"","NewUsername":"","NewDescription":"","NewProfilePic":"","NewCreatorBasisPoints":1800,"NewStakeMultipleBasisPoints":12500,"IsHidden":false,"MinFeeRateNanosPerKB":1000}

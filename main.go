@@ -24,6 +24,7 @@ func PrintHelp() {
 	fmt.Println("  clout notifications          # list notifications")
 	fmt.Println("  clout post --reply=postHash  # post or reply")
 	fmt.Println("  clout reclout [postHash]     # reclout specific post")
+	fmt.Println("  clout update [desc]          # update profile description")
 	fmt.Println("  clout whoami                 # base58 pubkey logged in")
 	fmt.Println("  clout [username]             # username's profile & posts")
 	fmt.Println("")
@@ -61,6 +62,8 @@ func main() {
 		Post()
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
+	} else if command == "update" {
+		HandleUpdateProfile()
 	} else if command == "v8" {
 		RunV8()
 	} else if command == "whoami" {

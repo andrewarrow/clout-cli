@@ -54,6 +54,13 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 		[]byte(send))
 	return jsonString
 }
+func UpdateProfile(pub58, desc string) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","ProfilePublicKeyBase58Check":"","NewUsername":"","NewDescription":"%s","NewProfilePic":"","NewCreatorBasisPoints":1800,"NewStakeMultipleBasisPoints":12500,"IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, desc)
+	jsonString = network.DoPost("api/v0/update-profile",
+		[]byte(send))
+	return jsonString
+}
 func CreateFollow(follower, followed string) string {
 	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, follower, followed)
