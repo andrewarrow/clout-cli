@@ -13,8 +13,8 @@ import (
 )
 
 func UnsignedRightShift(b, size byte) byte {
-	n := uint(b)
-	n = n >> size
+	n := int(b)
+	n = int(uint(n) >> size)
 	return byte(n)
 }
 
