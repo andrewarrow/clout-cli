@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/get-single-post
+
+{"PostHashHex":"fc0c78b7c433d4f2292d482f9cbe374d30824fba64a38001243b6971edd2b1df","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","FetchParents":true,"CommentOffset":0,"CommentLimit":20,"AddGlobalFeedBool":false}

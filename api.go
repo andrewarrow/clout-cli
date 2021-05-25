@@ -7,6 +7,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"strings"
 
 	"github.com/btcsuite/btcd/btcec"
 )
@@ -69,6 +70,9 @@ func SubmitReclout(pub58, RecloutedPostHashHex string) string {
 	return jsonString
 }
 func SubmitPost(pub58, body, reply string) string {
+	if strings.HasPrefix(reply, "https") {
+		reply = reply[27:]
+	}
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"%s","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, reply, body)
 	jsonString = network.DoPost("api/v0/submit-post",
@@ -111,6 +115,13 @@ func GetPostsForPublicKey(key string) string {
 	jsonString := `{"PublicKeyBase58Check":"","Username":"%s","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LastPostHashHex":"","NumToFetch":10}`
 	jsonString = network.DoPost("api/v0/get-posts-for-public-key",
 		[]byte(fmt.Sprintf(jsonString, key)))
+	return jsonString
+}
+func GetSinglePost(pub58, key string) string {
+	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","FetchParents":true,"CommentOffset":0,"CommentLimit":20,"AddGlobalFeedBool":false}`
+	sendString := fmt.Sprintf(jsonString, key, pub58)
+	jsonString = network.DoPost("api/v0/get-single-post",
+		[]byte(sendString))
 	return jsonString
 }
 func GetSingleProfile(key string) string {

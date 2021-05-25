@@ -1,5 +1,8 @@
 package models
 
+type PostStateless struct {
+	PostFound Post
+}
 type PostsStateless struct {
 	PostsFound []Post
 }

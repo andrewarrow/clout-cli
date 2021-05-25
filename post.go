@@ -14,6 +14,22 @@ import (
 	"github.com/justincampbell/timeago"
 )
 
+func HandlePosts() {
+	if argMap["post"] != "" {
+		ShowSinglePost(argMap["post"])
+		return
+	}
+	ListPosts(argMap["follow"] == "true")
+}
+func ShowSinglePost(key string) {
+	pub58 := LoggedInPub58()
+	js := GetSinglePost(pub58, key)
+	var ps models.PostStateless
+	json.Unmarshal([]byte(js), &ps)
+
+	fmt.Println(ps.PostFound.Body)
+}
+
 func PostsForPublicKey(key string) {
 	js := GetSingleProfile(key)
 	var sp models.SingleProfile
