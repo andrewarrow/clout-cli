@@ -19,6 +19,13 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	transactionHash := sha256.Sum256(first[:])
 	//fmt.Println("transactionHash", transactionHash[:])
 
+	// some transactionHash work fine in sig that will goto keys.SerializeToDer
+	// some transactionHash have R is negative issue
+	// some transactionHash have S is negative issue
+	// i think it's because the logic in keys.SerializeToDer does some truncating
+	// or floating point math or wrong >>> vs >> bit shifting
+	// if you keep trying you get a transactionHash that makes sig of right length
+	// but this needs to be fixed to work each and every time.
 	sig, _ := priv.Sign(transactionHash[:])
 	signatureBytes := keys.SerializeToDer(sig)
 
@@ -27,6 +34,10 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 	signatureLength := make([]byte, 8)
 	binary.LittleEndian.PutUint64(signatureLength, uint64(len(signatureBytes)))
 	//fmt.Println("signatureLength", signatureLength)
+
+	if len(transactionBytes) == 0 {
+		return ""
+	}
 
 	buff := []byte{}
 	buff = append(buff, transactionBytes[0:len(transactionBytes)-1]...)
