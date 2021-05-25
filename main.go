@@ -50,7 +50,7 @@ func main() {
 	} else if command == "followers" {
 		ListFollowers()
 	} else if command == "following" {
-		ListFollowing()
+		HandleFollowing()
 	} else if command == "help" {
 		PrintHelp()
 	} else if command == "login" {

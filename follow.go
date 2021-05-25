@@ -38,9 +38,14 @@ func HandleFollow() {
 		fmt.Println("Success.")
 	}
 }
-func ListFollowing() {
+func HandleFollowing() {
 	pub58 := LoggedInPub58()
-	js := GetFollowsStateless(pub58, "")
+	if len(os.Args) > 2 {
+		pub58 = os.Args[2]
+		LoopThruAllFollowing(pub58)
+		return
+	}
+	js := GetFollowsStateless(pub58, "", "")
 
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
@@ -54,7 +59,7 @@ func ListFollowing() {
 }
 func ListFollowers() {
 	pub58, username := LoggedInAs()
-	js := GetFollowsStateless(pub58, username)
+	js := GetFollowsStateless(pub58, username, "")
 
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
@@ -64,5 +69,20 @@ func ListFollowers() {
 		tokens := strings.Split(v.Description, "\n")
 		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
 			display.LeftAligned(tokens[0], 30))
+	}
+}
+func LoopThruAllFollowing(pub58 string) {
+	last := ""
+	for {
+		js := GetFollowsStateless(pub58, "", last)
+		var pktpe models.PublicKeyToProfileEntry
+		json.Unmarshal([]byte(js), &pktpe)
+		fmt.Println("NumFollowers", pktpe.NumFollowers)
+		fmt.Println("")
+		for pub58, v := range pktpe.PublicKeyToProfileEntry {
+			last = pub58
+			fmt.Println(v.Username)
+		}
+		fmt.Println(len(pktpe.PublicKeyToProfileEntry))
 	}
 }
