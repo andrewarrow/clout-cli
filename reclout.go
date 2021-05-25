@@ -14,13 +14,17 @@ func HandleReclout() {
 		return
 	}
 	username := os.Args[2]
-	js := GetPostsForPublicKey(username)
-	var ppk models.PostsPublicKey
-	json.Unmarshal([]byte(js), &ppk)
-	if len(ppk.Posts) == 0 {
-		return
+	lastPost := username // hack to allow passing in specific msg
+	if len(username) < 64 {
+		js := GetPostsForPublicKey(username)
+		var ppk models.PostsPublicKey
+		json.Unmarshal([]byte(js), &ppk)
+		if len(ppk.Posts) == 0 {
+			return
+		}
+		lastPost = ppk.Posts[0].PostHashHex
 	}
-	lastPost := ppk.Posts[0].PostHashHex
+
 	mnemonic := ReadLoggedInWords()
 	if mnemonic == "" {
 		return
