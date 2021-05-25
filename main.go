@@ -59,7 +59,7 @@ func main() {
 	} else if command == "ls" {
 		ListPosts(argMap["follow"] == "true")
 	} else if command == "post" {
-		Post()
+		Post(argMap["reply"])
 	} else if command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "reclout" {

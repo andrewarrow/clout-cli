@@ -75,7 +75,7 @@ func Pub58ToUsername(key string) string {
 	json.Unmarshal([]byte(js), &us)
 	return us.UserList[0].ProfileEntryResponse.Username
 }
-func Post() {
+func Post(reply string) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Say: ")
 	text, _ := reader.ReadString('\n')
@@ -86,7 +86,7 @@ func Post() {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
-	bigString := SubmitPost(pub58, text)
+	bigString := SubmitPost(pub58, text, reply)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)

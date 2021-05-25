@@ -68,9 +68,9 @@ func SubmitReclout(pub58, RecloutedPostHashHex string) string {
 		[]byte(send))
 	return jsonString
 }
-func SubmitPost(pub58, body string) string {
-	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
-	send := fmt.Sprintf(jsonString, pub58, body)
+func SubmitPost(pub58, body, reply string) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"%s","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, reply, body)
 	jsonString = network.DoPost("api/v0/submit-post",
 		[]byte(send))
 	return jsonString
