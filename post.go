@@ -28,6 +28,19 @@ func ShowSinglePost(key string) {
 	json.Unmarshal([]byte(js), &ps)
 
 	fmt.Println(ps.PostFound.Body)
+	for i, p := range ps.PostFound.Comments {
+		ts := time.Unix(p.TimestampNanos/1000000000, 0)
+		ago := timeago.FromDuration(time.Since(ts))
+		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
+			display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
+			ago)
+		tokens := strings.Split(p.Body, "\n")
+		fmt.Println("        ", display.LeftAligned(tokens[0], 40))
+		fmt.Println("")
+		if i > 6 {
+			break
+		}
+	}
 }
 
 func PostsForPublicKey(key string) {

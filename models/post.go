@@ -18,6 +18,7 @@ type Post struct {
 	Body                       string
 	TimestampNanos             int64
 	ProfileEntryResponse       ProfileEntryResponse
+	Comments                   []Post
 	RecloutedPostEntryResponse RecloutedPostEntryResponse
 }
 
