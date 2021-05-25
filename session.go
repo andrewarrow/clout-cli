@@ -47,15 +47,15 @@ func SecretFileExists() bool {
 }
 
 func ReadLoggedInWords() string {
-	home := files.UserHomeDir()
-	path := home + "/" + dir + "/" + file
-	b, e := ioutil.ReadFile(path)
-	if e != nil {
+	m := ReadAccounts()
+	if len(m) == 0 {
 		fmt.Println("    --- not logged in yet, run clout login")
 		return ""
 	}
-	mnemonic := strings.TrimSpace(string(b))
-	return mnemonic
+	for _, v := range m {
+		return v
+	}
+	return ""
 }
 func Login() {
 	reader := bufio.NewReader(os.Stdin)
