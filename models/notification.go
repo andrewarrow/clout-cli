@@ -15,6 +15,12 @@ type Metadata struct {
 	CreatorCoinTransferTxindexMetadata CreatorCoinTransferTxindexMetadata
 	SubmitPostTxindexMetadata          SubmitPostTxindexMetadata
 	CreatorCoinTxindexMetadata         CreatorCoinTxindexMetadata
+	LikeTxindexMetadata                LikeTxindexMetadata
+}
+
+type LikeTxindexMetadata struct {
+	PostHashHex string
+	IsUnlike    bool
 }
 
 type CreatorCoinTxindexMetadata struct {

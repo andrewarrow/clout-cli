@@ -85,6 +85,12 @@ func ListNotificationForPub(pub58 string) {
 			//fmt.Println(n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex)
 			tokens := strings.Split(p.Body, "\n")
 			fmt.Println(display.LeftAligned(tokens[0], 60), "     ", ago)
+		} else if n.Metadata.TxnType == "LIKE" {
+			p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
+			ts := time.Unix(p.TimestampNanos/1000000000, 0)
+			ago := timeago.FromDuration(time.Since(ts))
+			tokens := strings.Split(p.Body, "\n")
+			fmt.Println(display.LeftAligned(tokens[0], 60), "     ", ago)
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
 			cctm := n.Metadata.CreatorCoinTxindexMetadata
 			fmt.Printf("%s %0.2f %d %d\n", cctm.OperationType,
