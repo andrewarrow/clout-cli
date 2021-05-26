@@ -2,6 +2,7 @@ package main
 
 import (
 	"clout/display"
+	"clout/keys"
 	"clout/models"
 	"encoding/json"
 	"fmt"
@@ -22,7 +23,14 @@ func ParseUserList(js string, buff []string) map[string]string {
 	return m
 }
 func ListNotifications() {
-	pub58 := LoggedInPub58()
+	m := ReadAccounts()
+	for username, s := range m {
+		fmt.Println(username)
+		pub58, _ := keys.ComputeKeysFromSeed(SeedBytes(s))
+		ListNotificationForPub(pub58)
+	}
+}
+func ListNotificationForPub(pub58 string) {
 	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
 	js := GetNotifications(pub58)
 	//ioutil.WriteFile("samples/get_notifications.list", []byte(js), 0755)
@@ -62,8 +70,11 @@ func ListNotifications() {
 	WriteCache(cache)
 
 	for i, n := range list.Notifications {
-		fmt.Printf("%02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
+		fmt.Printf("  %02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
 			cache[n.Metadata.TransactorPublicKeyBase58Check],
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
+		if i > 3 {
+			break
+		}
 	}
 }

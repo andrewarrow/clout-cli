@@ -25,6 +25,7 @@ func PrintHelp() {
 	fmt.Println("  clout notifications          # list notifications")
 	fmt.Println("  clout post --reply=id        # post or reply")
 	fmt.Println("  clout reclout [username]     # reclout last thing username said")
+	fmt.Println("  clout sync                   # fill local hard drive with data")
 	fmt.Println("  clout update [desc]          # update profile description")
 	fmt.Println("  clout whoami                 # base58 pubkey logged in")
 	fmt.Println("  clout [username]             # username's profile & posts")
@@ -65,6 +66,8 @@ func main() {
 		ListNotifications()
 	} else if command == "reclout" {
 		HandleReclout()
+	} else if command == "sync" {
+		HandleSync()
 	} else if command == "update" {
 		HandleUpdateProfile()
 	} else if command == "v8" {
