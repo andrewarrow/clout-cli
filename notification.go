@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
+
+	"github.com/justincampbell/timeago"
 )
 
 func ParseUserList(js string, buff []string) map[string]string {
@@ -76,11 +79,19 @@ func ListNotificationForPub(pub58 string) {
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
 
 		if n.Metadata.TxnType == "SUBMIT_POST" {
+			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
+			ts := time.Unix(p.TimestampNanos/1000000000, 0)
+			ago := timeago.FromDuration(time.Since(ts))
 			//fmt.Println(n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex)
-			tokens := strings.Split(list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex].Body, "\n")
-			fmt.Println(tokens[0])
+			tokens := strings.Split(p.Body, "\n")
+			fmt.Println(display.LeftAligned(tokens[0], 60), "     ", ago)
+		} else if n.Metadata.TxnType == "CREATOR_COIN" {
+			cctm := n.Metadata.CreatorCoinTxindexMetadata
+			fmt.Printf("%s %0.2f %d %d\n", cctm.OperationType,
+				float64(cctm.BitCloutToSellNanos)/1000000.0,
+				cctm.CreatorCoinToSellNanos, cctm.BitCloutToAddNanos)
 		}
-		if i > 10 {
+		if i > 5 {
 			break
 		}
 	}

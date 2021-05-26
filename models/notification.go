@@ -14,6 +14,14 @@ type Metadata struct {
 	TransactorPublicKeyBase58Check     string
 	CreatorCoinTransferTxindexMetadata CreatorCoinTransferTxindexMetadata
 	SubmitPostTxindexMetadata          SubmitPostTxindexMetadata
+	CreatorCoinTxindexMetadata         CreatorCoinTxindexMetadata
+}
+
+type CreatorCoinTxindexMetadata struct {
+	OperationType          string
+	BitCloutToSellNanos    int64
+	CreatorCoinToSellNanos int64
+	BitCloutToAddNanos     int64
 }
 
 type SubmitPostTxindexMetadata struct {
