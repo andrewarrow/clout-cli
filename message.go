@@ -23,10 +23,12 @@ func ListMessagesForPub(pub58 string) {
 	var list models.MessageList
 	json.Unmarshal([]byte(js), &list)
 	for _, oc := range list.OrderedContactsWithMessages {
+		username := list.PublicKeyToProfileEntry[oc.PublicKeyBase58Check].Username
+		fmt.Println("  ", username)
 		for _, m := range oc.Messages {
 			ts := time.Unix(m.TstampNanos/1000000000, 0)
 			ago := timeago.FromDuration(time.Since(ts))
-			fmt.Println("  ", ago)
+			fmt.Println("    ", ago)
 		}
 	}
 }
