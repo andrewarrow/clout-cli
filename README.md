@@ -10,6 +10,44 @@ To understand the code start with the big if else in main.go for each menu optio
 
 [they own your coin](https://andrewarrow.substack.com/p/they-own-your-coin) is a blog article I wrote about bc in general.
 
+# Entering your secret words
+
+Everything cloutcli stores on your local drive it stores in `~/clout-cli-data` so when you want to remove everything just run:
+
+```
+$ rm -rf ~/clout-cli-data
+```
+
+And any secret you entered has been deleted.
+
+# You can login with multiple accounts
+
+```
+$ ./clout login
+~/clout-cli $ ./clout login
+Enter mnenomic: lorem ipsum dolor sit amet consectetur adipiscing elit aenean ac mauris sit
+Secret stored at: /Users/andrewarrow/clout-cli-data/secrets.txt
+
+$ ./clout login
+~/clout-cli $ ./clout login
+Enter mnenomic: these are twelve different words from the words above this line done
+Secret stored at: /Users/andrewarrow/clout-cli-data/secrets.txt
+```
+
+Each time you login the words are appened to that `secrets.txt` file.
+
+```
+$ ./clout accounts
+
+andrewarrow
+cloutcli
+
+To select account, run `clout account [username]`
+```
+
+When I run the `accounts` command I see all my logged in accounts.
+
+
 # Building
 
 Just run `go build`
