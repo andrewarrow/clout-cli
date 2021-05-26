@@ -1,11 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
 
-func HandleSync() {
-	fmt.Println("")
+func HandleSync(limit string) {
 	fmt.Println("-=-=-= SYNC =-=-=-")
-	fmt.Println("")
 	fmt.Println("Run this in background to query nodes for blockchain")
 	fmt.Println("data about the recent past, further and further back in time.")
 	fmt.Println("")
@@ -21,5 +23,15 @@ func HandleSync() {
 	fmt.Println("Then as your drives fills with data, we index it, makes searching")
 	fmt.Println("for old content better and better.")
 	fmt.Println("")
-	fmt.Println("Syncing now...")
+	if limit == "" {
+		return
+	}
+	limitBytes, _ := strconv.ParseInt(limit, 10, 64)
+	k := limitBytes / 1000
+	mb := k / 1000
+	fmt.Printf("Syncing now... %d mb\n", mb)
+
+	for {
+		time.Sleep(time.Second * 1)
+	}
 }

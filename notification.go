@@ -73,7 +73,7 @@ func ListNotificationForPub(pub58 string) {
 		fmt.Printf("  %02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
 			cache[n.Metadata.TransactorPublicKeyBase58Check],
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
-		if i > 3 {
+		if i > 10 {
 			break
 		}
 	}

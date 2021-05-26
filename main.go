@@ -67,7 +67,7 @@ func main() {
 	} else if command == "reclout" {
 		HandleReclout()
 	} else if command == "sync" {
-		HandleSync()
+		HandleSync(argMap["limit"])
 	} else if command == "update" {
 		HandleUpdateProfile()
 	} else if command == "v8" {
