@@ -76,18 +76,26 @@ func LoopThruAllFollowing(pub58 string) {
 	last := ""
 	//f, _ := os.OpenFile("i.follow", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	//defer f.Close()
+	js := GetFollowsStateless(pub58, "", last)
+	var pktpe models.PublicKeyToProfileEntry
+	json.Unmarshal([]byte(js), &pktpe)
+	fmt.Println("NumFollowers", pktpe.NumFollowers)
+	NumFollowers := pktpe.NumFollowers
+	total := map[string]bool{}
 	for {
-		js := GetFollowsStateless(pub58, "", last)
-		var pktpe models.PublicKeyToProfileEntry
-		json.Unmarshal([]byte(js), &pktpe)
-		fmt.Println("NumFollowers", pktpe.NumFollowers)
-		fmt.Println("")
 		for key, v := range pktpe.PublicKeyToProfileEntry {
 			last = key
 			//f.WriteString(v.Username + "\n")
-			fmt.Println(v.Username)
+			if total[v.Username] == false {
+				fmt.Println(v.Username)
+				total[v.Username] = true
+			}
 		}
-		fmt.Println(len(pktpe.PublicKeyToProfileEntry))
+		if len(total) >= int(NumFollowers) {
+			break
+		}
 		time.Sleep(time.Second * 1)
+		js := GetFollowsStateless(pub58, "", last)
+		json.Unmarshal([]byte(js), &pktpe)
 	}
 }
