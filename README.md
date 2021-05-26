@@ -2,9 +2,19 @@
 
 ![image](https://user-images.githubusercontent.com/127054/119290208-f4527a80-bc00-11eb-9458-c29d828e4df0.png)
 
-golang cli for BitClout
+Welcome to the [cloutcli](https://bitclout.com/u/cloutcli) project.
 
-[they own your coin](https://andrewarrow.substack.com/p/they-own-your-coin)
+There is a [bounty](https://stackoverflow.com/questions/67661276/how-do-i-properly-sign-a-bitclout-tx-in-golang-vs-typescript) for how to fix our tx signing to not need javascript. 
+
+To understand the code start with the big if else in main.go for each menu option. Many things are still in the package `main` but slowly moving into various packages.
+
+[they own your coin](https://andrewarrow.substack.com/p/they-own-your-coin) is a blog article I wrote about bc in general.
+
+# Building
+
+Just run `go build`
+
+# Examples
 
 ```
 clout-cli $ ./clout help
