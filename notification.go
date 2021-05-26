@@ -29,7 +29,10 @@ func ParseUserList(js string, buff []string) map[string]string {
 func ListNotifications() {
 	m := ReadAccounts()
 	for username, s := range m {
+		fmt.Println("")
+		fmt.Println("===========")
 		fmt.Println(username)
+		fmt.Println("===========")
 		pub58, _ := keys.ComputeKeysFromSeed(SeedBytes(s))
 		ListNotificationForPub(pub58)
 	}
