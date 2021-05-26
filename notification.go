@@ -6,6 +6,7 @@ import (
 	"clout/models"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 func ParseUserList(js string, buff []string) map[string]string {
@@ -73,6 +74,12 @@ func ListNotificationForPub(pub58 string) {
 		fmt.Printf("  %02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
 			cache[n.Metadata.TransactorPublicKeyBase58Check],
 			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
+
+		if n.Metadata.TxnType == "SUBMIT_POST" {
+			//fmt.Println(n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex)
+			tokens := strings.Split(list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex].Body, "\n")
+			fmt.Println(tokens[0])
+		}
 		if i > 10 {
 			break
 		}
