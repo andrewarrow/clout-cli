@@ -19,20 +19,24 @@ Just run `go build`
 ```
 clout-cli $ ./clout help
 
+  clout accounts               # list your various accounts
+  clout diamond [username]     # award 1 diamond to last post
+  clout follow [username]      # toggle follow
+  clout followers              # who follows you
+  clout following              # who you follow
   clout ls                     # list global posts
   clout ls --follow            # filter by follow
-  clout [username]             # username's profile & posts
+  clout ls --post=id           # show single post
   clout login                  # enter secret phrase
   clout logout                 # delete secret from drive
-  clout like [postHash]        # like/unlike a post
-  clout diamond [postHash]     # send 1 diamond
-  clout post --reply=postHash  # post or reply
-  clout reclout [postHash]     # reclout specific post
-  clout follow [username]      # toggle follow
+  clout messages               # list messages
   clout notifications          # list notifications
-  clout followers [username]   # who follows username
-  clout following              # who you follow
+  clout post --reply=id        # post or reply
+  clout reclout [username]     # reclout last post
+  clout sync                   # fill local hard drive with data
+  clout update [desc]          # update profile description
   clout whoami                 # base58 pubkey logged in
+  clout [username]             # username's profile & posts
 ```
 
 ```
