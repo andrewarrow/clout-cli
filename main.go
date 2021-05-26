@@ -11,7 +11,7 @@ import (
 func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clout accounts               # list your various accounts")
-	fmt.Println("  clout diamond [postHash]     # send 1 diamond")
+	fmt.Println("  clout diamond [username]     # award 1 diamond to last post")
 	fmt.Println("  clout follow [username]      # toggle follow")
 	fmt.Println("  clout followers              # who follows you")
 	fmt.Println("  clout following              # who you follow")
@@ -25,7 +25,7 @@ func PrintHelp() {
 	fmt.Println("  clout messages               # list messages")
 	fmt.Println("  clout notifications          # list notifications")
 	fmt.Println("  clout post --reply=id        # post or reply")
-	fmt.Println("  clout reclout [username]     # reclout last thing username said")
+	fmt.Println("  clout reclout [username]     # reclout last post")
 	fmt.Println("  clout sync                   # fill local hard drive with data")
 	fmt.Println("  clout update [desc]          # update profile description")
 	fmt.Println("  clout whoami                 # base58 pubkey logged in")
@@ -47,6 +47,8 @@ func main() {
 
 	if command == "account" || command == "accounts" {
 		HandleAccounts()
+	} else if command == "diamond" {
+		HandleDiamond()
 	} else if command == "follow" {
 		HandleFollow()
 	} else if command == "followers" {

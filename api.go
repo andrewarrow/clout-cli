@@ -62,6 +62,13 @@ func CreateFollow(follower, followed string) string {
 		[]byte(send))
 	return jsonString
 }
+func SubmitDiamond(sender, receiver, post string) string {
+	jsonString := `{"SenderPublicKeyBase58Check":"%s","ReceiverPublicKeyBase58Check":"%s","DiamondPostHashHex":"%s","DiamondLevel":1,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, sender, receiver, post)
+	jsonString = network.DoPost("api/v0/send-diamonds",
+		[]byte(send))
+	return jsonString
+}
 func SubmitReclout(pub58, RecloutedPostHashHex string) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{},"RecloutedPostHashHex":"%s","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, RecloutedPostHashHex)
