@@ -22,6 +22,7 @@ func PrintHelp() {
 	fmt.Println("  clout ls --post=id           # show single post")
 	fmt.Println("  clout login                  # enter secret phrase")
 	fmt.Println("  clout logout                 # delete secret from drive")
+	fmt.Println("  clout messages               # list messages")
 	fmt.Println("  clout notifications          # list notifications")
 	fmt.Println("  clout post --reply=id        # post or reply")
 	fmt.Println("  clout reclout [username]     # reclout last thing username said")
@@ -62,6 +63,8 @@ func main() {
 		HandlePosts()
 	} else if command == "post" {
 		Post(argMap["reply"])
+	} else if command == "messages" {
+		ListMessages()
 	} else if command == "n" || command == "notifications" || command == "notification" {
 		ListNotifications()
 	} else if command == "reclout" {
