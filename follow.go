@@ -11,13 +11,6 @@ import (
 	"time"
 )
 
-func UsernameToPub58(s string) string {
-	js := GetSingleProfile(s)
-	var sp models.SingleProfile
-	json.Unmarshal([]byte(js), &sp)
-	return sp.Profile.PublicKeyBase58Check
-}
-
 func HandleFollow() {
 	if len(os.Args) < 3 {
 		fmt.Println("missing username")
@@ -25,7 +18,7 @@ func HandleFollow() {
 	}
 	username := os.Args[2]
 	follower := LoggedInPub58()
-	followed := UsernameToPub58(username)
+	followed, _ := UsernameToPub58(username)
 	jsonString := CreateFollow(follower, followed)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
@@ -59,7 +52,7 @@ func HandleFollowing() {
 	}
 }
 func ListFollowers() {
-	pub58, username := LoggedInAs()
+	pub58, username, _ := LoggedInAs()
 	js := GetFollowsStateless(pub58, username, "")
 
 	var pktpe models.PublicKeyToProfileEntry

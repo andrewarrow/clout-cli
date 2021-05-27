@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"clout/files"
 	"clout/keys"
+	"clout/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -46,9 +47,9 @@ func HandleAccounts() {
 func Whoami() string {
 	fmt.Println("Logged in as:")
 	fmt.Println("")
-	pub58, username := LoggedInAs()
+	pub58, username, balance := LoggedInAs()
 	fmt.Println(pub58)
-	fmt.Println(username)
+	fmt.Println(username, balance)
 	fmt.Println("")
 	return username
 }
@@ -163,17 +164,32 @@ func SeedBytes(mnemonic string) []byte {
 	return seedBytes
 }
 
-func LoggedInAs() (string, string) {
+func Pub58ToUsername(key string) string {
+	js := GetUsersStateless(key)
+	var us models.UsersStateless
+	json.Unmarshal([]byte(js), &us)
+	return us.UserList[0].ProfileEntryResponse.Username
+}
+func UsernameToPub58(s string) (string, int64) {
+	js := GetSingleProfile(s)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+	return sp.Profile.PublicKeyBase58Check, sp.BalanceNanos
+}
+
+func LoggedInAs() (string, string, int64) {
 
 	mnemonic := ReadLoggedInWords()
 	if mnemonic == "" {
-		return "", ""
+		return "", "", 0
 	}
 	seedBytes := SeedBytes(mnemonic)
 	//fmt.Printf("%x\n", seedBytes)
 
 	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
-	return pub58, Pub58ToUsername(pub58)
+	username := Pub58ToUsername(pub58)
+	_, balance := UsernameToPub58(username)
+	return pub58, Pub58ToUsername(pub58), balance
 }
 
 func UsernameFromSecret(s string) string {

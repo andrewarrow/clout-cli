@@ -98,12 +98,6 @@ func ListPosts(follow bool) {
 	}
 }
 
-func Pub58ToUsername(key string) string {
-	js := GetUsersStateless(key)
-	var us models.UsersStateless
-	json.Unmarshal([]byte(js), &us)
-	return us.UserList[0].ProfileEntryResponse.Username
-}
 func Post(reply string) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Say: ")
