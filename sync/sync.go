@@ -6,12 +6,18 @@ import (
 	"clout/session"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
 
 func HandleSync(limit string) {
 	CreateSchema()
+	if len(os.Args) > 2 {
+		query := os.Args[2]
+		FindPosts(query)
+		return
+	}
 	fmt.Println("-=-=-= SYNC =-=-=-")
 	fmt.Println("Run this in background to query nodes for blockchain")
 	fmt.Println("data about the recent past, further and further back in time.")
@@ -57,5 +63,6 @@ func SyncLoop() {
 		}
 		fmt.Println(len(ps.PostsFound))
 		time.Sleep(time.Second * 1)
+		fmt.Println(last)
 	}
 }

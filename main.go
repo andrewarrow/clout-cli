@@ -30,6 +30,7 @@ func PrintHelp() {
 	fmt.Println("  clout post --reply=id        # post or reply")
 	fmt.Println("  clout reclout [username]     # reclout last post")
 	fmt.Println("  clout sync                   # fill local hard drive with data")
+	fmt.Println("  clout sync [query]           # search sync data")
 	fmt.Println("  clout update [desc]          # update profile description")
 	fmt.Println("  clout whoami                 # base58 pubkey logged in")
 	fmt.Println("  clout [username]             # username's profile & posts")
