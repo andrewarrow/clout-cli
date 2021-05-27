@@ -51,43 +51,11 @@ func ListNotificationForPub(limit int, pub58 string) {
 	//ioutil.WriteFile("samples/get_notifications.list", []byte(js), 0755)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
-	mapOfUsers := map[string]bool{}
-	buff := []string{}
-	for _, n := range list.Notifications {
-		mapOfUsers[n.Metadata.TransactorPublicKeyBase58Check] = true
-	}
-	cache := session.ReadCache()
-	for pub58, _ := range mapOfUsers {
-		if cache[pub58] != "" {
-			delete(mapOfUsers, pub58)
-		}
-	}
-	for k, _ := range mapOfUsers {
-		buff = append(buff, k)
-		if len(buff) == 10 {
-			fmt.Println("fetching 10...")
-			js = network.GetManyUsersStateless(buff)
-			m := ParseUserList(js, buff)
-			for k, v := range m {
-				cache[k] = v
-			}
-			buff = []string{}
-		}
-	}
-	if len(buff) > 0 {
-		fmt.Println("fetching ", len(buff))
-		js = network.GetManyUsersStateless(buff)
-		m := ParseUserList(js, buff)
-		for k, v := range m {
-			cache[k] = v
-		}
-	}
-	session.WriteCache(cache)
 
 	for i, n := range list.Notifications {
-		fmt.Printf("  %02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
-			cache[n.Metadata.TransactorPublicKeyBase58Check],
-			n.Metadata.CreatorCoinTransferTxindexMetadata.CreatorUsername)
+		username := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+		fmt.Printf("  %02d %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
+			username)
 
 		if n.Metadata.TxnType == "SUBMIT_POST" {
 			parent := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.ParentPostHashHex]

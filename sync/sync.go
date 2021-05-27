@@ -62,6 +62,9 @@ func SyncLoop() {
 			last = p.PostHashHex
 		}
 		fmt.Println(len(ps.PostsFound))
+		if len(ps.PostsFound) == 0 {
+			break
+		}
 		time.Sleep(time.Second * 1)
 		fmt.Println(last)
 	}
