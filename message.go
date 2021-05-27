@@ -4,6 +4,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -84,10 +85,10 @@ from https://github.com/bitclout/identity/blob/680c584e197eb086e63f0ba12e8142882
 */
 
 func ListMessages() {
-	m := ReadAccounts()
+	m := session.ReadAccounts()
 	for username, s := range m {
 		fmt.Println(username)
-		pub58, _ := keys.ComputeKeysFromSeed(SeedBytes(s))
+		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
 		ListMessagesForPub(pub58)
 	}
 }

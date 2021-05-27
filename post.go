@@ -6,6 +6,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -23,7 +24,7 @@ func HandlePosts() {
 	ListPosts(argMap["follow"] == "true")
 }
 func ShowSinglePost(key string) {
-	pub58 := LoggedInPub58()
+	pub58 := session.LoggedInPub58()
 	js := network.GetSinglePost(pub58, key)
 	var ps models.PostStateless
 	json.Unmarshal([]byte(js), &ps)
@@ -78,7 +79,7 @@ func PostsForPublicKey(key string) {
 }
 
 func ListPosts(follow bool) {
-	pub58 := LoggedInPub58()
+	pub58 := session.LoggedInPub58()
 	js := network.GetPostsStateless(pub58, follow)
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
@@ -105,11 +106,11 @@ func Post(reply string) {
 	text, _ := reader.ReadString('\n')
 	text = strings.TrimSpace(text)
 
-	mnemonic := ReadLoggedInWords()
+	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
-	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 	bigString := network.SubmitPost(pub58, text, reply)
 
 	var tx models.TxReady

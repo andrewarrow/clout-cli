@@ -1,8 +1,9 @@
-package main
+package sync
 
 import (
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -42,7 +43,7 @@ func HandleSync(limit string) {
 }
 
 func SyncLoop() {
-	pub58 := LoggedInPub58()
+	pub58 := session.LoggedInPub58()
 	last := ""
 	for {
 		js := network.GetPostsStatelessWithOptions(last, pub58)

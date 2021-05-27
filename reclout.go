@@ -4,6 +4,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -26,11 +27,11 @@ func HandleReclout() {
 		lastPost = ppk.Posts[0].PostHashHex
 	}
 
-	mnemonic := ReadLoggedInWords()
+	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
-	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 	bigString := network.SubmitReclout(pub58, lastPost)
 
 	var tx models.TxReady

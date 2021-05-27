@@ -4,6 +4,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -15,7 +16,7 @@ func HandleDiamond() {
 		return
 	}
 	username := os.Args[2]
-	theirPub58 := UsernameToPub58(username)
+	theirPub58 := session.UsernameToPub58(username)
 	js := network.GetPostsForPublicKey(username)
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)
@@ -24,11 +25,11 @@ func HandleDiamond() {
 	}
 	lastPost := ppk.Posts[0].PostHashHex
 
-	mnemonic := ReadLoggedInWords()
+	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
-	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 	bigString := network.SubmitDiamond(pub58, theirPub58, lastPost)
 
 	var tx models.TxReady

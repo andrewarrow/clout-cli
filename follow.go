@@ -5,6 +5,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -18,23 +19,23 @@ func HandleFollow() {
 		return
 	}
 	username := os.Args[2]
-	follower := LoggedInPub58()
-	followed := UsernameToPub58(username)
+	follower := session.LoggedInPub58()
+	followed := session.UsernameToPub58(username)
 	jsonString := network.CreateFollow(follower, followed)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
-	mnemonic := ReadLoggedInWords()
+	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
-	_, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	_, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 	jsonString = network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
 	}
 }
 func HandleFollowing() {
-	pub58 := LoggedInPub58()
+	pub58 := session.LoggedInPub58()
 	if len(os.Args) > 2 {
 		pub58 = os.Args[2]
 		LoopThruAllFollowing(pub58)
@@ -53,7 +54,7 @@ func HandleFollowing() {
 	}
 }
 func ListFollowers() {
-	pub58, username, _ := LoggedInAs()
+	pub58, username, _ := session.LoggedInAs()
 	js := network.GetFollowsStateless(pub58, username, "")
 
 	var pktpe models.PublicKeyToProfileEntry

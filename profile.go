@@ -4,6 +4,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -15,11 +16,11 @@ func HandleUpdateProfile() {
 		return
 	}
 	desc := os.Args[2]
-	mnemonic := ReadLoggedInWords()
+	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
-	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 	jsonString := network.UpdateProfile(pub58, desc)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)

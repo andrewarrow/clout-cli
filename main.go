@@ -2,6 +2,8 @@ package main
 
 import (
 	"clout/args"
+	"clout/session"
+	"clout/sync"
 	"fmt"
 	"math/rand"
 	"os"
@@ -47,7 +49,7 @@ func main() {
 	argMap = args.ToMap()
 
 	if command == "account" || command == "accounts" {
-		HandleAccounts()
+		session.HandleAccounts()
 	} else if command == "buy" {
 		HandleBuy()
 	} else if command == "diamond" {
@@ -61,9 +63,9 @@ func main() {
 	} else if command == "help" {
 		PrintHelp()
 	} else if command == "login" {
-		Login()
+		session.Login()
 	} else if command == "logout" {
-		Logout()
+		session.Logout()
 	} else if command == "ls" {
 		HandlePosts()
 	} else if command == "post" {
@@ -75,13 +77,13 @@ func main() {
 	} else if command == "reclout" {
 		HandleReclout()
 	} else if command == "sync" {
-		HandleSync(argMap["limit"])
+		sync.HandleSync(argMap["limit"])
 	} else if command == "update" {
 		HandleUpdateProfile()
 	} else if command == "v8" {
 		//RunV8()
 	} else if command == "whoami" {
-		Whoami()
+		session.Whoami()
 	} else {
 		PostsForPublicKey(command)
 	}

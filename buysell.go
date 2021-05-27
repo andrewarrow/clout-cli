@@ -4,6 +4,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -17,13 +18,13 @@ func HandleBuy() {
 	}
 	username := os.Args[2]
 	amountString := os.Args[3]
-	theirPub58 := UsernameToPub58(username)
+	theirPub58 := session.UsernameToPub58(username)
 
-	mnemonic := ReadLoggedInWords()
+	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
-	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 
 	amount, _ := strconv.ParseInt(amountString, 10, 64)
 	bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, amount)

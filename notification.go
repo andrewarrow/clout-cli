@@ -5,6 +5,7 @@ import (
 	"clout/keys"
 	"clout/models"
 	"clout/network"
+	"clout/session"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -28,13 +29,13 @@ func ParseUserList(js string, buff []string) map[string]string {
 	return m
 }
 func ListNotifications() {
-	m := ReadAccounts()
+	m := session.ReadAccounts()
 	for username, s := range m {
 		fmt.Println("")
 		fmt.Println("===========")
 		fmt.Println(username)
 		fmt.Println("===========")
-		pub58, _ := keys.ComputeKeysFromSeed(SeedBytes(s))
+		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
 		ListNotificationForPub(pub58)
 	}
 }
@@ -49,7 +50,7 @@ func ListNotificationForPub(pub58 string) {
 	for _, n := range list.Notifications {
 		mapOfUsers[n.Metadata.TransactorPublicKeyBase58Check] = true
 	}
-	cache := ReadCache()
+	cache := session.ReadCache()
 	for pub58, _ := range mapOfUsers {
 		if cache[pub58] != "" {
 			delete(mapOfUsers, pub58)
@@ -75,7 +76,7 @@ func ListNotificationForPub(pub58 string) {
 			cache[k] = v
 		}
 	}
-	WriteCache(cache)
+	session.WriteCache(cache)
 
 	for i, n := range list.Notifications {
 		fmt.Printf("  %02d %s %s %s\n", i, display.LeftAligned(n.Metadata.TxnType, 30),
