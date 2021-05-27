@@ -6,18 +6,17 @@ import (
 	"clout/session"
 	"encoding/json"
 	"fmt"
-	"os"
 	"strconv"
 	"time"
 )
 
-func HandleSync(limit string) {
+func HandleSync(argMap map[string]string) {
 	CreateSchema()
-	if len(os.Args) > 2 {
-		query := os.Args[2]
-		FindPosts(query)
+	if argMap["query"] != "" {
+		FindPosts(argMap["query"])
 		return
 	}
+	limit := argMap["limit"]
 	fmt.Println("-=-=-= SYNC =-=-=-")
 	fmt.Println("Run this in background to query nodes for blockchain")
 	fmt.Println("data about the recent past, further and further back in time.")
@@ -59,6 +58,7 @@ func SyncLoop() {
 		for _, p := range ps.PostsFound {
 			ts := time.Unix(p.TimestampNanos/1000000000, 0)
 			InsertPost(ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
+			InsertUser(p.ProfileEntryResponse.PublicKeyBase58Check, p.ProfileEntryResponse.Username)
 			last = p.PostHashHex
 		}
 		fmt.Println(len(ps.PostsFound))

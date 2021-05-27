@@ -15,3 +15,14 @@ func InsertPost(ts time.Time, hash, body, username string) {
 
 	tx.Commit()
 }
+func InsertUser(hash, username string) {
+	db := OpenTheDB()
+	defer db.Close()
+	tx, _ := db.Begin()
+
+	s := `insert into users (hash, username) values (?, ?)`
+	thing, _ := tx.Prepare(s)
+	thing.Exec(hash, username)
+
+	tx.Commit()
+}

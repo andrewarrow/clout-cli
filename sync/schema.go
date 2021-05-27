@@ -26,6 +26,11 @@ create table posts (hash text, body text, username text, created_at datetime);
 
 CREATE UNIQUE INDEX posts_idx
   ON posts (hash);
+
+create table users (hash text, username text, created_at datetime);
+
+CREATE UNIQUE INDEX users_idx
+  ON users (username);
 `
 
 	_, err := db.Exec(sqlStmt)
