@@ -4,8 +4,7 @@ import (
 	"time"
 )
 
-func InsertPost(hash, body, username string) {
-	ts := time.Now()
+func InsertPost(ts time.Time, hash, body, username string) {
 	db := OpenTheDB()
 	defer db.Close()
 	tx, _ := db.Begin()

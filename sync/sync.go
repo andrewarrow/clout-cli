@@ -43,14 +43,15 @@ func HandleSync(limit string) {
 
 func SyncLoop() {
 	pub58 := session.LoggedInPub58()
-	last := ""
+	last := LastHash()
 	for {
 		js := network.GetPostsStatelessWithOptions(last, pub58)
 		var ps models.PostsStateless
 		json.Unmarshal([]byte(js), &ps)
 
 		for _, p := range ps.PostsFound {
-			InsertPost(p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
+			ts := time.Unix(p.TimestampNanos/1000000000, 0)
+			InsertPost(ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
 			last = p.PostHashHex
 		}
 		fmt.Println(len(ps.PostsFound))
