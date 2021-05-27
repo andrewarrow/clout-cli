@@ -1,0 +1,22 @@
+POST
+	https://bitclout.com/api/v0/upload-image
+
+
+-----------------------------56259981311082071783610828175
+Content-Disposition: form-data; name="file"; filename="aww.png"
+Content-Type: image/png
+
+
+-----------------------------56259981311082071783610828175
+Content-Disposition: form-data; name="UserPublicKeyBase58Check"
+
+BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v
+-----------------------------56259981311082071783610828175
+Content-Disposition: form-data; name="JWT"
+
+eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjIxNTI2ODYsImV4cCI6MTYyMjE1Mjc0Nn0.hQefRUtXkg2oFa365JJGB5ZOGygq_fabfrfwrVU6IDz4rX2vAkKAxKdDMWKpryBDWZg1X8Xrm_cfi5_Phm5iXA
+-----------------------------56259981311082071783610828175--
+
+---
+{"ImageURL":"https://images.bitclout.com/c08779391d3a354a34cb2a561f365fe25260146410f8bcf07b927ff5999602f4.webp"}
+

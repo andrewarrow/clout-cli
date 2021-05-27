@@ -1,6 +1,9 @@
 POST
 	https://bitclout.com/api/v0/submit-post
 
+{"UpdaterPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"four!","ImageURLs":["https://images.bitclout.com/c08779391d3a354a34cb2a561f365fe25260146410f8bcf07b927ff5999602f4.webp"]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}
+
+
 {"UpdaterPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"i support this @cloutfeed"},"RecloutedPostHashHex":"46eee294b9ec35e9c3b3e7e87e38a4cdf84f7afead08b9db93ef5db67c02516f","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}
 
 {"UpdaterPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{},"RecloutedPostHashHex":"d90b025c501159a800593ec67158cf66fdc0d551a610013519e61a19c916ec35","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}
