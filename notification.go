@@ -8,6 +8,7 @@ import (
 	"clout/session"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,7 +29,12 @@ func ParseUserList(js string, buff []string) map[string]string {
 	}
 	return m
 }
-func ListNotifications() {
+func ListNotifications(argMap map[string]string) {
+
+	limit, _ := strconv.Atoi(argMap["limit"])
+	if limit == 0 {
+		limit = 5
+	}
 	m := session.ReadAccounts()
 	for username, s := range m {
 		fmt.Println("")
@@ -36,10 +42,10 @@ func ListNotifications() {
 		fmt.Println(username)
 		fmt.Println("===========")
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
-		ListNotificationForPub(pub58)
+		ListNotificationForPub(limit, pub58)
 	}
 }
-func ListNotificationForPub(pub58 string) {
+func ListNotificationForPub(limit int, pub58 string) {
 	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
 	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("samples/get_notifications.list", []byte(js), 0755)
@@ -105,7 +111,7 @@ func ListNotificationForPub(pub58 string) {
 				float64(cctm.BitCloutToSellNanos)/1000000.0,
 				cctm.CreatorCoinToSellNanos, cctm.BitCloutToAddNanos)
 		}
-		if i > 5 {
+		if i > limit {
 			break
 		}
 	}

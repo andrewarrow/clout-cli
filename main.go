@@ -73,7 +73,7 @@ func main() {
 	} else if command == "messages" {
 		ListMessages()
 	} else if command == "n" || command == "notifications" || command == "notification" {
-		ListNotifications()
+		ListNotifications(argMap)
 	} else if command == "reclout" {
 		HandleReclout()
 	} else if command == "sync" {
