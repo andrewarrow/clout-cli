@@ -129,6 +129,11 @@ func SeedBytes(mnemonic string) []byte {
 	//fmt.Printf("\n\nPRIVATE\n%x\n\n", seedBytes)
 	return seedBytes
 }
+func NewWords() string {
+	entropy, _ := bip39.NewEntropy(128)
+	mnemonic, _ := bip39.NewMnemonic(entropy)
+	return mnemonic
+}
 
 func Pub58ToUsername(key string) (string, int64) {
 	js := network.GetUsersStateless(key)

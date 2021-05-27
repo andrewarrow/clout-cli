@@ -56,7 +56,8 @@ func HandleUpdateProfile(argMap map[string]string) {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	jsonString := network.UpdateProfile(pub58, descData, usernameData, percentData, imageData)
+	target := pub58
+	jsonString := network.UpdateProfile(pub58, target, descData, usernameData, percentData, imageData)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
 	jsonString = network.SubmitTx(tx.TransactionHex, priv)

@@ -54,7 +54,7 @@ func main() {
 	argMap = args.ToMap()
 
 	if command == "account" || command == "accounts" {
-		session.HandleAccounts()
+		session.HandleAccounts(argMap)
 	} else if command == "buy" {
 		HandleBuy()
 	} else if command == "diamond" {

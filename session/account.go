@@ -10,7 +10,12 @@ import (
 	"strconv"
 )
 
-func HandleAccounts() {
+func HandleAccounts(argMap map[string]string) {
+	if argMap["new"] != "" {
+		words := NewWords()
+		fmt.Println(words)
+		return
+	}
 	if len(os.Args) > 2 {
 		username := os.Args[2]
 		i, _ := strconv.Atoi(username)
