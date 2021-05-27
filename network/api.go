@@ -61,10 +61,20 @@ func CreateFollow(follower, followed string) string {
 		[]byte(send))
 	return jsonString
 }
-func SubmitBuyOrSellCoin(updater, creator string, amount int64) string {
+func SubmitBuyOrSellCoin(updater, creator string, sell, expected int64) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","CreatorPublicKeyBase58Check":"%s","OperationType":"buy","BitCloutToSellNanos":%d,"CreatorCoinToSellNanos":0,"BitCloutToAddNanos":0,"MinBitCloutExpectedNanos":0,"MinCreatorCoinExpectedNanos":%d,"MinFeeRateNanosPerKB":1000}`
-	sell := amount
-	expected := amount
+
+	/*
+		sell     28296689
+		expected 28368525
+
+		sell     71898725
+		expected 2535444
+
+		TODO use ALLOWED_SLIPPAGE_PERCENT = 75;
+
+	*/
+
 	send := fmt.Sprintf(jsonString, updater, creator, sell, expected)
 	jsonString = DoPost("api/v0/buy-or-sell-creator-coin",
 		[]byte(send))

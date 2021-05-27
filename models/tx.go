@@ -1,8 +1,14 @@
 package models
 
 type TxReady struct {
-	TstampNanos    int64
-	TransactionHex string
+	TstampNanos                      int64
+	TransactionHex                   string
+	ExpectedBitCloutReturnedNanos    int64
+	ExpectedCreatorCoinReturnedNanos int64
+	SpendAmountNanos                 int64
+	TotalInputNanos                  int64
+	ChangeAmountNanos                int64
+	FeeNanos                         int64
 }
 
 type Tx struct {
