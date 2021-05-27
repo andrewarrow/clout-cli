@@ -25,7 +25,7 @@ func HandleUpdateProfile(argMap map[string]string) {
 
 	image := argMap["image"]
 	percent := argMap["percent"]
-	username := argMap["percent"]
+	username := argMap["username"]
 	desc := argMap["desc"]
 	imageData := ""
 	percentData := ""
