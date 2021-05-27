@@ -7,7 +7,7 @@ import (
 func LastHash() string {
 	db := OpenTheDB()
 	defer db.Close()
-	rows, err := db.Query("select hash from post order by created_at limit 1")
+	rows, err := db.Query("select hash from posts order by created_at limit 1")
 	if err != nil {
 		fmt.Println(err)
 		return ""
