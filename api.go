@@ -62,6 +62,15 @@ func CreateFollow(follower, followed string) string {
 		[]byte(send))
 	return jsonString
 }
+func SubmitBuyOrSellCoin(updater, creator string, amount int64) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","CreatorPublicKeyBase58Check":"%s","OperationType":"buy","BitCloutToSellNanos":%d,"CreatorCoinToSellNanos":0,"BitCloutToAddNanos":0,"MinBitCloutExpectedNanos":0,"MinCreatorCoinExpectedNanos":%d,"MinFeeRateNanosPerKB":1000}`
+	sell := amount
+	expected := amount
+	send := fmt.Sprintf(jsonString, updater, creator, sell, expected)
+	jsonString = network.DoPost("api/v0/buy-or-sell-creator-coin",
+		[]byte(send))
+	return jsonString
+}
 func SubmitDiamond(sender, receiver, post string) string {
 	jsonString := `{"SenderPublicKeyBase58Check":"%s","ReceiverPublicKeyBase58Check":"%s","DiamondPostHashHex":"%s","DiamondLevel":1,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, sender, receiver, post)

@@ -11,6 +11,7 @@ import (
 func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clout accounts               # list your various accounts")
+	fmt.Println("  clout buy                    # buy creator coin")
 	fmt.Println("  clout diamond [username]     # award 1 diamond to last post")
 	fmt.Println("  clout follow [username]      # toggle follow")
 	fmt.Println("  clout followers              # who follows you")
@@ -47,6 +48,8 @@ func main() {
 
 	if command == "account" || command == "accounts" {
 		HandleAccounts()
+	} else if command == "buy" {
+		HandleBuy()
 	} else if command == "diamond" {
 		HandleDiamond()
 	} else if command == "follow" {
