@@ -34,6 +34,11 @@ func PrintHelp() {
 	fmt.Println("  clout whoami                 # base58 pubkey logged in")
 	fmt.Println("  clout [username]             # username's profile & posts")
 	fmt.Println("")
+	username := session.SelectedAccount()
+	if username != "" {
+		fmt.Println("SELECTED ACCOUNT:", username)
+		fmt.Println("")
+	}
 }
 
 var argMap map[string]string

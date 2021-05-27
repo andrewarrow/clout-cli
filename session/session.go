@@ -147,6 +147,10 @@ func Logout() {
 	WriteAccounts(m)
 }
 
+func SelectedAccount() string {
+	return JustReadFile(selected)
+}
+
 func LoggedInPub58() string {
 	mnemonic := ReadLoggedInWords()
 	if mnemonic == "" {
