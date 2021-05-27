@@ -1,9 +1,13 @@
 package main
 
 import (
+	"clout/models"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/justincampbell/timeago"
 )
 
 func HandleSync(limit string) {
@@ -32,6 +36,24 @@ func HandleSync(limit string) {
 	fmt.Printf("Syncing now... %d mb\n", mb)
 
 	for {
+		SyncLoop()
+	}
+}
+
+func SyncLoop() {
+	pub58 := LoggedInPub58()
+	last := ""
+	for {
+		js := GetPostsStatelessWithOptions(last, pub58)
+		var ps models.PostsStateless
+		json.Unmarshal([]byte(js), &ps)
+
+		for _, p := range ps.PostsFound {
+			ts := time.Unix(p.TimestampNanos/1000000000, 0)
+			ago := timeago.FromDuration(time.Since(ts))
+			fmt.Println(ago)
+			last = p.PostHashHex
+		}
 		time.Sleep(time.Second * 1)
 	}
 }

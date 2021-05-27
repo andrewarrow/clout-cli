@@ -115,6 +115,15 @@ func GetUsersStateless(key string) string {
 	return jsonString
 }
 
+func GetPostsStatelessWithOptions(last, pub58 string) string {
+	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","OrderBy":"","StartTstampSecs":null,"PostContent":"","NumToFetch":50,"FetchSubcomments":false,"GetPostsForFollowFeed":false,"GetPostsForGlobalWhitelist":true,"GetPostsByClout":false,"PostsByCloutMinutesLookback":0,"AddGlobalFeedBool":false}`
+
+	sendString := fmt.Sprintf(jsonString, last, pub58)
+	jsonString = network.DoPost("api/v0/get-posts-stateless",
+		[]byte(sendString))
+	return jsonString
+}
+
 func GetPostsStateless(pub58 string, follow bool) string {
 	jsonString := `{"GetPostsForGlobalWhitelist":%s,"GetPostsForFollowFeed":%s, "OrderBy":"newest", "ReaderPublicKeyBase58Check": "%s"}`
 
