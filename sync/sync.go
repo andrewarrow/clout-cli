@@ -50,7 +50,7 @@ func SyncLoop() {
 		json.Unmarshal([]byte(js), &ps)
 
 		for _, p := range ps.PostsFound {
-			InsertPost(p.Body, p.ProfileEntryResponse.Username)
+			InsertPost(p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
 			last = p.PostHashHex
 		}
 		fmt.Println(len(ps.PostsFound))

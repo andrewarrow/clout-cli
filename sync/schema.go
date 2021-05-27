@@ -22,7 +22,10 @@ func CreateSchema() {
 	defer db.Close()
 
 	sqlStmt := `
-create table posts (body text, username text, created_at datetime);
+create table posts (hash text, body text, username text, created_at datetime);
+
+CREATE UNIQUE INDEX posts_idx
+  ON posts (hash);
 `
 
 	_, err := db.Exec(sqlStmt)
