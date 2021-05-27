@@ -29,7 +29,7 @@ func LastHash() string {
 func FindPosts(s string) {
 	db := OpenTheDB()
 	defer db.Close()
-	rows, err := db.Query("select username, body, created_at from posts where body like '%" + s + "%")
+	rows, err := db.Query("select username, body, created_at from posts where body like '%" + s + "%'")
 	if err != nil {
 		fmt.Println(err)
 		return
