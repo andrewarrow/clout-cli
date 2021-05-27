@@ -8,11 +8,10 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-
-	"github.com/justincampbell/timeago"
 )
 
 func HandleSync(limit string) {
+	CreateSchema()
 	fmt.Println("-=-=-= SYNC =-=-=-")
 	fmt.Println("Run this in background to query nodes for blockchain")
 	fmt.Println("data about the recent past, further and further back in time.")
@@ -51,11 +50,10 @@ func SyncLoop() {
 		json.Unmarshal([]byte(js), &ps)
 
 		for _, p := range ps.PostsFound {
-			ts := time.Unix(p.TimestampNanos/1000000000, 0)
-			ago := timeago.FromDuration(time.Since(ts))
-			fmt.Println(ago)
+			InsertPost(p.Body, p.ProfileEntryResponse.Username)
 			last = p.PostHashHex
 		}
+		fmt.Println(len(ps.PostsFound))
 		time.Sleep(time.Second * 1)
 	}
 }
