@@ -129,6 +129,10 @@ func SerializeToDer(sig *btcec.Signature) []byte {
 }
 
 func ComputeKeysFromSeed(seedBytes []byte) (string, *btcec.PrivateKey) {
+	pub, priv, _ := ComputeKeysFromSeedWithAddress(seedBytes)
+	return pub, priv
+}
+func ComputeKeysFromSeedWithAddress(seedBytes []byte) (string, *btcec.PrivateKey, string) {
 	netParams := &chaincfg.MainNetParams
 	masterKey, _ := hdkeychain.NewMaster(seedBytes, netParams)
 	index := uint32(0)
@@ -140,8 +144,8 @@ func ComputeKeysFromSeed(seedBytes []byte) (string, *btcec.PrivateKey) {
 	addressKey, _ := changeKey.Child(index)
 	pubKey, _ := addressKey.ECPubKey()
 	privKey, _ := addressKey.ECPrivKey()
-	//addressObj, _ := addressKey.Address(netParams)
-	//btcDepositAddress := addressObj.EncodeAddress()
+	addressObj, _ := addressKey.Address(netParams)
+	btcDepositAddress := addressObj.EncodeAddress()
 
 	prefix := [3]byte{0xcd, 0x14, 0x0}
 	input := pubKey.SerializeCompressed()
@@ -151,7 +155,7 @@ func ComputeKeysFromSeed(seedBytes []byte) (string, *btcec.PrivateKey) {
 	b = append(b, input[:]...)
 	cksum := _checksum(b)
 	b = append(b, cksum[:]...)
-	return base58.Encode(b), privKey
+	return base58.Encode(b), privKey, btcDepositAddress
 }
 
 func _checksum(input []byte) (cksum [4]byte) {

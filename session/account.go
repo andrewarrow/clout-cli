@@ -2,6 +2,7 @@ package session
 
 import (
 	"clout/files"
+	"clout/keys"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,10 +11,30 @@ import (
 	"strconv"
 )
 
+func WriteSelected(username string) {
+	home := files.UserHomeDir()
+	path := home + "/" + dir + "/" + selected
+	ioutil.WriteFile(path, []byte(username), 0700)
+}
+
 func HandleAccounts(argMap map[string]string) {
 	if argMap["new"] != "" {
 		words := NewWords()
+		_, _, btc := keys.ComputeKeysFromSeedWithAddress(SeedBytes(words))
+		fmt.Println("SAVE THESE WORDS!")
+		fmt.Println("")
 		fmt.Println(words)
+		fmt.Println("")
+		fmt.Println("We use `add-oath` command in github.com/andrewarrow/wolfservers.")
+		fmt.Println("")
+		fmt.Println("Send >= 0.0007 BTC to", btc)
+		fmt.Println("")
+		fmt.Println("Wait a few minutes then run `clout balance`")
+		username := argMap["new"]
+		usernames := ReadAccounts()
+		usernames[username] = words
+		WriteAccounts(usernames)
+		WriteSelected(username)
 		return
 	}
 	if len(os.Args) > 2 {
@@ -23,9 +44,7 @@ func HandleAccounts(argMap map[string]string) {
 			list := ReadAccountsSorted()
 			username = list[i-1]
 		}
-		home := files.UserHomeDir()
-		path := home + "/" + dir + "/" + selected
-		ioutil.WriteFile(path, []byte(username), 0700)
+		WriteSelected(username)
 	}
 	fmt.Println("")
 	for i, k := range ReadAccountsSorted() {
