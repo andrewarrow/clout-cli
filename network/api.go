@@ -86,21 +86,21 @@ func SubmitBuyOrSellCoin(updater, creator string, sell, expected int64) string {
 func UploadImage(filepath string) string {
 	tokens := strings.Split(filepath, "/")
 	filename := tokens[len(tokens)-1]
-	jwt := "changeme"
+	jwt := "changeme" // TODO keys/jwt.go
 	pub58 := "pub58"
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 	var fw io.Writer
 	// strings.NewReader("hello world!"),
-	r := bytes.NewReader([]byte{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65})
+	r := bytes.NewReader([]byte{65, 65, 65, 65, 65, 65, 65, 65, 65})
 	fw, _ = w.CreateFormFile("file", filename)
 	io.Copy(fw, r)
 
-	r = bytes.NewReader([]byte{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65})
+	r = bytes.NewReader([]byte{65, 65, 65, 6, 65, 65, 65, 65, 65, 65})
 	fw, _ = w.CreateFormFile("UserPublicKeyBase58Check", pub58)
 	io.Copy(fw, r)
 
-	r = bytes.NewReader([]byte{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65})
+	r = bytes.NewReader([]byte{65, 65, 65, 65, 65, 65, 65, 65, 65, 65})
 	fw, _ = w.CreateFormFile("JWT", jwt)
 	io.Copy(fw, r)
 
