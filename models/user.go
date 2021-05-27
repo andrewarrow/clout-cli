@@ -8,5 +8,11 @@ type User struct {
 	PublicKeyBase58Check string
 	ProfileEntryResponse ProfileEntryResponse
 	BalanceNanos         int64
-	UsersYouHODL         string
+	UsersYouHODL         []HODLerThing
+}
+type HODLerThing struct {
+	HODLerPublicKeyBase58Check  string
+	CreatorPublicKeyBase58Check string
+	BalanceNanos                int64
+	ProfileEntryResponse        ProfileEntryResponse
 }

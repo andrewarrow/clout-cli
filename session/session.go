@@ -2,6 +2,7 @@ package session
 
 import (
 	"bufio"
+	"clout/display"
 	"clout/files"
 	"clout/keys"
 	"clout/models"
@@ -138,6 +139,19 @@ func NewWords() string {
 	return mnemonic
 }
 
+func Pub58ToBoards(key string) {
+	js := network.GetUsersStateless(key)
+	var us models.UsersStateless
+	json.Unmarshal([]byte(js), &us)
+	for _, thing := range us.UserList[0].UsersYouHODL {
+		coins := float64(thing.BalanceNanos) / 1000000000.0
+		if coins < 1 {
+			continue
+		}
+		fmt.Printf("%s %0.2f\n",
+			display.LeftAligned(thing.ProfileEntryResponse.Username, 30), coins)
+	}
+}
 func Pub58ToUsername(key string) (string, int64) {
 	js := network.GetUsersStateless(key)
 	var us models.UsersStateless
