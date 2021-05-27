@@ -9,7 +9,7 @@ import (
 )
 
 func OpenTheDB() *sql.DB {
-	db, err := sql.Open("sqlite3", files.UserHomeDir()+"/wolf.db")
+	db, err := sql.Open("sqlite3", files.UserHomeDir()+"/clout-cli-data/sync.db")
 	if err != nil {
 		fmt.Println(err)
 		return nil
