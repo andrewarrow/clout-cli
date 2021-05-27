@@ -27,24 +27,6 @@ func JustReadFile(s string) string {
 	return strings.TrimSpace(string(b))
 }
 
-func HandleAccounts() {
-	if len(os.Args) > 2 {
-		username := os.Args[2]
-		home := files.UserHomeDir()
-		path := home + "/" + dir + "/" + selected
-		ioutil.WriteFile(path, []byte(username), 0700)
-		return
-	}
-	m := ReadAccounts()
-	fmt.Println("")
-	for k, _ := range m {
-		fmt.Printf("%s\n", k)
-	}
-	fmt.Println("")
-	fmt.Println("To select account, run `clout account [username]`")
-	fmt.Println("")
-}
-
 func Whoami() string {
 	fmt.Println("Logged in as:")
 	fmt.Println("")
@@ -102,27 +84,6 @@ func Login() {
 
 	//fmt.Println("")
 	//Whoami()
-}
-
-func ReadAccounts() map[string]string {
-	m := map[string]string{}
-	asBytes := []byte(JustReadFile(file))
-	if len(asBytes) == 0 {
-		return m
-	}
-
-	json.Unmarshal(asBytes, &m)
-
-	return m
-}
-
-func WriteAccounts(m map[string]string) {
-	b, _ := json.Marshal(m)
-	home := files.UserHomeDir()
-	os.Mkdir(home+"/"+dir, 0700)
-	path := home + "/" + dir + "/" + file
-	ioutil.WriteFile(path, b, 0700)
-	fmt.Println("Secret stored at:", path)
 }
 
 func Logout() {
