@@ -47,9 +47,9 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 		[]byte(send))
 	return jsonString
 }
-func UpdateProfile(pub58, desc string) string {
-	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","ProfilePublicKeyBase58Check":"","NewUsername":"","NewDescription":"%s","NewProfilePic":"","NewCreatorBasisPoints":1800,"NewStakeMultipleBasisPoints":12500,"IsHidden":false,"MinFeeRateNanosPerKB":1000}`
-	send := fmt.Sprintf(jsonString, pub58, desc)
+func UpdateProfile(pub58, desc, username, percent, image string) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","ProfilePublicKeyBase58Check":"","NewUsername":"%s","NewDescription":"%s","NewProfilePic":"%s","NewCreatorBasisPoints":%s,"NewStakeMultipleBasisPoints":12500,"IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, username, desc, image, percent)
 	jsonString = DoPost("api/v0/update-profile",
 		[]byte(send))
 	return jsonString
