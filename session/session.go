@@ -106,6 +106,9 @@ func Logout() {
 	}
 	delete(m, username)
 	WriteAccounts(m)
+	home := files.UserHomeDir()
+	path := home + "/" + dir + "/" + selected
+	os.Remove(path)
 }
 
 func SelectedAccount() string {

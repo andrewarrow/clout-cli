@@ -13,6 +13,7 @@ import (
 func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clout accounts               # list your various accounts")
+	fmt.Println("  clout boards                 # list boards you are on")
 	fmt.Println("  clout buy                    # buy creator coin")
 	fmt.Println("  clout diamond [username]     # award 1 diamond to last post")
 	fmt.Println("  clout follow [username]      # toggle follow")
@@ -55,6 +56,8 @@ func main() {
 
 	if command == "account" || command == "accounts" {
 		session.HandleAccounts(argMap)
+	} else if command == "board" || command == "boards" {
+		HandleBoards()
 	} else if command == "buy" {
 		HandleBuy()
 	} else if command == "diamond" {

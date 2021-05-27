@@ -8,4 +8,5 @@ type User struct {
 	PublicKeyBase58Check string
 	ProfileEntryResponse ProfileEntryResponse
 	BalanceNanos         int64
+	UsersYouHODL         string
 }
