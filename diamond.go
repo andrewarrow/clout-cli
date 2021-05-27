@@ -14,7 +14,7 @@ func HandleDiamond() {
 		return
 	}
 	username := os.Args[2]
-	theirPub58, _ := UsernameToPub58(username)
+	theirPub58 := UsernameToPub58(username)
 	js := GetPostsForPublicKey(username)
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)

@@ -164,17 +164,17 @@ func SeedBytes(mnemonic string) []byte {
 	return seedBytes
 }
 
-func Pub58ToUsername(key string) string {
+func Pub58ToUsername(key string) (string, int64) {
 	js := GetUsersStateless(key)
 	var us models.UsersStateless
 	json.Unmarshal([]byte(js), &us)
-	return us.UserList[0].ProfileEntryResponse.Username
+	return us.UserList[0].ProfileEntryResponse.Username, us.UserList[0].BalanceNanos
 }
-func UsernameToPub58(s string) (string, int64) {
+func UsernameToPub58(s string) string {
 	js := GetSingleProfile(s)
 	var sp models.SingleProfile
 	json.Unmarshal([]byte(js), &sp)
-	return sp.Profile.PublicKeyBase58Check, sp.BalanceNanos
+	return sp.Profile.PublicKeyBase58Check
 }
 
 func LoggedInAs() (string, string, int64) {
@@ -187,13 +187,13 @@ func LoggedInAs() (string, string, int64) {
 	//fmt.Printf("%x\n", seedBytes)
 
 	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
-	username := Pub58ToUsername(pub58)
-	_, balance := UsernameToPub58(username)
-	return pub58, Pub58ToUsername(pub58), balance
+	username, balance := Pub58ToUsername(pub58)
+	return pub58, username, balance
 }
 
 func UsernameFromSecret(s string) string {
 	seedBytes := SeedBytes(s)
 	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
-	return Pub58ToUsername(pub58)
+	username, _ := Pub58ToUsername(pub58)
+	return username
 }

@@ -16,7 +16,7 @@ func HandleBuy() {
 	}
 	username := os.Args[2]
 	amountString := os.Args[3]
-	theirPub58, _ := UsernameToPub58(username)
+	theirPub58 := UsernameToPub58(username)
 
 	mnemonic := ReadLoggedInWords()
 	if mnemonic == "" {

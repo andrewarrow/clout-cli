@@ -1,8 +1,7 @@
 package models
 
 type SingleProfile struct {
-	Profile      ProfileEntryResponse
-	BalanceNanos int64
+	Profile ProfileEntryResponse
 }
 type ProfileEntryResponse struct {
 	PublicKeyBase58Check string

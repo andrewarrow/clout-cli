@@ -18,7 +18,7 @@ func HandleFollow() {
 	}
 	username := os.Args[2]
 	follower := LoggedInPub58()
-	followed, _ := UsernameToPub58(username)
+	followed := UsernameToPub58(username)
 	jsonString := CreateFollow(follower, followed)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
