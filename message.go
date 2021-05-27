@@ -3,6 +3,7 @@ package main
 import (
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -91,7 +92,7 @@ func ListMessages() {
 	}
 }
 func ListMessagesForPub(pub58 string) {
-	js := GetMessagesStateless(pub58)
+	js := network.GetMessagesStateless(pub58)
 	var list models.MessageList
 	json.Unmarshal([]byte(js), &list)
 	for _, oc := range list.OrderedContactsWithMessages {

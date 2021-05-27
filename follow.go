@@ -4,6 +4,7 @@ import (
 	"clout/display"
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -19,7 +20,7 @@ func HandleFollow() {
 	username := os.Args[2]
 	follower := LoggedInPub58()
 	followed := UsernameToPub58(username)
-	jsonString := CreateFollow(follower, followed)
+	jsonString := network.CreateFollow(follower, followed)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
 	mnemonic := ReadLoggedInWords()
@@ -27,7 +28,7 @@ func HandleFollow() {
 		return
 	}
 	_, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
-	jsonString = SubmitTx(tx.TransactionHex, priv)
+	jsonString = network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
 	}
@@ -39,7 +40,7 @@ func HandleFollowing() {
 		LoopThruAllFollowing(pub58)
 		return
 	}
-	js := GetFollowsStateless(pub58, "", "")
+	js := network.GetFollowsStateless(pub58, "", "")
 
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
@@ -53,7 +54,7 @@ func HandleFollowing() {
 }
 func ListFollowers() {
 	pub58, username, _ := LoggedInAs()
-	js := GetFollowsStateless(pub58, username, "")
+	js := network.GetFollowsStateless(pub58, username, "")
 
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
@@ -69,7 +70,7 @@ func LoopThruAllFollowing(pub58 string) {
 	last := ""
 	//f, _ := os.OpenFile("i.follow", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	//defer f.Close()
-	js := GetFollowsStateless(pub58, "", last)
+	js := network.GetFollowsStateless(pub58, "", last)
 	var pktpe models.PublicKeyToProfileEntry
 	json.Unmarshal([]byte(js), &pktpe)
 	fmt.Println("NumFollowers", pktpe.NumFollowers)
@@ -88,7 +89,7 @@ func LoopThruAllFollowing(pub58 string) {
 			break
 		}
 		time.Sleep(time.Second * 1)
-		js := GetFollowsStateless(pub58, "", last)
+		js := network.GetFollowsStateless(pub58, "", last)
 		json.Unmarshal([]byte(js), &pktpe)
 	}
 }

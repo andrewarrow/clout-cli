@@ -1,8 +1,7 @@
-package main
+package network
 
 import (
 	"clout/keys"
-	"clout/network"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
@@ -44,21 +43,21 @@ func SubmitTx(hexString string, priv *btcec.PrivateKey) string {
 
 	//fmt.Println("signedHex", signedHex)
 	send := fmt.Sprintf(jsonString, signedHex)
-	jsonString = network.DoPost("api/v0/submit-transaction",
+	jsonString = DoPost("api/v0/submit-transaction",
 		[]byte(send))
 	return jsonString
 }
 func UpdateProfile(pub58, desc string) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","ProfilePublicKeyBase58Check":"","NewUsername":"","NewDescription":"%s","NewProfilePic":"","NewCreatorBasisPoints":1800,"NewStakeMultipleBasisPoints":12500,"IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, desc)
-	jsonString = network.DoPost("api/v0/update-profile",
+	jsonString = DoPost("api/v0/update-profile",
 		[]byte(send))
 	return jsonString
 }
 func CreateFollow(follower, followed string) string {
 	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, follower, followed)
-	jsonString = network.DoPost("api/v0/create-follow-txn-stateless",
+	jsonString = DoPost("api/v0/create-follow-txn-stateless",
 		[]byte(send))
 	return jsonString
 }
@@ -67,21 +66,21 @@ func SubmitBuyOrSellCoin(updater, creator string, amount int64) string {
 	sell := amount
 	expected := amount
 	send := fmt.Sprintf(jsonString, updater, creator, sell, expected)
-	jsonString = network.DoPost("api/v0/buy-or-sell-creator-coin",
+	jsonString = DoPost("api/v0/buy-or-sell-creator-coin",
 		[]byte(send))
 	return jsonString
 }
 func SubmitDiamond(sender, receiver, post string) string {
 	jsonString := `{"SenderPublicKeyBase58Check":"%s","ReceiverPublicKeyBase58Check":"%s","DiamondPostHashHex":"%s","DiamondLevel":1,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, sender, receiver, post)
-	jsonString = network.DoPost("api/v0/send-diamonds",
+	jsonString = DoPost("api/v0/send-diamonds",
 		[]byte(send))
 	return jsonString
 }
 func SubmitReclout(pub58, RecloutedPostHashHex string) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{},"RecloutedPostHashHex":"%s","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, RecloutedPostHashHex)
-	jsonString = network.DoPost("api/v0/submit-post",
+	jsonString = DoPost("api/v0/submit-post",
 		[]byte(send))
 	return jsonString
 }
@@ -91,7 +90,7 @@ func SubmitPost(pub58, body, reply string) string {
 	}
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"%s","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, pub58, reply, body)
-	jsonString = network.DoPost("api/v0/submit-post",
+	jsonString = DoPost("api/v0/submit-post",
 		[]byte(send))
 	return jsonString
 }
@@ -103,14 +102,14 @@ func GetManyUsersStateless(keys []string) string {
 	}
 	jsonString := `{"PublicKeysBase58Check":[%s],"SkipHodlings":false}`
 	send := fmt.Sprintf(jsonString, strings.Join(keyBuff, ","))
-	jsonString = network.DoPost("api/v0/get-users-stateless",
+	jsonString = DoPost("api/v0/get-users-stateless",
 		[]byte(send))
 	return jsonString
 }
 func GetUsersStateless(key string) string {
 	jsonString := `{"PublicKeysBase58Check":["%s"],"SkipHodlings":false}`
 	send := fmt.Sprintf(jsonString, key)
-	jsonString = network.DoPost("api/v0/get-users-stateless",
+	jsonString = DoPost("api/v0/get-users-stateless",
 		[]byte(send))
 	return jsonString
 }
@@ -119,7 +118,7 @@ func GetPostsStatelessWithOptions(last, pub58 string) string {
 	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","OrderBy":"","StartTstampSecs":null,"PostContent":"","NumToFetch":50,"FetchSubcomments":false,"GetPostsForFollowFeed":false,"GetPostsForGlobalWhitelist":true,"GetPostsByClout":false,"PostsByCloutMinutesLookback":0,"AddGlobalFeedBool":false}`
 
 	sendString := fmt.Sprintf(jsonString, last, pub58)
-	jsonString = network.DoPost("api/v0/get-posts-stateless",
+	jsonString = DoPost("api/v0/get-posts-stateless",
 		[]byte(sendString))
 	return jsonString
 }
@@ -131,7 +130,7 @@ func GetPostsStateless(pub58 string, follow bool) string {
 	if follow {
 		withFollow = fmt.Sprintf(jsonString, "false", "true", pub58)
 	}
-	jsonString = network.DoPost("api/v0/get-posts-stateless",
+	jsonString = DoPost("api/v0/get-posts-stateless",
 		[]byte(withFollow))
 	return jsonString
 }
@@ -143,39 +142,39 @@ func GetFollowsStateless(pub58, username, last string) string {
 		withDirection = fmt.Sprintf(jsonString, username, pub58, "true", last)
 	}
 
-	jsonString = network.DoPost("api/v0/get-follows-stateless",
+	jsonString = DoPost("api/v0/get-follows-stateless",
 		[]byte(withDirection))
 	return jsonString
 }
 func GetPostsForPublicKey(key string) string {
 	jsonString := `{"PublicKeyBase58Check":"","Username":"%s","ReaderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","LastPostHashHex":"","NumToFetch":10}`
-	jsonString = network.DoPost("api/v0/get-posts-for-public-key",
+	jsonString = DoPost("api/v0/get-posts-for-public-key",
 		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
 func GetSinglePost(pub58, key string) string {
 	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","FetchParents":true,"CommentOffset":0,"CommentLimit":20,"AddGlobalFeedBool":false}`
 	sendString := fmt.Sprintf(jsonString, key, pub58)
-	jsonString = network.DoPost("api/v0/get-single-post",
+	jsonString = DoPost("api/v0/get-single-post",
 		[]byte(sendString))
 	return jsonString
 }
 func GetSingleProfile(key string) string {
 	jsonString := `{"PublicKeyBase58Check":"","Username":"%s"}`
-	jsonString = network.DoPost("api/v0/get-single-profile",
+	jsonString = DoPost("api/v0/get-single-profile",
 		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
 func GetNotifications(pub58 string) string {
 	jsonString := `{"PublicKeyBase58Check":"%s","FetchStartIndex":-1,"NumToFetch":50}`
 	sendString := fmt.Sprintf(jsonString, pub58)
-	jsonString = network.DoPost("api/v0/get-notifications", []byte(sendString))
+	jsonString = DoPost("api/v0/get-notifications", []byte(sendString))
 	return jsonString
 }
 func GetMessagesStateless(pub58 string) string {
 	jsonString := `{"PublicKeyBase58Check":"%s","FetchAfterPublicKeyBase58Check":"","NumToFetch":25,"HoldersOnly":false,"HoldingsOnly":false,"FollowersOnly":false,"FollowingOnly":false,"SortAlgorithm":"time"}`
 	sendString := fmt.Sprintf(jsonString, pub58)
-	jsonString = network.DoPost("api/v0/get-messages-stateless",
+	jsonString = DoPost("api/v0/get-messages-stateless",
 		[]byte(sendString))
 	return jsonString
 }

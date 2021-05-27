@@ -5,6 +5,7 @@ import (
 	"clout/files"
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -165,13 +166,13 @@ func SeedBytes(mnemonic string) []byte {
 }
 
 func Pub58ToUsername(key string) (string, int64) {
-	js := GetUsersStateless(key)
+	js := network.GetUsersStateless(key)
 	var us models.UsersStateless
 	json.Unmarshal([]byte(js), &us)
 	return us.UserList[0].ProfileEntryResponse.Username, us.UserList[0].BalanceNanos
 }
 func UsernameToPub58(s string) string {
-	js := GetSingleProfile(s)
+	js := network.GetSingleProfile(s)
 	var sp models.SingleProfile
 	json.Unmarshal([]byte(js), &sp)
 	return sp.Profile.PublicKeyBase58Check

@@ -5,6 +5,7 @@ import (
 	"clout/display"
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -23,7 +24,7 @@ func HandlePosts() {
 }
 func ShowSinglePost(key string) {
 	pub58 := LoggedInPub58()
-	js := GetSinglePost(pub58, key)
+	js := network.GetSinglePost(pub58, key)
 	var ps models.PostStateless
 	json.Unmarshal([]byte(js), &ps)
 
@@ -44,14 +45,14 @@ func ShowSinglePost(key string) {
 }
 
 func PostsForPublicKey(key string) {
-	js := GetSingleProfile(key)
+	js := network.GetSingleProfile(key)
 	var sp models.SingleProfile
 	json.Unmarshal([]byte(js), &sp)
 	fmt.Println("---", sp.Profile.CoinEntry.CreatorBasisPoints)
 	fmt.Println(sp.Profile.Description)
 	fmt.Println("---")
 
-	js = GetPostsForPublicKey(key)
+	js = network.GetPostsForPublicKey(key)
 	//b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)
@@ -78,7 +79,7 @@ func PostsForPublicKey(key string) {
 
 func ListPosts(follow bool) {
 	pub58 := LoggedInPub58()
-	js := GetPostsStateless(pub58, follow)
+	js := network.GetPostsStateless(pub58, follow)
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
@@ -109,12 +110,12 @@ func Post(reply string) {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
-	bigString := SubmitPost(pub58, text, reply)
+	bigString := network.SubmitPost(pub58, text, reply)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)
 
-	jsonString := SubmitTx(tx.TransactionHex, priv)
+	jsonString := network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
 	}

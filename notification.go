@@ -4,6 +4,7 @@ import (
 	"clout/display"
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -39,7 +40,7 @@ func ListNotifications() {
 }
 func ListNotificationForPub(pub58 string) {
 	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
-	js := GetNotifications(pub58)
+	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("samples/get_notifications.list", []byte(js), 0755)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
@@ -58,7 +59,7 @@ func ListNotificationForPub(pub58 string) {
 		buff = append(buff, k)
 		if len(buff) == 10 {
 			fmt.Println("fetching 10...")
-			js = GetManyUsersStateless(buff)
+			js = network.GetManyUsersStateless(buff)
 			m := ParseUserList(js, buff)
 			for k, v := range m {
 				cache[k] = v
@@ -68,7 +69,7 @@ func ListNotificationForPub(pub58 string) {
 	}
 	if len(buff) > 0 {
 		fmt.Println("fetching ", len(buff))
-		js = GetManyUsersStateless(buff)
+		js = network.GetManyUsersStateless(buff)
 		m := ParseUserList(js, buff)
 		for k, v := range m {
 			cache[k] = v

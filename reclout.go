@@ -3,6 +3,7 @@ package main
 import (
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -16,7 +17,7 @@ func HandleReclout() {
 	username := os.Args[2]
 	lastPost := username // hack to allow passing in specific msg
 	if len(username) < 64 {
-		js := GetPostsForPublicKey(username)
+		js := network.GetPostsForPublicKey(username)
 		var ppk models.PostsPublicKey
 		json.Unmarshal([]byte(js), &ppk)
 		if len(ppk.Posts) == 0 {
@@ -30,12 +31,12 @@ func HandleReclout() {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
-	bigString := SubmitReclout(pub58, lastPost)
+	bigString := network.SubmitReclout(pub58, lastPost)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)
 
-	jsonString := SubmitTx(tx.TransactionHex, priv)
+	jsonString := network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
 	}

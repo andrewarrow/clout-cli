@@ -3,6 +3,7 @@ package main
 import (
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -19,10 +20,10 @@ func HandleUpdateProfile() {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
-	jsonString := UpdateProfile(pub58, desc)
+	jsonString := network.UpdateProfile(pub58, desc)
 	var tx models.TxReady
 	json.Unmarshal([]byte(jsonString), &tx)
-	jsonString = SubmitTx(tx.TransactionHex, priv)
+	jsonString = network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
 	}

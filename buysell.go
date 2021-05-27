@@ -3,6 +3,7 @@ package main
 import (
 	"clout/keys"
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -25,12 +26,12 @@ func HandleBuy() {
 	pub58, priv := keys.ComputeKeysFromSeed(SeedBytes(mnemonic))
 
 	amount, _ := strconv.ParseInt(amountString, 10, 64)
-	bigString := SubmitBuyOrSellCoin(pub58, theirPub58, amount)
+	bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, amount)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)
 
-	jsonString := SubmitTx(tx.TransactionHex, priv)
+	jsonString := network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"clout/models"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -44,7 +45,7 @@ func SyncLoop() {
 	pub58 := LoggedInPub58()
 	last := ""
 	for {
-		js := GetPostsStatelessWithOptions(last, pub58)
+		js := network.GetPostsStatelessWithOptions(last, pub58)
 		var ps models.PostsStateless
 		json.Unmarshal([]byte(js), &ps)
 
