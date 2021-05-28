@@ -23,6 +23,11 @@ func HandlePosts() {
 		ShowSinglePost(m[short])
 		return
 	}
+	if len(os.Args) == 3 {
+		m := session.ReadShortMap()
+		ShowSinglePost(m[os.Args[2]])
+		return
+	}
 	ListPosts(argMap["follow"] == "true")
 }
 func ShowSinglePost(key string) {
