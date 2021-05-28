@@ -92,7 +92,7 @@ func main() {
 	} else if command == "upload" {
 		network.UploadImage(os.Args[2])
 	} else if command == "whoami" {
-		session.Whoami()
+		session.Whoami(argMap)
 	} else {
 		PostsForPublicKey(command)
 	}
