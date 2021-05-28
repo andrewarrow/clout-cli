@@ -40,12 +40,17 @@ func ShowSinglePost(key string) {
 	fmt.Println(ps.PostFound.Body)
 	fmt.Println("")
 
-	fmt.Printf("%s %s %s\n", display.LeftAligned("username", 20),
+	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("username", 20),
 		display.LeftAligned("ago", 15),
+		display.LeftAligned("replies", 10),
+		display.LeftAligned("reclouts", 10),
 		display.LeftAligned("hash", 10))
-	fmt.Printf("%s %s %s\n", display.LeftAligned("--------", 20),
+	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("--------", 20),
 		display.LeftAligned("---", 15),
+		display.LeftAligned("-------", 10),
+		display.LeftAligned("-------", 10),
 		display.LeftAligned("--------", 10))
+	shortMap := map[string]string{}
 	for i, p := range ps.PostFound.Comments {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
@@ -57,14 +62,18 @@ func ShowSinglePost(key string) {
 		//fmt.Println("")
 		username := p.ProfileEntryResponse.Username
 		short := p.PostHashHex[0:7]
-		fmt.Printf("%s %s %s\n", display.LeftAligned(username, 20),
+		shortMap[short] = p.PostHashHex
+		fmt.Printf("%s %s %s %s %s\n", display.LeftAligned(username, 20),
 			display.LeftAligned(ago, 15),
+			display.LeftAligned(p.CommentCount, 10),
+			display.LeftAligned(p.RecloutCount, 10),
 			display.LeftAligned(short, 10))
 
 		if i > 20 {
 			break
 		}
 	}
+	session.SaveShortMap(shortMap)
 	fmt.Println("")
 }
 
