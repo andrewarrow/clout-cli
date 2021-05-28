@@ -80,8 +80,8 @@ func LoopThruAllFollowing(pub58 string) {
 	for {
 		for key, v := range pktpe.PublicKeyToProfileEntry {
 			last = key
-			//f.WriteString(v.Username + "\n")
 			if total[v.Username] == false {
+				//f.WriteString(v.Username + "\n")
 				fmt.Println(v.Username)
 				total[v.Username] = true
 			}

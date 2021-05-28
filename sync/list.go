@@ -49,3 +49,20 @@ func FindPosts(s string) {
 		}
 	}
 }
+func FindUsers() {
+	db := OpenTheDB()
+	defer db.Close()
+	rows, err := db.Query("select username from users order by username")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var username string
+		rows.Scan(&username)
+		fmt.Println("./clout follow", username)
+		fmt.Println("sleep 1")
+	}
+}

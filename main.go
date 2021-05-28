@@ -91,8 +91,6 @@ func main() {
 		HandleUpdateProfile(argMap)
 	} else if command == "upload" {
 		network.UploadImage(os.Args[2])
-	} else if command == "v8" {
-		//RunV8()
 	} else if command == "whoami" {
 		session.Whoami()
 	} else {

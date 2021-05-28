@@ -4,7 +4,7 @@
 
 Welcome to the [cloutcli](https://bitclout.com/u/cloutcli) project.
 
-There is a [bounty](https://stackoverflow.com/questions/67661276/how-do-i-properly-sign-a-bitclout-tx-in-golang-vs-typescript) for how to fix our tx signing to not need javascript. 
+There WAS a [bounty](https://stackoverflow.com/questions/67661276/how-do-i-properly-sign-a-bitclout-tx-in-golang-vs-typescript) for how to fix our tx signing to not need javascript. It was claimed by https://stackoverflow.com/users/589259/maarten-bodewes thanks!
 
 To understand the code start with the big if else in main.go for each menu option. Many things are still in the package `main` but slowly moving into various packages.
 
