@@ -23,7 +23,7 @@ func HandlePosts() {
 		ShowSinglePost(m[short])
 		return
 	}
-	if len(os.Args) == 3 {
+	if len(os.Args) == 3 && !strings.HasPrefix(os.Args[2], "--") {
 		m := session.ReadShortMap()
 		ShowSinglePost(m[os.Args[2]])
 		return
