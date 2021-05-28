@@ -47,6 +47,16 @@ To select account, run `clout account [username]`
 
 When I run the `accounts` command I see all my logged in accounts.
 
+# Backup
+
+`export CLOUT_PHRASE='these are some nice words and stuff.'`
+
+If you set a `CLOUT_PHRASE` you can run `./clout backup` to
+place your secrets.txt file with ALL your words into a encrypted file
+that can only be read with your CLOUT_PHRASE.
+
+Backup this one file, and it can get you into all your accounts.
+
 
 # Building
 
