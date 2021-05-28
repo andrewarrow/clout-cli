@@ -29,9 +29,11 @@ func JustReadFile(s string) string {
 func Whoami() string {
 	fmt.Println("Logged in as:")
 	fmt.Println("")
-	pub58, username, balance := LoggedInAs()
-	fmt.Println(pub58)
-	fmt.Println(username, balance)
+	pub58, username, balance, btc := LoggedInAs()
+	fmt.Println(display.LeftAligned("clout pub58", 20), pub58)
+	fmt.Println(display.LeftAligned("btc address", 20), btc)
+	fmt.Println(display.LeftAligned("clout username", 20), username)
+	fmt.Println(display.LeftAligned("clout balance", 20), balance)
 	fmt.Println("")
 	return username
 }
@@ -137,18 +139,18 @@ func UsernameToPub58(s string) string {
 	return sp.Profile.PublicKeyBase58Check
 }
 
-func LoggedInAs() (string, string, int64) {
+func LoggedInAs() (string, string, int64, string) {
 
 	mnemonic := ReadLoggedInWords()
 	if mnemonic == "" {
-		return "", "", 0
+		return "", "", 0, ""
 	}
 	seedBytes := SeedBytes(mnemonic)
 	//fmt.Printf("%x\n", seedBytes)
 
-	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
+	pub58, _, btc := keys.ComputeKeysFromSeedWithAddress(seedBytes)
 	username, balance := Pub58ToUsername(pub58)
-	return pub58, username, balance
+	return pub58, username, balance, btc
 }
 
 func UsernameFromSecret(s string) string {

@@ -54,7 +54,7 @@ func HandleFollowing() {
 	}
 }
 func ListFollowers() {
-	pub58, username, _ := session.LoggedInAs()
+	pub58, username, _, _ := session.LoggedInAs()
 	js := network.GetFollowsStateless(pub58, username, "")
 
 	var pktpe models.PublicKeyToProfileEntry
