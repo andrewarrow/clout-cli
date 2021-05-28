@@ -24,7 +24,7 @@ func PrintHelp() {
 	fmt.Println("  clout like [postHash]        # like/unlike a post")
 	fmt.Println("  clout ls                     # list global posts")
 	fmt.Println("  clout ls --follow            # filter by follow")
-	fmt.Println("  clout ls --post=id           # show single post")
+	fmt.Println("  clout ls --hash=x            # show single post")
 	fmt.Println("  clout login                  # enter secret phrase")
 	fmt.Println("  clout logout                 # delete secret from drive")
 	fmt.Println("  clout messages               # list messages")

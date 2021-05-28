@@ -18,6 +18,7 @@ var dir = "clout-cli-data"
 var file = "secrets.txt"
 var selected = "selected.account"
 var cache = "cache.usernames"
+var short = "short.map"
 
 func JustReadFile(s string) string {
 	home := files.UserHomeDir()

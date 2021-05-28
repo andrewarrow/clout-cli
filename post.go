@@ -17,8 +17,10 @@ import (
 )
 
 func HandlePosts() {
-	if argMap["post"] != "" {
-		ShowSinglePost(argMap["post"])
+	if argMap["hash"] != "" {
+		m := session.ReadShortMap()
+		short := argMap["hash"]
+		ShowSinglePost(m[short])
 		return
 	}
 	ListPosts(argMap["follow"] == "true")
@@ -95,6 +97,7 @@ func ListPosts(follow bool) {
 		display.LeftAligned("-------", 10),
 		display.LeftAligned("-------", 10),
 		display.LeftAligned("--------", 10))
+	shortMap := map[string]string{}
 	for i, p := range ps.PostsFound {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
@@ -107,16 +110,19 @@ func ListPosts(follow bool) {
 		//fmt.Println("")
 
 		username := p.ProfileEntryResponse.Username
+		short := p.PostHashHex[0:7]
+		shortMap[short] = p.PostHashHex
 		fmt.Printf("%s %s %s %s %s\n", display.LeftAligned(username, 20),
 			display.LeftAligned(ago, 15),
 			display.LeftAligned(p.CommentCount, 10),
 			display.LeftAligned(p.RecloutCount, 10),
-			display.LeftAligned(p.PostHashHex[0:7], 10))
+			display.LeftAligned(short, 10))
 
 		if i > 20 {
 			break
 		}
 	}
+	session.SaveShortMap(shortMap)
 }
 
 func Post(reply string) {
