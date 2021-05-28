@@ -37,7 +37,15 @@ func ShowSinglePost(key string) {
 	json.Unmarshal([]byte(js), &ps)
 
 	fmt.Println("")
-	fmt.Println(ps.PostFound.Body)
+	if ps.PostFound.Body == "" {
+		long := ps.PostFound.RecloutedPostEntryResponse.PostHashHex
+		short := long[0:7]
+		session.SaveShortMap(map[string]string{short: long})
+		fmt.Println("RECLOUT", short)
+		fmt.Println(ps.PostFound.RecloutedPostEntryResponse.Body)
+	} else {
+		fmt.Println(ps.PostFound.Body)
+	}
 	fmt.Println("")
 	for _, image := range ps.PostFound.ImageURLs {
 		fmt.Println(image)
