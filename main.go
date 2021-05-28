@@ -29,7 +29,7 @@ func PrintHelp() {
 	fmt.Println("  clout logout                 # delete secret from drive")
 	fmt.Println("  clout messages               # list messages")
 	fmt.Println("  clout notifications          # list notifications")
-	fmt.Println("  clout post --reply=id        # post or reply")
+	fmt.Println("  clout post --reply=x         # post or reply")
 	fmt.Println("  clout reclout [username]     # reclout last post")
 	fmt.Println("  clout sync                   # fill local hard drive with data")
 	fmt.Println("  clout update                 # update profile description")

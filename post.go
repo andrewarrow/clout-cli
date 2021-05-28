@@ -156,6 +156,16 @@ func ListPosts(follow bool) {
 }
 
 func Post(reply string) {
+	shortMap := session.ReadShortMap()
+
+	longHash := ""
+
+	if len(reply) == 7 {
+		longHash = shortMap[reply]
+	} else {
+		longHash = reply
+	}
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Say: ")
 	text, _ := reader.ReadString('\n')
@@ -166,7 +176,7 @@ func Post(reply string) {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	bigString := network.SubmitPost(pub58, text, reply)
+	bigString := network.SubmitPost(pub58, text, longHash)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)
