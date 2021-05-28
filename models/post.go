@@ -16,10 +16,13 @@ type Post struct {
 	PosterPublicKeyBase58Check string
 	ParentStakeID              string
 	Body                       string
+	ImageURLs                  []string
 	TimestampNanos             int64
 	ProfileEntryResponse       ProfileEntryResponse
 	Comments                   []Post
 	RecloutedPostEntryResponse RecloutedPostEntryResponse
+	CommentCount               int64
+	RecloutCount               int64
 }
 
 type RecloutedPostEntryResponse struct {

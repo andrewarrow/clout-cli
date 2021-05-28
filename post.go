@@ -85,16 +85,35 @@ func ListPosts(follow bool) {
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
+	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("username", 20),
+		display.LeftAligned("ago", 15),
+		display.LeftAligned("replies", 10),
+		display.LeftAligned("reclouts", 10),
+		display.LeftAligned("hash", 10))
+	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("--------", 20),
+		display.LeftAligned("---", 15),
+		display.LeftAligned("-------", 10),
+		display.LeftAligned("-------", 10),
+		display.LeftAligned("--------", 10))
 	for i, p := range ps.PostsFound {
 		ts := time.Unix(p.TimestampNanos/1000000000, 0)
 		ago := timeago.FromDuration(time.Since(ts))
-		fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
-			display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
-			ago)
-		tokens := strings.Split(p.Body, "\n")
-		fmt.Println("        ", display.LeftAligned(tokens[0], 40))
-		fmt.Println("")
-		if i > 6 {
+
+		//fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
+		//	display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
+		//	ago)
+		//tokens := strings.Split(p.Body, "\n")
+		//fmt.Println("        ", display.LeftAligned(tokens[0], 40))
+		//fmt.Println("")
+
+		username := p.ProfileEntryResponse.Username
+		fmt.Printf("%s %s %s %s %s\n", display.LeftAligned(username, 20),
+			display.LeftAligned(ago, 15),
+			display.LeftAligned(p.CommentCount, 10),
+			display.LeftAligned(p.RecloutCount, 10),
+			display.LeftAligned(p.PostHashHex[0:7], 10))
+
+		if i > 20 {
 			break
 		}
 	}
