@@ -25,7 +25,7 @@ func HandleAccounts(argMap map[string]string) {
 		fmt.Println("")
 		fmt.Println(words)
 		fmt.Println("")
-		fmt.Println("We use `add-oath` command in github.com/andrewarrow/wolfservers.")
+		fmt.Println("We use `add-oath` command in github.com/andrewarrow/wolfservers")
 		fmt.Println("")
 		fmt.Println("Send >= 0.0007 BTC to", btc)
 		fmt.Println("")
@@ -35,6 +35,8 @@ func HandleAccounts(argMap map[string]string) {
 		usernames[username] = words
 		WriteAccounts(usernames)
 		WriteSelected(username)
+		fmt.Println("")
+		fmt.Println("")
 		return
 	}
 	if len(os.Args) > 2 {

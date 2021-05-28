@@ -1,7 +1,6 @@
 package session
 
 import (
-	"bufio"
 	"clout/display"
 	"clout/files"
 	"clout/keys"
@@ -10,7 +9,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
 
 	"github.com/tyler-smith/go-bip39"
@@ -64,52 +62,6 @@ func ReadLoggedInWords() string {
 		return v
 	}
 	return ""
-}
-func Login() {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter mnenomic: ")
-	text, _ := reader.ReadString('\n')
-	text = strings.TrimSpace(text)
-
-	_, e := bip39.MnemonicToByteArray(text)
-	if e != nil {
-		fmt.Println(e)
-		return
-	}
-	//fmt.Printf("%x\n", b)
-
-	username := UsernameFromSecret(text)
-	usernames := ReadAccounts()
-	usernames[username] = text
-	WriteAccounts(usernames)
-
-	//fmt.Println("")
-	//Whoami()
-}
-
-func Logout() {
-	m := ReadAccounts()
-	if len(m) == 0 {
-		return
-	}
-	if len(m) == 1 {
-		home := files.UserHomeDir()
-		path := home + "/" + dir + "/" + file
-		os.Remove(path)
-		fmt.Println("Secret removed.")
-		fmt.Println("")
-		return
-	}
-	username := JustReadFile(selected)
-	if username == "" {
-		fmt.Println("Please run `clout account [username]` to select account first.")
-		return
-	}
-	delete(m, username)
-	WriteAccounts(m)
-	home := files.UserHomeDir()
-	path := home + "/" + dir + "/" + selected
-	os.Remove(path)
 }
 
 func SelectedAccount() string {
