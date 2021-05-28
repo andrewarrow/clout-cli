@@ -41,9 +41,7 @@ func HandleSync(argMap map[string]string) {
 	mb := k / 1000
 	fmt.Printf("Syncing now... %d mb\n", mb)
 
-	for {
-		SyncLoop()
-	}
+	SyncLoop()
 }
 
 func SyncLoop() {
@@ -63,7 +61,7 @@ func SyncLoop() {
 		}
 		fmt.Println(len(ps.PostsFound))
 		if len(ps.PostsFound) == 0 {
-			break
+			return
 		}
 		time.Sleep(time.Second * 1)
 		fmt.Println(last)

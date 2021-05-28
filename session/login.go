@@ -26,7 +26,5 @@ func Login() {
 	usernames := ReadAccounts()
 	usernames[username] = text
 	WriteAccounts(usernames)
-
-	//fmt.Println("")
-	//Whoami()
+	WriteSelected(username)
 }
