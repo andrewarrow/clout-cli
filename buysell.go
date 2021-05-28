@@ -31,7 +31,7 @@ func HandleBuy() {
 
 	amount, _ := strconv.ParseInt(amountString, 10, 64)
 
-	bigString = network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, tx.ExpectedCreatorCoinReturnedNanos)
+	bigString = network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, amount)
 	json.Unmarshal([]byte(bigString), &tx)
 
 	jsonString := network.SubmitTx(tx.TransactionHex, priv)

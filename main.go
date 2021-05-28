@@ -14,6 +14,7 @@ import (
 func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clout accounts               # list your various accounts")
+	fmt.Println("  clout backup                 # encrypt and copy secrets")
 	fmt.Println("  clout boards                 # list boards you are on")
 	fmt.Println("  clout buy                    # buy creator coin")
 	fmt.Println("  clout diamond [username]     # award 1 diamond to last post")
@@ -57,6 +58,8 @@ func main() {
 
 	if command == "account" || command == "accounts" {
 		session.HandleAccounts(argMap)
+	} else if command == "backup" || command == "backups" {
+		HandleBackup()
 	} else if command == "board" || command == "boards" {
 		HandleBoards()
 	} else if command == "buy" {
