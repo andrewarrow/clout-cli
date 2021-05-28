@@ -1,0 +1,8 @@
+POST
+	https://bitclout.com/api/v0/get-txn
+
+{"TxnHashHex":"e82098c859d275abb51227bb821b23fc505fc144051f97d7965579e6bf427e23"}
+
+---
+{"TxnFound":false}
+

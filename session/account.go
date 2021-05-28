@@ -21,11 +21,7 @@ func HandleAccounts(argMap map[string]string) {
 	if argMap["new"] != "" {
 		words := NewWords()
 		_, _, btc := keys.ComputeKeysFromSeedWithAddress(SeedBytes(words))
-		fmt.Println("SAVE THESE WORDS!")
-		fmt.Println("")
-		fmt.Println(words)
-		fmt.Println("")
-		fmt.Println("We use `add-oath` command in github.com/andrewarrow/wolfservers")
+		fmt.Println("New words added to your secrets.txt file, back it up.")
 		fmt.Println("")
 		fmt.Println("Send >= 0.0007 BTC to", btc)
 		fmt.Println("")
