@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clout/session"
 	"fmt"
 	"os"
 )
@@ -19,4 +20,9 @@ func HandleBackup() {
 		fmt.Println("")
 		return
 	}
+	fmt.Println("")
+	fmt.Println("Found CLOUT_PHRASE size is", len(words))
+	fmt.Println("")
+	session.BackupSecrets(words)
+	fmt.Println("")
 }
