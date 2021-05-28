@@ -19,7 +19,7 @@ var file = "secrets.txt"
 var selected = "selected.account"
 var cache = "cache.usernames"
 var short = "short.map"
-var backup = "secrets.enc"
+var backup = "clout.enc"
 
 func JustReadFile(s string) string {
 	home := files.UserHomeDir()
