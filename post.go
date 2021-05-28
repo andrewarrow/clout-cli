@@ -39,6 +39,10 @@ func ShowSinglePost(key string) {
 	fmt.Println("")
 	fmt.Println(ps.PostFound.Body)
 	fmt.Println("")
+	for _, image := range ps.PostFound.ImageURLs {
+		fmt.Println(image)
+	}
+	fmt.Println("")
 
 	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("username", 20),
 		display.LeftAligned("ago", 15),
