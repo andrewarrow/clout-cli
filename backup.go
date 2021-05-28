@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func HandleBackup() {
+func HandleBackup(argMap map[string]string) {
 	words := os.Getenv("CLOUT_PHRASE")
 	if len(words) < 36 {
 		fmt.Println("")
@@ -18,6 +18,10 @@ func HandleBackup() {
 		fmt.Println("Set an envionment variable called CLOUT_PHRASE with your words.")
 		fmt.Println("The string must be >= 36.")
 		fmt.Println("")
+		return
+	}
+	if argMap["restore"] != "" {
+		session.SecretsFromBackup(words)
 		return
 	}
 	fmt.Println("")

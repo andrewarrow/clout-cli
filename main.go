@@ -59,7 +59,7 @@ func main() {
 	if command == "account" || command == "accounts" {
 		session.HandleAccounts(argMap)
 	} else if command == "backup" || command == "backups" {
-		HandleBackup()
+		HandleBackup(argMap)
 	} else if command == "board" || command == "boards" {
 		HandleBoards()
 	} else if command == "buy" {

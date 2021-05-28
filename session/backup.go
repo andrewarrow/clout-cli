@@ -8,6 +8,17 @@ import (
 	"os"
 )
 
+func SecretsFromBackup(phrase string) {
+	enc := JustReadFile(backup)
+	decodedBytes, _ := base64.StdEncoding.DecodeString(enc)
+	shhh := decrypt(decodedBytes, phrase)
+
+	home := files.UserHomeDir()
+	os.Mkdir(home+"/"+dir, 0700)
+	path := home + "/" + dir + "/" + file
+	ioutil.WriteFile(path, shhh, 0700)
+}
+
 func BackupSecrets(phrase string) {
 	shhh := JustReadFile(file)
 
