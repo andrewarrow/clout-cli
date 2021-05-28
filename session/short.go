@@ -8,7 +8,11 @@ import (
 )
 
 func SaveShortMap(shortMap map[string]string) {
-	b, _ := json.Marshal(shortMap)
+	existing := ReadShortMap()
+	for k, v := range shortMap {
+		existing[k] = v
+	}
+	b, _ := json.Marshal(existing)
 	home := files.UserHomeDir()
 	os.Mkdir(home+"/"+dir, 0700)
 	path := home + "/" + dir + "/" + short
