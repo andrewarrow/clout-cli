@@ -25,13 +25,13 @@ func HandleBuy() {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, 0, 0)
+	//bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, 0, 0)
 	var tx models.TxReady
-	json.Unmarshal([]byte(bigString), &tx)
+	//json.Unmarshal([]byte(bigString), &tx)
 
 	amount, _ := strconv.ParseInt(amountString, 10, 64)
 
-	bigString = network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, amount)
+	bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, amount)
 	json.Unmarshal([]byte(bigString), &tx)
 
 	jsonString := network.SubmitTx(tx.TransactionHex, priv)
