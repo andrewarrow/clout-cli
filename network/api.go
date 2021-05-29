@@ -210,6 +210,10 @@ func GetSingleProfile(key string) string {
 		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
+func GetExchangeRate() string {
+	jsonString := DoGet("api/v0/get-exchange-rate")
+	return jsonString
+}
 func GetNotifications(pub58 string) string {
 	jsonString := `{"PublicKeyBase58Check":"%s","FetchStartIndex":-1,"NumToFetch":50}`
 	sendString := fmt.Sprintf(jsonString, pub58)
