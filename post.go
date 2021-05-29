@@ -83,9 +83,7 @@ func LsPost(p models.Post, shortMap map[string]string) {
 	ts := time.Unix(p.TimestampNanos/1000000000, 0)
 	ago := timeago.FromDuration(time.Since(ts))
 
-	coins := float64(p.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos) / 1000000000.0
-	marketCap := coins * float64(p.ProfileEntryResponse.CoinPriceBitCloutNanos)
-	marketCap = marketCap / 1000000000.0
+	marketCap := p.ProfileEntryResponse.MarketCap()
 
 	username := p.ProfileEntryResponse.Username
 	short := p.PostHashHex[0:7]

@@ -141,6 +141,12 @@ func Pub58ToBoards(key string) {
 		}
 	}
 }
+func Pub58ToUser(key string) models.User {
+	js := network.GetUsersStateless(key)
+	var us models.UsersStateless
+	json.Unmarshal([]byte(js), &us)
+	return us.UserList[0]
+}
 func Pub58ToUsername(key string) (string, int64) {
 	js := network.GetUsersStateless(key)
 	var us models.UsersStateless
