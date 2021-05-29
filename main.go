@@ -83,7 +83,7 @@ func main() {
 	} else if command == "ls" {
 		HandlePosts()
 	} else if command == "post" {
-		Post(argMap["reply"])
+		Post(argMap)
 	} else if command == "messages" {
 		ListMessages()
 	} else if command == "n" || command == "notifications" || command == "notification" {

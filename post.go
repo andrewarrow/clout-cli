@@ -120,7 +120,10 @@ func ListPosts(follow bool) {
 	session.SaveShortMap(shortMap)
 }
 
-func Post(reply string) {
+func Post(argMap map[string]string) {
+	reply := argMap["reply"]
+	imagePath := argMap["image"]
+
 	shortMap := session.ReadShortMap()
 
 	longHash := ""
@@ -141,7 +144,12 @@ func Post(reply string) {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	bigString := network.SubmitPost(pub58, text, longHash, "")
+	imageUrl := ""
+	if imagePath != "" {
+		imageUrl = UploadImage(imagePath, pub58, priv)
+	}
+
+	bigString := network.SubmitPost(pub58, text, longHash, imageUrl)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)

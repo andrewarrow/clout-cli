@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/btcsuite/btcd/btcec"
 )
 
 func HandleUpload() {
@@ -23,4 +25,12 @@ func HandleUpload() {
 	var image models.Image
 	json.Unmarshal([]byte(js), &image)
 	fmt.Println(image.ImageURL)
+}
+
+func UploadImage(path, pub58 string, priv *btcec.PrivateKey) string {
+	jwt := keys.MakeJWT(priv)
+	js := network.UploadImage(path, pub58, jwt)
+	var image models.Image
+	json.Unmarshal([]byte(js), &image)
+	return image.ImageURL
 }
