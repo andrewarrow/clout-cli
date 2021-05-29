@@ -141,7 +141,7 @@ func Post(reply string) {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	bigString := network.SubmitPost(pub58, text, longHash)
+	bigString := network.SubmitPost(pub58, text, longHash, "")
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)

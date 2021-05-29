@@ -92,6 +92,8 @@ func UploadImage(filepath, pub58, jwt string) string {
 	imageBytes, _ := ioutil.ReadFile(filepath)
 	tokens := strings.Split(filepath, "/")
 	filename := tokens[len(tokens)-1]
+	tokens = strings.Split(filename, ".")
+	ext := tokens[len(tokens)-1]
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 	var fw io.Writer
@@ -100,7 +102,11 @@ func UploadImage(filepath, pub58, jwt string) string {
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",
 		fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "file", filename))
-	h.Set("Content-Type", "image/png")
+	imageType := "image/png"
+	if ext == "jpg" {
+		imageType = "image/jpeg"
+	}
+	h.Set("Content-Type", imageType)
 
 	fw, _ = w.CreatePart(h)
 	io.Copy(fw, r)
@@ -137,12 +143,12 @@ func SubmitReclout(pub58, RecloutedPostHashHex string) string {
 		[]byte(send))
 	return jsonString
 }
-func SubmitPost(pub58, body, reply string) string {
+func SubmitPost(pub58, body, reply, imageURL string) string {
 	if strings.HasPrefix(reply, "https") {
 		reply = reply[27:]
 	}
-	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"%s","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
-	send := fmt.Sprintf(jsonString, pub58, reply, body)
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"%s","Title":"","BodyObj":{"Body":"%s","ImageURLs":[%s]},"RecloutedPostHashHex":"","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, reply, body, imageURL)
 	jsonString = DoPost("api/v0/submit-post",
 		[]byte(send))
 	return jsonString
