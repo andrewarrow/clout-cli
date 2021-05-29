@@ -150,6 +150,7 @@ func Post(argMap map[string]string) {
 		if imageUrl == "" {
 			return
 		}
+		imageUrl = "\"" + imageUrl + "\""
 	}
 
 	bigString := network.SubmitPost(pub58, text, longHash, imageUrl)
