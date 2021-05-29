@@ -58,12 +58,40 @@ func SyncLoop() {
 		var ps models.PostsStateless
 		json.Unmarshal([]byte(js), &ps)
 
+		userMap := map[string]bool{}
 		for _, p := range ps.PostsFound {
 			ts := time.Unix(p.TimestampNanos/1000000000, 0)
 			InsertPost(p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
-			InsertUser(p.ProfileEntryResponse.PublicKeyBase58Check, p.ProfileEntryResponse.Username)
+			userMap[p.ProfileEntryResponse.PublicKeyBase58Check] = true
 			last = p.PostHashHex
 		}
+
+		users := []string{}
+		for k, _ := range userMap {
+			users = append(users, k)
+		}
+
+		js = network.GetManyUsersStateless(users)
+
+		var us models.UsersStateless
+		json.Unmarshal([]byte(js), &us)
+		for _, u := range us.UserList {
+			marketCap := u.ProfileEntryResponse.MarketCap()
+			numUsersYouHODL := len(u.UsersYouHODL)
+			numBoardMembers := 0
+			for _, thing := range u.UsersYouHODL {
+				coins := float64(thing.BalanceNanos) / 1000000000.0
+				if coins < 1 {
+					continue
+				}
+				numBoardMembers++
+			}
+			InsertUser(fmt.Sprintf("%.02f", marketCap), numUsersYouHODL, numBoardMembers,
+				u.ProfileEntryResponse.CoinEntry.CreatorBasisPoints/100,
+				u.ProfileEntryResponse.PublicKeyBase58Check,
+				u.ProfileEntryResponse.Username)
+		}
+
 		fmt.Println(len(ps.PostsFound))
 		if len(ps.PostsFound) == 0 {
 			return

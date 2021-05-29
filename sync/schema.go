@@ -21,13 +21,17 @@ func CreateSchema() {
 	db := OpenTheDB()
 	defer db.Close()
 
+	//percent
+	//cap
+	//number of holders
+	//number of board members
 	sqlStmt := `
 create table posts (reclouts integer, hash text, body text, username text, created_at datetime);
 
 CREATE UNIQUE INDEX posts_idx
   ON posts (hash);
 
-create table users (hash text, username text, created_at datetime);
+create table users (market_cap text, num_hodl integer, num_board integer, points integer, hash text, username text, created_at datetime);
 
 CREATE UNIQUE INDEX users_idx
   ON users (username);

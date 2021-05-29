@@ -15,14 +15,15 @@ func InsertPost(reclouts int64, ts time.Time, hash, body, username string) {
 
 	tx.Commit()
 }
-func InsertUser(hash, username string) {
+func InsertUser(marketCap string, numUsersYouHODL int,
+	numBoardMembers int, points int64, hash, username string) {
 	db := OpenTheDB()
 	defer db.Close()
 	tx, _ := db.Begin()
 
-	s := `insert into users (hash, username) values (?, ?)`
+	s := `insert into users (market_cap, num_hodl, num_board, points, hash, username) values (?, ?, ?, ?, ?, ?)`
 	thing, _ := tx.Prepare(s)
-	thing.Exec(hash, username)
+	thing.Exec(marketCap, numUsersYouHODL, numBoardMembers, points, hash, username)
 
 	tx.Commit()
 }
