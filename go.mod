@@ -6,6 +6,7 @@ require (
 	github.com/bitclout/core v1.0.1 // indirect
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/justincampbell/timeago v0.0.0-20160528003754-027f40306f1d
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect

@@ -1,5 +1,26 @@
 package keys
 
+import (
+	"fmt"
+
+	"github.com/btcsuite/btcd/btcec"
+	"github.com/dgrijalva/jwt-go"
+)
+
+func MakeJWT(priv *btcec.PrivateKey) string {
+
+	claims := &jwt.StandardClaims{
+		ExpiresAt: 15000,
+		Issuer:    "https://bitclout.com/u/cloutcli",
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+
+	signed, err := token.SignedString(priv.Serialize())
+	fmt.Println(err)
+	return signed
+}
+
 /*
  identityServiceParamsForKey(publicKey: string) {
     const { encryptedSeedHex, accessLevel, accessLevelHmac } = this.identityServiceUsers[publicKey];
@@ -21,7 +42,7 @@ package keys
 	 signJWT(seedHex: string): string {
     const keyEncoder = new KeyEncoder('secp256k1');
     const encodedPrivateKey = keyEncoder.encodePrivate(seedHex, 'raw', 'pem');
-    return jsonwebtoken.sign({ }, encodedPrivateKey, { algorithm: 'ES256', expiresIn: 60 });
+  return jsonwebtoken.sign({ }, encodedPrivateKey, { algorithm: 'ES256', expiresIn: 60 });
   }
 
 

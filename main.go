@@ -2,7 +2,6 @@ package main
 
 import (
 	"clout/args"
-	"clout/network"
 	"clout/session"
 	"clout/sync"
 	"fmt"
@@ -96,7 +95,7 @@ func main() {
 	} else if command == "update" {
 		HandleUpdateProfile(argMap)
 	} else if command == "upload" {
-		network.UploadImage(os.Args[2])
+		HandleUpload()
 	} else if command == "whoami" {
 		session.Whoami(argMap)
 	} else {
