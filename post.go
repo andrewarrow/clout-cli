@@ -147,6 +147,9 @@ func Post(argMap map[string]string) {
 	imageUrl := ""
 	if imagePath != "" {
 		imageUrl = UploadImage(imagePath, pub58, priv)
+		if imageUrl == "" {
+			return
+		}
 	}
 
 	bigString := network.SubmitPost(pub58, text, longHash, imageUrl)
