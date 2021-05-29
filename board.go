@@ -13,13 +13,14 @@ func HandleBoards() {
 	fmt.Println("owners and have some responsibilities.")
 	fmt.Println("")
 
-	mnemonic := session.ReadLoggedInWords()
-	if mnemonic == "" {
-		return
+	m := session.ReadAccounts()
+	for username, s := range m {
+		fmt.Println("")
+		fmt.Println("===========")
+		fmt.Println(username)
+		fmt.Println("===========")
+		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
+		session.Pub58ToBoards(pub58)
 	}
-	seedBytes := session.SeedBytes(mnemonic)
-	pub58, _ := keys.ComputeKeysFromSeed(seedBytes)
-	session.Pub58ToBoards(pub58)
-	fmt.Println("")
 	fmt.Println("")
 }
