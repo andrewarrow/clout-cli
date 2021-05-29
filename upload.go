@@ -2,8 +2,10 @@ package main
 
 import (
 	"clout/keys"
+	"clout/network"
 	"clout/session"
 	"fmt"
+	"os"
 )
 
 func HandleUpload() {
@@ -13,8 +15,8 @@ func HandleUpload() {
 	}
 	seedBytes := session.SeedBytes(mnemonic)
 
-	_, priv, _ := keys.ComputeKeysFromSeedWithAddress(seedBytes)
+	pub58, priv, _ := keys.ComputeKeysFromSeedWithAddress(seedBytes)
 	jwt := keys.MakeJWT(priv)
-	fmt.Println(jwt)
-	//network.UploadImage(os.Args[2])
+	js := network.UploadImage(os.Args[2], pub58, jwt)
+	fmt.Println(js)
 }

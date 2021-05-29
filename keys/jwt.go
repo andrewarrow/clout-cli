@@ -1,7 +1,7 @@
 package keys
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/dgrijalva/jwt-go"
@@ -10,14 +10,12 @@ import (
 func MakeJWT(priv *btcec.PrivateKey) string {
 
 	claims := &jwt.StandardClaims{
-		ExpiresAt: 15000,
-		Issuer:    "https://bitclout.com/u/cloutcli",
+		ExpiresAt: time.Now().Add(time.Second * 60).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 
-	signed, err := token.SignedString(priv.Serialize())
-	fmt.Println(err)
+	signed, _ := token.SignedString(priv.ToECDSA())
 	return signed
 }
 
