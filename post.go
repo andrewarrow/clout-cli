@@ -129,13 +129,15 @@ func ListPosts(follow bool) {
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
-	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("username", 20),
+	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("username", 20),
 		display.LeftAligned("ago", 15),
 		display.LeftAligned("replies", 10),
 		display.LeftAligned("reclouts", 10),
-		display.LeftAligned("hash", 10))
-	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("--------", 20),
+		display.LeftAligned("hash", 10),
+		display.LeftAligned("cap", 10))
+	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("--------", 20),
 		display.LeftAligned("---", 15),
+		display.LeftAligned("-------", 10),
 		display.LeftAligned("-------", 10),
 		display.LeftAligned("-------", 10),
 		display.LeftAligned("--------", 10))
@@ -151,14 +153,19 @@ func ListPosts(follow bool) {
 		//fmt.Println("        ", display.LeftAligned(tokens[0], 40))
 		//fmt.Println("")
 
+		coins := float64(p.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos) / 1000000000.0
+		marketCap := coins * float64(p.ProfileEntryResponse.CoinPriceBitCloutNanos)
+		marketCap = marketCap / 1000000000.0
+
 		username := p.ProfileEntryResponse.Username
 		short := p.PostHashHex[0:7]
 		shortMap[short] = p.PostHashHex
-		fmt.Printf("%s %s %s %s %s\n", display.LeftAligned(username, 20),
+		fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned(username, 20),
 			display.LeftAligned(ago, 15),
 			display.LeftAligned(p.CommentCount, 10),
 			display.LeftAligned(p.RecloutCount, 10),
-			display.LeftAligned(short, 10))
+			display.LeftAligned(short, 10),
+			display.LeftAligned(fmt.Sprintf("%.02f", marketCap), 10))
 
 		if i > 20 {
 			break
