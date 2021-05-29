@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"mime/multipart"
+	"net/textproto"
 	"strings"
 
 	"github.com/btcsuite/btcd/btcec"
@@ -95,15 +96,27 @@ func UploadImage(filepath, pub58, jwt string) string {
 	w := multipart.NewWriter(&b)
 	var fw io.Writer
 	r := bytes.NewReader(imageBytes)
-	fw, _ = w.CreateFormFile("file", filename)
+
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition",
+		fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "file", filename))
+	h.Set("Content-Type", "image/png")
+
+	fw, _ = w.CreatePart(h)
 	io.Copy(fw, r)
 
 	rs := strings.NewReader(pub58)
-	fw, _ = w.CreateFormFile("UserPublicKeyBase58Check", pub58)
+	h = make(textproto.MIMEHeader)
+	h.Set("Content-Disposition",
+		fmt.Sprintf(`form-data; name="%s";`, "UserPublicKeyBase58Check"))
+	fw, _ = w.CreatePart(h)
 	io.Copy(fw, rs)
 
 	rs = strings.NewReader(jwt)
-	fw, _ = w.CreateFormFile("JWT", jwt)
+	h = make(textproto.MIMEHeader)
+	h.Set("Content-Disposition",
+		fmt.Sprintf(`form-data; name="%s";`, "JWT"))
+	fw, _ = w.CreatePart(h)
 	io.Copy(fw, rs)
 
 	w.Close()
