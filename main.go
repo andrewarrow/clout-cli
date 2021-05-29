@@ -15,6 +15,7 @@ func PrintHelp() {
 	fmt.Println("")
 	fmt.Println("  clout accounts               # list your various accounts")
 	fmt.Println("  clout backup                 # encrypt and copy secrets")
+	fmt.Println("  clout balances               # list available $bitclout")
 	fmt.Println("  clout boards                 # list boards you are on")
 	fmt.Println("  clout buy                    # buy creator coin")
 	fmt.Println("  clout diamond [username]     # award 1 diamond to last post")
@@ -60,6 +61,8 @@ func main() {
 		session.HandleAccounts(argMap)
 	} else if command == "backup" || command == "backups" {
 		HandleBackup(argMap)
+	} else if command == "balance" || command == "balances" {
+		HandleBalances(argMap)
 	} else if command == "board" || command == "boards" {
 		HandleBoards()
 	} else if command == "buy" {
