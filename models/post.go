@@ -19,6 +19,7 @@ type Post struct {
 	ImageURLs                  []string
 	TimestampNanos             int64
 	ProfileEntryResponse       ProfileEntryResponse
+	LikeCount                  int64
 	Comments                   []Post
 	RecloutedPostEntryResponse RecloutedPostEntryResponse
 	CommentCount               int64

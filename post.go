@@ -65,16 +65,18 @@ func ShowSinglePost(key string) {
 }
 
 func LsHeader() {
-	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("username", 20),
+	fmt.Printf("%s %s %s %s %s %s %s\n", display.LeftAligned("username", 20),
 		display.LeftAligned("ago", 15),
-		display.LeftAligned("replies", 10),
-		display.LeftAligned("reclouts", 10),
+		display.LeftAligned("likes", 6),
+		display.LeftAligned("replies", 8),
+		display.LeftAligned("reclouts", 9),
 		display.LeftAligned("cap", 10),
 		display.LeftAligned("hash", 10))
-	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("--------", 20),
+	fmt.Printf("%s %s %s %s %s %s %s\n", display.LeftAligned("--------", 20),
 		display.LeftAligned("---", 15),
-		display.LeftAligned("-------", 10),
-		display.LeftAligned("-------", 10),
+		display.LeftAligned("-----", 6),
+		display.LeftAligned("-------", 8),
+		display.LeftAligned("-------", 9),
 		display.LeftAligned("-------", 10),
 		display.LeftAligned("--------", 10))
 }
@@ -88,10 +90,11 @@ func LsPost(p models.Post, shortMap map[string]string) {
 	username := p.ProfileEntryResponse.Username
 	short := p.PostHashHex[0:7]
 	shortMap[short] = p.PostHashHex
-	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned(username, 20),
+	fmt.Printf("%s %s %s %s %s %s %s\n", display.LeftAligned(username, 20),
 		display.LeftAligned(ago, 15),
-		display.LeftAligned(p.CommentCount, 10),
-		display.LeftAligned(p.RecloutCount, 10),
+		display.LeftAligned(p.LikeCount, 6),
+		display.LeftAligned(p.CommentCount, 8),
+		display.LeftAligned(p.RecloutCount, 9),
 		display.LeftAligned(fmt.Sprintf("%.02f", marketCap), 10),
 		display.LeftAligned(short, 10))
 }
