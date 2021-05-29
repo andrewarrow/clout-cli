@@ -5,17 +5,17 @@ import (
 	"strings"
 )
 
-func Header(fields ...string) {
-	for _, field := range fields {
-		fmt.Printf("%s ", field)
+func Header(sizes []int, fields ...string) {
+	for i, field := range fields {
+		fmt.Printf("%s ", LeftAligned(field, sizes[i]))
 	}
 	fmt.Printf("\n")
-	for _, field := range fields {
+	for i, field := range fields {
 		dashes := []string{}
 		for i := 0; i < len(field); i++ {
 			dashes = append(dashes, "-")
 		}
-		fmt.Printf("%s ", strings.Join(dashes, ""))
+		fmt.Printf("%s ", LeftAligned(strings.Join(dashes, ""), sizes[i]))
 	}
 	fmt.Printf("\n")
 }

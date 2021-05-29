@@ -69,20 +69,21 @@ func FindUsers() {
 func FindTopReclouted() {
 	db := OpenTheDB()
 	defer db.Close()
-	rows, err := db.Query("select sum(reclouts) as total, username from posts where reclouts group by username order by total desc limit 1000")
+	rows, err := db.Query("select sum(p.reclouts) as total, p.username, u.hash from posts p, users u where p.username = u.username group by p.username, u.hash order by total desc limit 1000")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer rows.Close()
 
-	fields := []string{"reclouts", "username"}
-	sizes := []int{8, 20}
-	display.Header(fields...)
+	fields := []string{"reclouts", "username", "pub58"}
+	sizes := []int{9, 20, 7}
+	display.Header(sizes, fields...)
 	for rows.Next() {
 		var total string
 		var username string
-		rows.Scan(&total, &username)
-		display.Row(sizes, total, username)
+		var pub58 string
+		rows.Scan(&total, &username, &pub58)
+		display.Row(sizes, total, username, pub58)
 	}
 }
