@@ -76,10 +76,13 @@ func FindTopReclouted() {
 	}
 	defer rows.Close()
 
+	fields := []string{"reclouts", "username"}
+	sizes := []int{8, 20}
+	display.Header(fields...)
 	for rows.Next() {
 		var total string
 		var username string
 		rows.Scan(&total, &username)
-		fmt.Println(total, username)
+		display.Row(sizes, total, username)
 	}
 }
