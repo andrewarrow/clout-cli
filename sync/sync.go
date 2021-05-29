@@ -16,6 +16,10 @@ func HandleSync(argMap map[string]string) {
 		FindPosts(argMap["query"])
 		return
 	}
+	if argMap["top"] != "" {
+		FindTopReclouted()
+		return
+	}
 	limit := argMap["limit"]
 	fmt.Println("-=-=-= SYNC =-=-=-")
 	fmt.Println("Run this in background to query nodes for blockchain")

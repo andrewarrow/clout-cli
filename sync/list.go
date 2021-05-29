@@ -66,3 +66,20 @@ func FindUsers() {
 		fmt.Println("sleep 1")
 	}
 }
+func FindTopReclouted() {
+	db := OpenTheDB()
+	defer db.Close()
+	rows, err := db.Query("select sum(reclouts) as total, username from posts where reclouts group by username order by total desc limit 1000")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var total string
+		var username string
+		rows.Scan(&total, &username)
+		fmt.Println(total, username)
+	}
+}
