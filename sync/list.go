@@ -69,21 +69,35 @@ func FindUsers() {
 func FindTopReclouted() {
 	db := OpenTheDB()
 	defer db.Close()
-	rows, err := db.Query("select sum(p.reclouts) as total, p.username, u.hash from posts p, users u where p.username = u.username group by p.username, u.hash order by total desc limit 1000")
+	sql := `SELECT sum(p.reclouts) as total, 
+                 p.username, 
+								 u.points,
+								 u.market_cap,
+								 u.num_hodl,
+								 u.num_board
+					FROM posts p, users u 
+          WHERE p.username = u.username 
+					GROUP BY p.username, u.points, u.market_cap, u.num_hodl, u.num_board
+					ORDER BY total DESC limit 1000`
+
+	rows, err := db.Query(sql)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer rows.Close()
 
-	fields := []string{"reclouts", "username", "pub58"}
-	sizes := []int{9, 20, 7}
+	fields := []string{"reclouts", "username", "points", "cap", "holders", "board"}
+	sizes := []int{9, 20, 7, 10, 10, 10}
 	display.Header(sizes, fields...)
 	for rows.Next() {
 		var total string
 		var username string
-		var pub58 string
-		rows.Scan(&total, &username, &pub58)
-		display.Row(sizes, total, username, pub58)
+		var points string
+		var marketCap string
+		var numHodl string
+		var numBoard string
+		rows.Scan(&total, &username, &points, &marketCap, &numHodl, &numBoard)
+		display.Row(sizes, total, username, points, marketCap, numHodl, numBoard)
 	}
 }
