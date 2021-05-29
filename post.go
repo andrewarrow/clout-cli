@@ -52,35 +52,10 @@ func ShowSinglePost(key string) {
 	}
 	fmt.Println("")
 
-	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("username", 20),
-		display.LeftAligned("ago", 15),
-		display.LeftAligned("replies", 10),
-		display.LeftAligned("reclouts", 10),
-		display.LeftAligned("hash", 10))
-	fmt.Printf("%s %s %s %s %s\n", display.LeftAligned("--------", 20),
-		display.LeftAligned("---", 15),
-		display.LeftAligned("-------", 10),
-		display.LeftAligned("-------", 10),
-		display.LeftAligned("--------", 10))
+	LsHeader()
 	shortMap := map[string]string{}
 	for i, p := range ps.PostFound.Comments {
-		ts := time.Unix(p.TimestampNanos/1000000000, 0)
-		ago := timeago.FromDuration(time.Since(ts))
-		//fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
-		//	display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
-		//	ago)
-		//tokens := strings.Split(p.Body, "\n")
-		//fmt.Println("        ", display.LeftAligned(tokens[0], 40))
-		//fmt.Println("")
-		username := p.ProfileEntryResponse.Username
-		short := p.PostHashHex[0:7]
-		shortMap[short] = p.PostHashHex
-		fmt.Printf("%s %s %s %s %s\n", display.LeftAligned(username, 20),
-			display.LeftAligned(ago, 15),
-			display.LeftAligned(p.CommentCount, 10),
-			display.LeftAligned(p.RecloutCount, 10),
-			display.LeftAligned(short, 10))
-
+		LsPost(p, shortMap)
 		if i > 20 {
 			break
 		}
@@ -89,37 +64,38 @@ func ShowSinglePost(key string) {
 	fmt.Println("")
 }
 
-func PostsForPublicKey(key string) {
-	js := network.GetSingleProfile(key)
-	var sp models.SingleProfile
-	json.Unmarshal([]byte(js), &sp)
-	fmt.Println("---", sp.Profile.CoinEntry.CreatorBasisPoints)
-	fmt.Println(sp.Profile.Description)
-	fmt.Println("---")
+func LsHeader() {
+	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("username", 20),
+		display.LeftAligned("ago", 15),
+		display.LeftAligned("replies", 10),
+		display.LeftAligned("reclouts", 10),
+		display.LeftAligned("cap", 10),
+		display.LeftAligned("hash", 10))
+	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("--------", 20),
+		display.LeftAligned("---", 15),
+		display.LeftAligned("-------", 10),
+		display.LeftAligned("-------", 10),
+		display.LeftAligned("-------", 10),
+		display.LeftAligned("--------", 10))
+}
 
-	js = network.GetPostsForPublicKey(key)
-	//b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
-	var ppk models.PostsPublicKey
-	json.Unmarshal([]byte(js), &ppk)
-	for _, p := range ppk.Posts {
-		ts := time.Unix(p.TimestampNanos/1000000000, 0)
-		ago := timeago.FromDuration(time.Since(ts))
-		body := ""
-		if p.Body != "" {
-			body = p.Body
-		} else {
-			body = p.RecloutedPostEntryResponse.Body
-		}
-		tokens := strings.Split(body, "\n")
-		for i, t := range tokens {
-			if strings.TrimSpace(t) == "" {
-				continue
-			}
-			fmt.Println("    ", i, t)
-		}
-		fmt.Println(ago)
-		fmt.Println("")
-	}
+func LsPost(p models.Post, shortMap map[string]string) {
+	ts := time.Unix(p.TimestampNanos/1000000000, 0)
+	ago := timeago.FromDuration(time.Since(ts))
+
+	coins := float64(p.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos) / 1000000000.0
+	marketCap := coins * float64(p.ProfileEntryResponse.CoinPriceBitCloutNanos)
+	marketCap = marketCap / 1000000000.0
+
+	username := p.ProfileEntryResponse.Username
+	short := p.PostHashHex[0:7]
+	shortMap[short] = p.PostHashHex
+	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned(username, 20),
+		display.LeftAligned(ago, 15),
+		display.LeftAligned(p.CommentCount, 10),
+		display.LeftAligned(p.RecloutCount, 10),
+		display.LeftAligned(fmt.Sprintf("%.02f", marketCap), 10),
+		display.LeftAligned(short, 10))
 }
 
 func ListPosts(follow bool) {
@@ -134,44 +110,11 @@ func ListPosts(follow bool) {
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
-	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("username", 20),
-		display.LeftAligned("ago", 15),
-		display.LeftAligned("replies", 10),
-		display.LeftAligned("reclouts", 10),
-		display.LeftAligned("hash", 10),
-		display.LeftAligned("cap", 10))
-	fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned("--------", 20),
-		display.LeftAligned("---", 15),
-		display.LeftAligned("-------", 10),
-		display.LeftAligned("-------", 10),
-		display.LeftAligned("-------", 10),
-		display.LeftAligned("--------", 10))
 	shortMap := map[string]string{}
+	LsHeader()
 	for i, p := range ps.PostsFound {
-		ts := time.Unix(p.TimestampNanos/1000000000, 0)
-		ago := timeago.FromDuration(time.Since(ts))
 
-		//fmt.Println(display.LeftAligned(p.ProfileEntryResponse.Username, 30),
-		//	display.LeftAligned(p.ProfileEntryResponse.CoinEntry.NumberOfHolders, 20),
-		//	ago)
-		//tokens := strings.Split(p.Body, "\n")
-		//fmt.Println("        ", display.LeftAligned(tokens[0], 40))
-		//fmt.Println("")
-
-		coins := float64(p.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos) / 1000000000.0
-		marketCap := coins * float64(p.ProfileEntryResponse.CoinPriceBitCloutNanos)
-		marketCap = marketCap / 1000000000.0
-
-		username := p.ProfileEntryResponse.Username
-		short := p.PostHashHex[0:7]
-		shortMap[short] = p.PostHashHex
-		fmt.Printf("%s %s %s %s %s %s\n", display.LeftAligned(username, 20),
-			display.LeftAligned(ago, 15),
-			display.LeftAligned(p.CommentCount, 10),
-			display.LeftAligned(p.RecloutCount, 10),
-			display.LeftAligned(short, 10),
-			display.LeftAligned(fmt.Sprintf("%.02f", marketCap), 10))
-
+		LsPost(p, shortMap)
 		if i > 20 {
 			break
 		}
@@ -208,5 +151,38 @@ func Post(reply string) {
 	jsonString := network.SubmitTx(tx.TransactionHex, priv)
 	if jsonString != "" {
 		fmt.Println("Success.")
+	}
+}
+
+func PostsForPublicKey(key string) {
+	js := network.GetSingleProfile(key)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+	fmt.Println("---", sp.Profile.CoinEntry.CreatorBasisPoints)
+	fmt.Println(sp.Profile.Description)
+	fmt.Println("---")
+
+	js = network.GetPostsForPublicKey(key)
+	//b, _ := ioutil.ReadFile("samples/get_posts_for_public_key.list")
+	var ppk models.PostsPublicKey
+	json.Unmarshal([]byte(js), &ppk)
+	for _, p := range ppk.Posts {
+		ts := time.Unix(p.TimestampNanos/1000000000, 0)
+		ago := timeago.FromDuration(time.Since(ts))
+		body := ""
+		if p.Body != "" {
+			body = p.Body
+		} else {
+			body = p.RecloutedPostEntryResponse.Body
+		}
+		tokens := strings.Split(body, "\n")
+		for i, t := range tokens {
+			if strings.TrimSpace(t) == "" {
+				continue
+			}
+			fmt.Println("    ", i, t)
+		}
+		fmt.Println(ago)
+		fmt.Println("")
 	}
 }
