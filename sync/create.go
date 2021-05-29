@@ -4,14 +4,14 @@ import (
 	"time"
 )
 
-func InsertPost(ts time.Time, hash, body, username string) {
+func InsertPost(reclouts int64, ts time.Time, hash, body, username string) {
 	db := OpenTheDB()
 	defer db.Close()
 	tx, _ := db.Begin()
 
-	s := `insert into posts (hash, body, username, created_at) values (?, ?, ?, ?)`
+	s := `insert into posts (reclouts, hash, body, username, created_at) values (?, ?, ?, ?, ?)`
 	thing, _ := tx.Prepare(s)
-	thing.Exec(hash, body, username, ts)
+	thing.Exec(reclouts, hash, body, username, ts)
 
 	tx.Commit()
 }

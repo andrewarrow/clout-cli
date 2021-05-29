@@ -56,7 +56,7 @@ func SyncLoop() {
 
 		for _, p := range ps.PostsFound {
 			ts := time.Unix(p.TimestampNanos/1000000000, 0)
-			InsertPost(ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
+			InsertPost(p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
 			InsertUser(p.ProfileEntryResponse.PublicKeyBase58Check, p.ProfileEntryResponse.Username)
 			last = p.PostHashHex
 		}
