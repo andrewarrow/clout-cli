@@ -120,11 +120,7 @@ func UploadImage(filepath, pub58, jwt string) string {
 	io.Copy(fw, rs)
 
 	w.Close()
-	postWithBinary := string(b.Bytes())
-	fmt.Println(len(postWithBinary))
-
 	jsonString := DoPostMultipart("api/v0/upload-image", w.FormDataContentType(), b.Bytes())
-	fmt.Println(jsonString)
 	return jsonString
 }
 func SubmitDiamond(sender, receiver, post string) string {
