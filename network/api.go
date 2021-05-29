@@ -94,22 +94,21 @@ func UploadImage(filepath, pub58, jwt string) string {
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 	var fw io.Writer
-	// strings.NewReader("hello world!"),
 	r := bytes.NewReader(imageBytes)
 	fw, _ = w.CreateFormFile("file", filename)
 	io.Copy(fw, r)
 
-	r = bytes.NewReader([]byte(pub58))
+	rs := strings.NewReader(pub58)
 	fw, _ = w.CreateFormFile("UserPublicKeyBase58Check", pub58)
-	io.Copy(fw, r)
+	io.Copy(fw, rs)
 
-	r = bytes.NewReader([]byte(jwt))
+	rs = strings.NewReader(jwt)
 	fw, _ = w.CreateFormFile("JWT", jwt)
-	io.Copy(fw, r)
+	io.Copy(fw, rs)
 
 	w.Close()
 	postWithBinary := string(b.Bytes())
-	fmt.Println(postWithBinary)
+	fmt.Println(len(postWithBinary))
 
 	jsonString := DoPostMultipart("api/v0/upload-image", w.FormDataContentType(), b.Bytes())
 	fmt.Println(jsonString)
