@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
 )
 
 func HandleBuy() {
@@ -17,7 +16,7 @@ func HandleBuy() {
 		return
 	}
 	username := os.Args[2]
-	amountString := os.Args[3]
+	//amountString := os.Args[3]
 	theirPub58 := session.UsernameToPub58(username)
 
 	mnemonic := session.ReadLoggedInWords()
@@ -25,13 +24,17 @@ func HandleBuy() {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	//bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, 0, 0)
+	user := session.Pub58ToUser(pub58)
+	amount := user.BalanceNanos - 100318
+	// 604713
+	// 504395
+	//amount, _ := strconv.ParseInt(amountString, 10, 64)
+	bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, 0)
 	var tx models.TxReady
-	//json.Unmarshal([]byte(bigString), &tx)
+	json.Unmarshal([]byte(bigString), &tx)
+	fmt.Println(user.BalanceNanos, amount, tx.ExpectedCreatorCoinReturnedNanos)
 
-	amount, _ := strconv.ParseInt(amountString, 10, 64)
-
-	bigString := network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, amount)
+	bigString = network.SubmitBuyOrSellCoin(pub58, theirPub58, amount, tx.ExpectedCreatorCoinReturnedNanos)
 	json.Unmarshal([]byte(bigString), &tx)
 
 	jsonString := network.SubmitTx(tx.TransactionHex, priv)
