@@ -76,9 +76,9 @@ func LsHeader() {
 		display.LeftAligned("---", 15),
 		display.LeftAligned("-----", 6),
 		display.LeftAligned("-------", 8),
-		display.LeftAligned("-------", 9),
+		display.LeftAligned("--------", 9),
 		display.LeftAligned("-------", 10),
-		display.LeftAligned("--------", 10))
+		display.LeftAligned("-------", 10))
 }
 
 func LsPost(p models.Post, shortMap map[string]string) {
