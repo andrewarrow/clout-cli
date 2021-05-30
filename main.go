@@ -91,6 +91,8 @@ func main() {
 		ListNotifications(argMap)
 	} else if command == "reclout" {
 		HandleReclout()
+	} else if command == "sell" {
+		HandleSell()
 	} else if command == "sync" {
 		sync.HandleSync(argMap)
 	} else if command == "update" {

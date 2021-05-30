@@ -66,29 +66,15 @@ func CreateFollow(follower, followed string) string {
 		[]byte(send))
 	return jsonString
 }
-func SubmitBuyOrSellCoin(updater, creator string, sell, expected int64) string {
+func SubmitBuyCoin(updater, creator string, sell, expected int64) string {
 	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","CreatorPublicKeyBase58Check":"%s","OperationType":"buy","BitCloutToSellNanos":%d,"CreatorCoinToSellNanos":0,"BitCloutToAddNanos":0,"MinBitCloutExpectedNanos":0,"MinCreatorCoinExpectedNanos":%d,"MinFeeRateNanosPerKB":1000}`
-
-	/*
-
-
-		minCreatorCoinExpectedNanos =
-		creatorCoinTrade.expectedCreatorCoinReturnedNanos * (this.ALLOWED_SLIPPAGE_PERCENT / 100);
-
-
-						{BitCloutToSellNanos, CreatorCoinToSellNanos}"}
-
-
-							sell     28296689
-							expected 28368525
-
-							sell     71898725
-							expected 2535444
-
-							TODO use ALLOWED_SLIPPAGE_PERCENT = 75;
-
-	*/
-
+	send := fmt.Sprintf(jsonString, updater, creator, sell, expected)
+	jsonString = DoPost("api/v0/buy-or-sell-creator-coin",
+		[]byte(send))
+	return jsonString
+}
+func SubmitSellCoin(updater, creator string, sell, expected int64) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","CreatorPublicKeyBase58Check":"%s","OperationType":"sell","BitCloutToSellNanos":0,"CreatorCoinToSellNanos":%d,"BitCloutToAddNanos":0,"MinBitCloutExpectedNanos":%d,"MinCreatorCoinExpectedNanos":0,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, updater, creator, sell, expected)
 	jsonString = DoPost("api/v0/buy-or-sell-creator-coin",
 		[]byte(send))
