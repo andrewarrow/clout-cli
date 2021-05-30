@@ -96,6 +96,8 @@ func main() {
 		HandleUpdateProfile(argMap)
 	} else if command == "upload" {
 		HandleUpload()
+	} else if command == "wallet" {
+		HandleWallet(argMap)
 	} else if command == "whoami" {
 		session.Whoami(argMap)
 	} else {
