@@ -5,6 +5,16 @@ import (
 	"strings"
 )
 
+func Float(val float64) string {
+	return fmt.Sprintf("%.02f", val)
+}
+func OneE9(val int64) string {
+	return fmt.Sprintf("%.02f", OneE9Float(val))
+}
+func OneE9Float(val int64) float64 {
+	return float64(val) / 1000000000.0
+}
+
 func Header(sizes []int, fields ...string) {
 	for i, field := range fields {
 		fmt.Printf("%s ", LeftAligned(field, sizes[i]))
