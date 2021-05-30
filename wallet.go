@@ -7,6 +7,7 @@ import (
 	"clout/session"
 	"encoding/json"
 	"fmt"
+	"sort"
 )
 
 func HandleWallet(argMap map[string]string) {
@@ -22,7 +23,13 @@ func ListAssets(key string) {
 	fields := []string{"username", "balance", "price", "worth"}
 	sizes := []int{20, 11, 10, 10}
 	display.Header(sizes, fields...)
-	for _, thing := range us.UserList[0].UsersYouHODL {
+
+	YouHODL := us.UserList[0].UsersYouHODL
+	sort.SliceStable(YouHODL, func(i, j int) bool {
+		return YouHODL[i].BalanceNanos > YouHODL[j].BalanceNanos
+	})
+
+	for _, thing := range YouHODL {
 		display.Row(sizes,
 			thing.ProfileEntryResponse.Username,
 			display.OneE9(thing.BalanceNanos),
