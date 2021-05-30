@@ -13,6 +13,26 @@ func BaseUrl() string {
 	return "https://bitclout.com/"
 }
 
+func DoTest404(word string) string {
+	jsonString := `{"PublicKeyBase58Check":"","Username":"%s"}`
+	sendString := fmt.Sprintf(jsonString, word)
+	body := bytes.NewBuffer([]byte(sendString))
+	urlString := fmt.Sprintf("%s%s", BaseUrl(), "api/v0/get-single-profile")
+	request, _ := http.NewRequest("POST", urlString, body)
+	request.Header.Set("Content-Type", "application/json")
+	client := &http.Client{Timeout: time.Second * 500}
+	resp, err := client.Do(request)
+	if err == nil {
+		defer resp.Body.Close()
+		if resp.StatusCode == 404 {
+			return "404"
+		} else {
+			return "200"
+		}
+	}
+	fmt.Printf("\n\nERROR: %s\n\n", err.Error())
+	return ""
+}
 func DoGet(route string) string {
 	agent := "agent"
 

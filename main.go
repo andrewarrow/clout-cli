@@ -99,6 +99,8 @@ func main() {
 		HandleUpload()
 	} else if command == "wallet" {
 		HandleWallet(argMap)
+	} else if command == "words" {
+		HandleWords(argMap)
 	} else if command == "whoami" {
 		session.Whoami(argMap)
 	} else {

@@ -11,8 +11,8 @@ func HandleBalances(argMap map[string]string) {
 	m := session.ReadAccounts()
 	for username, s := range m {
 		fmt.Println("")
-		fmt.Println(username)
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
+		fmt.Println(username, pub58)
 		user := session.Pub58ToUser(pub58)
 		points := user.ProfileEntryResponse.CoinEntry.CreatorBasisPoints
 		fmt.Printf("  %s %.02f\n", display.LeftAligned("BalanceNano", 20), float64(user.BalanceNanos)/1000000.0)
