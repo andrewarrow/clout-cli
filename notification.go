@@ -31,29 +31,40 @@ func ListNotificationsForUser(pub58 string) {
 	//ioutil.WriteFile("foo.json", []byte(js), 0755)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
-	fields := []string{"flavor", "username", "meta"}
-	sizes := []int{25, 20, 20}
+	fields := []string{"flavor", "username", "meta", "hash"}
+	sizes := []int{25, 20, 20, 10}
 	display.Header(sizes, fields...)
+	shortMap := map[string]string{}
 	for _, n := range list.Notifications {
 		username := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
 		meta := ""
+		short := ""
 		if n.Metadata.TxnType == "SUBMIT_POST" {
 			//parent := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.ParentPostHashHex]
 			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
+			short = p.PostHashHex[0:7]
+			shortMap[short] = p.PostHashHex
 			meta = BodyParse(p.Body)
 			if meta == "" {
 				meta = BodyParse(p.RecloutedPostEntryResponse.Body)
+				short = p.RecloutedPostEntryResponse.PostHashHex[0:7]
+				shortMap[short] = p.PostHashHex
 			}
 		} else if n.Metadata.TxnType == "LIKE" {
 			p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
+			short = p.PostHashHex[0:7]
+			shortMap[short] = p.PostHashHex
 			meta = BodyParse(p.Body)
 		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
 			md := n.Metadata.CreatorCoinTransferTxindexMetadata
 			if md.PostHashHex != "" {
 				p := list.PostsByHash[md.PostHashHex]
 				meta = fmt.Sprintf("[%d] %s", md.DiamondLevel, BodyParse(p.Body))
+				short = p.PostHashHex[0:7]
+				shortMap[short] = p.PostHashHex
 			} else {
-				meta = display.OneE9(md.CreatorCoinToTransferNanos)
+				meta = display.OneE9(md.CreatorCoinToTransferNanos) + " " +
+					md.CreatorUsername
 			}
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
 			cctm := n.Metadata.CreatorCoinTxindexMetadata
@@ -65,8 +76,9 @@ func ListNotificationsForUser(pub58 string) {
 			//cctm.BitCloutToAddNanos
 		}
 
-		display.Row(sizes, n.Metadata.TxnType, username, meta)
+		display.Row(sizes, n.Metadata.TxnType, username, meta, short)
 	}
+	session.SaveShortMap(shortMap)
 }
 func ListNotifications(argMap map[string]string) {
 
