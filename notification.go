@@ -87,20 +87,30 @@ func ListNotifications(argMap map[string]string) {
 	fields := []string{"username", "follows", "likes", "posts", "coin", "coin_tx"}
 	sizes := []int{20, 9, 9, 9, 9, 9}
 	display.Header(sizes, fields...)
+
+	baseline := session.ReadBaseline()
+	save := map[string]map[string]int{}
 	for _, username := range sorted {
 		s := m[username]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
 		m := NotificationForPub(pub58)
-		display.Row(sizes, username, m["follows"], m["likes"],
-			m["posts"], m["coin"], m["coin_tx"])
+		save[username] = m
+		deltaFollows := m["follows"] - baseline[username]["follows"]
+		deltaLikes := m["likes"] - baseline[username]["likes"]
+		deltaPosts := m["posts"] - baseline[username]["posts"]
+		deltaCoin := m["coin"] - baseline[username]["coin"]
+		deltaCoinTx := m["coin_tx"] - baseline[username]["coin_tx"]
+		display.Row(sizes, username, deltaFollows, deltaLikes,
+			deltaPosts, deltaCoin, deltaCoinTx)
 	}
+	session.SaveBaselineNotifications(save)
 }
-func NotificationForPub(pub58 string) map[string]interface{} {
+func NotificationForPub(pub58 string) map[string]int {
 	js := network.GetNotifications(pub58)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
 
-	m := map[string]interface{}{}
+	m := map[string]int{}
 	follows := 0
 	likes := 0
 	posts := 0
