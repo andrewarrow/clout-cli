@@ -100,6 +100,11 @@ func ListNotifications(argMap map[string]string) {
 		deltaPosts := m["posts"] - baseline[username]["posts"]
 		deltaCoin := m["coin"] - baseline[username]["coin"]
 		deltaCoinTx := m["coin_tx"] - baseline[username]["coin_tx"]
+		if deltaFollows == 0 && deltaLikes == 0 &&
+			deltaPosts == 0 && deltaCoin == 0 &&
+			deltaCoinTx == 0 {
+			continue
+		}
 		display.Row(sizes, username, deltaFollows, deltaLikes,
 			deltaPosts, deltaCoin, deltaCoinTx)
 	}
