@@ -15,37 +15,61 @@ import (
 	"github.com/justincampbell/timeago"
 )
 
-func ParseUserList(js string, buff []string) map[string]string {
-	m := map[string]string{}
-	var us models.UsersStateless
-	json.Unmarshal([]byte(js), &us)
-	for _, u := range us.UserList {
-		m[u.ProfileEntryResponse.PublicKeyBase58Check] = u.ProfileEntryResponse.Username
-	}
-	for _, b := range buff {
-		if m[b] == "" {
-			m[b] = "anonymous"
-		}
-	}
-	return m
-}
 func ListNotifications(argMap map[string]string) {
 
 	limit, _ := strconv.Atoi(argMap["limit"])
 	if limit == 0 {
 		limit = 5
 	}
+	sorted := session.ReadAccountsSorted()
 	m := session.ReadAccounts()
-	for username, s := range m {
-		fmt.Println("")
-		fmt.Println("===========")
-		fmt.Println(username)
-		fmt.Println("===========")
+	fields := []string{"username", "follows", "likes", "posts", "coin", "coin_tx"}
+	sizes := []int{20, 9, 9, 9, 9, 9}
+	display.Header(sizes, fields...)
+	for _, username := range sorted {
+		s := m[username]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
-		ListNotificationForPub(limit, pub58)
+		m := NotificationForPub(limit, pub58)
+		display.Row(sizes, username, m["follows"], m["likes"],
+			m["posts"], m["coin"], m["coin_tx"])
 	}
 }
-func ListNotificationForPub(limit int, pub58 string) {
+func NotificationForPub(limit int, pub58 string) map[string]interface{} {
+	js := network.GetNotifications(pub58)
+	var list models.NotificationList
+	json.Unmarshal([]byte(js), &list)
+
+	m := map[string]interface{}{}
+	follows := 0
+	likes := 0
+	posts := 0
+	coin := 0
+	coinTx := 0
+	for _, n := range list.Notifications {
+		if n.Metadata.TxnType == "FOLLOW" {
+			follows++
+		} else if n.Metadata.TxnType == "LIKE" {
+			likes++
+		} else if n.Metadata.TxnType == "SUBMIT_POST" {
+			posts++
+		} else if n.Metadata.TxnType == "CREATOR_COIN" {
+			coin++
+		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
+			coinTx++
+		} else if n.Metadata.TxnType == "BASIC_TRANSFER" {
+		} else {
+			fmt.Println(n.Metadata.TxnType)
+		}
+	}
+	m["follows"] = follows
+	m["likes"] = likes
+	m["posts"] = posts
+	m["coin"] = coin
+	m["coin_tx"] = coinTx
+	return m
+}
+
+func Old(limit int, pub58 string) {
 	//b, _ := ioutil.ReadFile("samples/get_notifications.list")
 	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("samples/get_notifications.list", []byte(js), 0755)
