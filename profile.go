@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clout/files"
 	"clout/keys"
 	"clout/models"
 	"clout/network"
@@ -20,6 +21,12 @@ func HandleUpdateProfile(argMap map[string]string) {
 		fmt.Println("--percent=18")
 		fmt.Println("--username=cloutcli")
 		fmt.Println("")
+		return
+	}
+
+	if argMap["desc"] != "" {
+		descData := files.ReadFromIn()
+		SubmitProfileUpdate(descData, "", "300", "")
 		return
 	}
 
@@ -51,6 +58,10 @@ func HandleUpdateProfile(argMap map[string]string) {
 		descData = desc
 	}
 
+	SubmitProfileUpdate(descData, usernameData, percentData, imageData)
+}
+
+func SubmitProfileUpdate(descData, usernameData, percentData, imageData string) {
 	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
