@@ -18,6 +18,7 @@ func HandleBalances(argMap map[string]string) {
 		fmt.Printf("  %s %.02f\n", display.LeftAligned("BalanceNano", 20), float64(user.BalanceNanos)/1000000.0)
 		fmt.Printf("  %s %.02f\n", display.LeftAligned("MarketCap", 20), user.ProfileEntryResponse.MarketCap())
 		fmt.Printf("  %s %d\n", display.LeftAligned("Points", 20), points)
+		fmt.Printf("  %s %s\n", display.LeftAligned("Price", 20), display.OneE9(user.ProfileEntryResponse.CoinPriceBitCloutNanos))
 	}
 	fmt.Println("")
 }
