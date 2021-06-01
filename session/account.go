@@ -18,6 +18,18 @@ func WriteSelected(username string) {
 	ioutil.WriteFile(path, []byte(username), 0700)
 }
 
+func GetAccountsForTag(tag string) []string {
+	m := ReadTags()
+	tagMap := map[string][]string{}
+	for k, v := range m {
+		tokens := strings.Split(v, ",")
+		for _, token := range tokens {
+			tagMap[token] = append(tagMap[token], k)
+		}
+	}
+	return tagMap[tag]
+}
+
 func HandleAccounts(argMap map[string]string) {
 	if argMap["new"] != "" {
 		words := NewWords()
@@ -50,15 +62,7 @@ func HandleAccounts(argMap map[string]string) {
 		return
 	}
 	if argMap["query"] != "" {
-		m := ReadTags()
-		tagMap := map[string][]string{}
-		for k, v := range m {
-			tokens := strings.Split(v, ",")
-			for _, token := range tokens {
-				tagMap[token] = append(tagMap[token], k)
-			}
-		}
-		for _, username := range tagMap[argMap["query"]] {
+		for _, username := range GetAccountsForTag(argMap["query"]) {
 			fmt.Println(username)
 		}
 		return
