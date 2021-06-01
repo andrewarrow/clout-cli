@@ -91,6 +91,8 @@ func main() {
 		ListMessages()
 	} else if command == "n" || command == "notifications" || command == "notification" {
 		HandleNotifications(argMap)
+	} else if command == "random" {
+		fmt.Println(RandomEmo())
 	} else if command == "reclout" {
 		HandleReclout()
 	} else if command == "sell" {
