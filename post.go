@@ -28,6 +28,10 @@ func HandlePosts() {
 		ShowSinglePost(m[os.Args[2]])
 		return
 	}
+	if argMap["body"] != "" {
+		ListWithBody()
+		return
+	}
 	ListPosts(argMap["follow"] == "true")
 }
 func ShowSinglePost(key string) {
@@ -97,6 +101,26 @@ func LsPost(p models.Post, shortMap map[string]string) {
 		display.LeftAligned(p.RecloutCount, 9),
 		display.LeftAligned(fmt.Sprintf("%.02f", marketCap), 10),
 		display.LeftAligned(short, 10))
+}
+
+func ListWithBody() {
+	pub58 := session.LoggedInPub58()
+	js := network.GetPostsStateless(pub58, false)
+	var ps models.PostsStateless
+	json.Unmarshal([]byte(js), &ps)
+
+	fields := []string{"hash", "username", "body"}
+	sizes := []int{10, 20, 50}
+	display.Header(sizes, fields...)
+	for i, p := range ps.PostsFound {
+		username := p.ProfileEntryResponse.Username
+		short := p.PostHashHex[0:7]
+		tokens := strings.Split(p.Body, "\n")
+		display.Row(sizes, short, username, strings.Join(tokens, " "))
+		if i > 20 {
+			break
+		}
+	}
 }
 
 func ListPosts(follow bool) {
