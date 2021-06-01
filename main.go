@@ -68,8 +68,7 @@ func main() {
 	} else if command == "buy" {
 		HandleBuy()
 	} else if command == "clown" {
-		m := ParseEmoji()
-		fmt.Println(m)
+		HandleClown()
 	} else if command == "diamond" {
 		HandleDiamond()
 	} else if command == "follow" {

@@ -1,9 +1,35 @@
 package main
 
 import (
+	"fmt"
+	"html"
+	"math/rand"
+	"strconv"
 	"strings"
 )
 
+func HandleClown() {
+	items := ParseEmojiAsList()
+	item1 := items[rand.Intn(len(items))]
+	item2 := items[rand.Intn(len(items))]
+	item3 := items[rand.Intn(len(items))]
+
+	val1, _ := strconv.ParseInt(item1, 16, 64)
+	val2, _ := strconv.ParseInt(item2, 16, 64)
+	val3, _ := strconv.ParseInt(item3, 16, 64)
+	str1 := html.UnescapeString(string(val1))
+	str2 := html.UnescapeString(string(val2))
+	str3 := html.UnescapeString(string(val3))
+	fmt.Println(str1, str2, str3)
+}
+
+func ParseEmojiAsList() []string {
+	list := []string{}
+	for k, _ := range ParseEmoji() {
+		list = append(list, k)
+	}
+	return list
+}
 func ParseEmoji() map[string]bool {
 	m := map[string]bool{}
 	tokens := strings.Split(emojiTableString, "<tr>")
