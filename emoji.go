@@ -26,6 +26,9 @@ func HandleClown() {
 	str2 := html.UnescapeString(string(val2))
 	str3 := html.UnescapeString(string(val3))
 	text := fmt.Sprintf("%s%s%s = $%d", str1, str2, str3, SumIt(item1)+SumIt(item2)+SumIt(item3))
+
+	fmt.Println(text)
+
 	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
