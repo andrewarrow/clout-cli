@@ -61,10 +61,17 @@ func ListFollowers() {
 	json.Unmarshal([]byte(js), &pktpe)
 	fmt.Println("NumFollowers", pktpe.NumFollowers)
 	fmt.Println("")
+	fields := []string{"username", "cap", "price"}
+	sizes := []int{20, 10, 10}
+	display.Header(sizes, fields...)
+	i := 0
 	for _, v := range pktpe.PublicKeyToProfileEntry {
-		tokens := strings.Split(v.Description, "\n")
-		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
-			display.LeftAligned(tokens[0], 30))
+		display.Row(sizes, v.Username, display.Float(v.MarketCap()),
+			display.OneE9(v.CoinPriceBitCloutNanos))
+		if i > 18 {
+			break
+		}
+		i++
 	}
 }
 func LoopThruAllFollowing(pub58 string) {
