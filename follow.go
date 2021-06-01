@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strings"
 	"time"
 )
 
@@ -35,6 +34,7 @@ func HandleFollow() {
 		fmt.Println("Success.")
 	}
 }
+
 func HandleFollowing() {
 	pub58 := session.LoggedInPub58()
 	if len(os.Args) > 2 {
@@ -42,20 +42,13 @@ func HandleFollowing() {
 		LoopThruAllFollowing(pub58)
 		return
 	}
-	js := network.GetFollowsStateless(pub58, "", "")
-
-	var pktpe models.PublicKeyToProfileEntry
-	json.Unmarshal([]byte(js), &pktpe)
-	fmt.Println("NumFollowers", pktpe.NumFollowers)
-	fmt.Println("")
-	for _, v := range pktpe.PublicKeyToProfileEntry {
-		tokens := strings.Split(v.Description, "\n")
-		fmt.Printf("%s %s\n", display.LeftAligned(v.Username, 30),
-			display.LeftAligned(tokens[0], 30))
-	}
+	RunFollowLogic(pub58, "")
 }
 func ListFollowers() {
 	pub58, username, _, _ := session.LoggedInAs()
+	RunFollowLogic(pub58, username)
+}
+func RunFollowLogic(pub58, username string) {
 	js := network.GetFollowsStateless(pub58, username, "")
 
 	var pktpe models.PublicKeyToProfileEntry
@@ -71,14 +64,11 @@ func ListFollowers() {
 		items = append(items, v)
 	}
 	sort.SliceStable(items, func(i, j int) bool {
-		return items[i].CoinPriceBitCloutNanos > items[j].CoinPriceBitCloutNanos
+		return items[i].CoinPriceBitCloutNanos < items[j].CoinPriceBitCloutNanos
 	})
-	for i, v := range items {
+	for _, v := range items {
 		display.Row(sizes, v.Username, display.Float(v.MarketCap()),
 			display.OneE9(v.CoinPriceBitCloutNanos))
-		if i > 18 {
-			break
-		}
 	}
 }
 func LoopThruAllFollowing(pub58 string) {
