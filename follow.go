@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
@@ -64,14 +65,20 @@ func ListFollowers() {
 	fields := []string{"username", "cap", "price"}
 	sizes := []int{20, 10, 10}
 	display.Header(sizes, fields...)
-	i := 0
+
+	items := []models.ProfileEntryResponse{}
 	for _, v := range pktpe.PublicKeyToProfileEntry {
+		items = append(items, v)
+	}
+	sort.SliceStable(items, func(i, j int) bool {
+		return items[i].CoinPriceBitCloutNanos > items[j].CoinPriceBitCloutNanos
+	})
+	for i, v := range items {
 		display.Row(sizes, v.Username, display.Float(v.MarketCap()),
 			display.OneE9(v.CoinPriceBitCloutNanos))
 		if i > 18 {
 			break
 		}
-		i++
 	}
 }
 func LoopThruAllFollowing(pub58 string) {
