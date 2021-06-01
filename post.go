@@ -100,11 +100,6 @@ func LsPost(p models.Post, shortMap map[string]string) {
 }
 
 func ListPosts(follow bool) {
-	rateString := network.GetExchangeRate()
-	var rate models.Rate
-	json.Unmarshal([]byte(rateString), &rate)
-	//TODO use rate
-
 	pub58 := session.LoggedInPub58()
 	js := network.GetPostsStateless(pub58, follow)
 	//b, _ := ioutil.ReadFile("samples/get_posts_stateless.list")
