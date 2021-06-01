@@ -40,7 +40,7 @@ func ShowSinglePost(key string) {
 	var ps models.PostStateless
 	json.Unmarshal([]byte(js), &ps)
 
-	fmt.Println("")
+	fmt.Println("", ps.PostFound.ParentStakeID)
 	if ps.PostFound.Body == "" {
 		long := ps.PostFound.RecloutedPostEntryResponse.PostHashHex
 		short := long[0:7]
