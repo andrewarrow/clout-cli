@@ -1,6 +1,11 @@
 package main
 
 import (
+	"clout/keys"
+	"clout/models"
+	"clout/network"
+	"clout/session"
+	"encoding/json"
 	"fmt"
 	"html"
 	"math/rand"
@@ -20,7 +25,23 @@ func HandleClown() {
 	str1 := html.UnescapeString(string(val1))
 	str2 := html.UnescapeString(string(val2))
 	str3 := html.UnescapeString(string(val3))
-	fmt.Printf("%s%s%s=$%d\n", str1, str2, str3, SumIt(item1)+SumIt(item2)+SumIt(item3))
+	text := fmt.Sprintf("%s%s%s = $%d", str1, str2, str3, SumIt(item1)+SumIt(item2)+SumIt(item3))
+	mnemonic := session.ReadLoggedInWords()
+	if mnemonic == "" {
+		return
+	}
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
+
+	longHash := "a167e616c33047f73ce386bb877b0044b275ca59aa12af1a5a0312b10c3a756b"
+	bigString := network.SubmitPost(pub58, text, longHash, "")
+
+	var tx models.TxReady
+	json.Unmarshal([]byte(bigString), &tx)
+
+	jsonString := network.SubmitTx(tx.TransactionHex, priv)
+	if jsonString != "" {
+		fmt.Println("Success.")
+	}
 }
 
 func SumIt(item string) int64 {
