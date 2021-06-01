@@ -9,6 +9,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 func WriteSelected(username string) {
@@ -33,6 +34,19 @@ func HandleAccounts(argMap map[string]string) {
 		WriteSelected(username)
 		fmt.Println("")
 		fmt.Println("")
+		return
+	}
+	if argMap["tag"] != "" {
+		m := ReadTags()
+
+		username := SelectedAccount()
+		list := []string{}
+		if m[username] != "" {
+			list = strings.Split(m[username], ",")
+		}
+		list = append(list, argMap["tag"])
+		m[username] = strings.Join(list, ",")
+		WriteTags(m)
 		return
 	}
 	if len(os.Args) > 2 {
@@ -86,4 +100,24 @@ func WriteAccounts(m map[string]string) {
 	path := home + "/" + dir + "/" + file
 	ioutil.WriteFile(path, b, 0700)
 	fmt.Println("Secret stored at:", path)
+}
+func ReadTags() map[string]string {
+	m := map[string]string{}
+	asBytes := []byte(JustReadFile(tags))
+	if len(asBytes) == 0 {
+		return m
+	}
+
+	json.Unmarshal(asBytes, &m)
+
+	return m
+}
+
+func WriteTags(m map[string]string) {
+	b, _ := json.Marshal(m)
+	home := files.UserHomeDir()
+	os.Mkdir(home+"/"+dir, 0700)
+	path := home + "/" + dir + "/" + tags
+	ioutil.WriteFile(path, b, 0700)
+	fmt.Println("Stored at:", path)
 }

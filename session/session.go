@@ -21,6 +21,7 @@ var cache = "cache.usernames"
 var short = "short.map"
 var backup = "clout.enc"
 var baseline = "baseline.json"
+var tags = "tags.json"
 
 func JustReadFile(s string) string {
 	home := files.UserHomeDir()
