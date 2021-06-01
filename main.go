@@ -65,6 +65,8 @@ func main() {
 		HandleBalances(argMap)
 	} else if command == "board" || command == "boards" {
 		HandleBoards()
+	} else if command == "bulk" {
+		HandleBulk()
 	} else if command == "buy" {
 		HandleBuy()
 	} else if command == "clown" {
@@ -92,7 +94,7 @@ func main() {
 	} else if command == "n" || command == "notifications" || command == "notification" {
 		HandleNotifications(argMap)
 	} else if command == "random" {
-		fmt.Println(RandomEmo())
+		RandomEmo(20)
 	} else if command == "reclout" {
 		HandleReclout()
 	} else if command == "sell" {

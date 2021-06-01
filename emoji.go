@@ -13,11 +13,14 @@ import (
 	"strings"
 )
 
-func RandomEmo() string {
-	items := ParseEmojiFromString()
-	item := items[rand.Intn(len(items))]
-	val, _ := strconv.ParseInt(item, 16, 64)
-	return html.UnescapeString(string(val))
+func RandomEmo(n int) {
+	for i := 0; i < n; i++ {
+		items := ParseEmojiFromString()
+		item := items[rand.Intn(len(items))]
+		val, _ := strconv.ParseInt(item, 16, 64)
+		s := html.UnescapeString(string(val))
+		fmt.Println(s)
+	}
 }
 
 func HandleClown() {
