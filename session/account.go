@@ -49,6 +49,20 @@ func HandleAccounts(argMap map[string]string) {
 		WriteTags(m)
 		return
 	}
+	if argMap["query"] != "" {
+		m := ReadTags()
+		tagMap := map[string][]string{}
+		for k, v := range m {
+			tokens := strings.Split(v, ",")
+			for _, token := range tokens {
+				tagMap[token] = append(tagMap[token], k)
+			}
+		}
+		for _, username := range tagMap[argMap["query"]] {
+			fmt.Println(username)
+		}
+		return
+	}
 	if len(os.Args) > 2 {
 		username := os.Args[2]
 		i, _ := strconv.Atoi(username)
