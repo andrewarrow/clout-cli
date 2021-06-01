@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"clout/display"
+	"clout/files"
 	"clout/keys"
 	"clout/models"
 	"clout/network"
@@ -137,10 +137,7 @@ func Post(argMap map[string]string) {
 		longHash = reply
 	}
 
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Say: ")
-	text, _ := reader.ReadString('\n')
-	text = strings.TrimSpace(text)
+	text := files.ReadFromIn()
 
 	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
