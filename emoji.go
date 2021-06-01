@@ -20,7 +20,17 @@ func HandleClown() {
 	str1 := html.UnescapeString(string(val1))
 	str2 := html.UnescapeString(string(val2))
 	str3 := html.UnescapeString(string(val3))
-	fmt.Println(str1, str2, str3)
+	fmt.Printf("%s%s%s=$%d\n", str1, str2, str3, SumIt(item1)+SumIt(item2)+SumIt(item3))
+}
+
+func SumIt(item string) int64 {
+	sum := int64(0)
+	for i, _ := range item {
+		thing := item[i : i+1]
+		val, _ := strconv.ParseInt(thing, 16, 64)
+		sum += val
+	}
+	return sum
 }
 
 func ParseEmojiAsList() []string {
