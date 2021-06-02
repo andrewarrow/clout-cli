@@ -45,7 +45,7 @@ func GetNotificationsForEachGlobalPost(sizes []int, target, pub58 string) {
 			} else if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 
-				if display.OneE9Float(cctm.BitCloutToSellNanos) >= 1.0 {
+				if display.OneE9Float(cctm.BitCloutToSellNanos) >= 10.0 {
 					display.Row(sizes, username, target, display.OneE9(cctm.BitCloutToSellNanos))
 				}
 			}
