@@ -116,15 +116,18 @@ func ListWithBody() {
 	fields := []string{"hash", "username", "body"}
 	sizes := []int{10, 20, 50}
 	display.Header(sizes, fields...)
+	shortMap := map[string]string{}
 	for i, p := range ps.PostsFound {
 		username := p.ProfileEntryResponse.Username
 		short := p.PostHashHex[0:7]
+		shortMap[short] = p.PostHashHex
 		tokens := strings.Split(p.Body, "\n")
 		display.Row(sizes, short, username, strings.Join(tokens, " "))
 		if i > 20 {
 			break
 		}
 	}
+	session.SaveShortMap(shortMap)
 }
 
 func ListPosts(follow bool) {
