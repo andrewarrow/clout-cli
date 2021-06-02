@@ -156,7 +156,10 @@ func Post(argMap map[string]string) {
 		longHash = reply
 	}
 
-	text := files.ReadFromIn()
+	text := argMap["text"]
+	if text == "" {
+		text = files.ReadFromIn()
+	}
 
 	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
