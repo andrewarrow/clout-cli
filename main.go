@@ -79,6 +79,8 @@ func main() {
 		ListFollowers()
 	} else if command == "following" {
 		HandleFollowing()
+	} else if command == "global" {
+		HandleGlobal()
 	} else if command == "help" {
 		PrintHelp()
 	} else if command == "login" {

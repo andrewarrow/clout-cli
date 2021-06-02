@@ -3,6 +3,7 @@ package main
 import (
 	"clout/session"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -18,8 +19,8 @@ func HandleBulk() {
 		session.WriteSelected(username)
 		//os.Args = []string{"", "follow", "changeme"}
 		//HandleFollow()
-		//os.Args = []string{"", "reclout", "changeme"}
-		//HandleReclout()
+		os.Args = []string{"", "reclout", "changeme"}
+		HandleReclout()
 		//m := map[string]string{"text": "we also like @derishaviar", "reply": "changeme"}
 		//Post(m)
 		time.Sleep(time.Second * 1)

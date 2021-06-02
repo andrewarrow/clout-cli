@@ -33,7 +33,7 @@ func HandlePosts() {
 		return
 	}
 	if argMap["body"] != "" {
-		ListWithBody()
+		ListWithBody(argMap["follow"] == "true")
 		return
 	}
 	ListPosts(argMap["follow"] == "true")
@@ -107,9 +107,9 @@ func LsPost(p models.Post, shortMap map[string]string) {
 		display.LeftAligned(short, 10))
 }
 
-func ListWithBody() {
+func ListWithBody(follow bool) {
 	pub58 := session.LoggedInPub58()
-	js := network.GetPostsStateless(pub58, false)
+	js := network.GetPostsStateless(pub58, follow)
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
