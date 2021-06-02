@@ -50,6 +50,50 @@ func HandleSync(argMap map[string]string) {
 
 func SyncLoop() {
 	pub58 := session.LoggedInPub58()
+	last := ""
+	for {
+		js := network.GetPostsStatelessWithOptions(last, pub58)
+		var ps models.PostsStateless
+		json.Unmarshal([]byte(js), &ps)
+
+		fmt.Printf("PostsFound %d\n", len(ps.PostsFound))
+		for _, p := range ps.PostsFound {
+			ts := time.Unix(p.TimestampNanos/1000000000, 0)
+			InsertPost("", p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
+			if p.CommentCount > 0 {
+				LoopThruAllCommentsToInsert("", p.PostHashHex)
+			}
+		}
+	}
+}
+func LoopThruAllCommentsToInsert(tabs, key string) {
+	offset := int64(0)
+	pub58 := session.LoggedInPub58()
+
+	for {
+		js := network.GetSinglePostWithOffset(offset, pub58, key)
+		var ps models.PostStateless
+		json.Unmarshal([]byte(js), &ps)
+
+		if len(ps.PostFound.Comments) == 0 {
+			break
+		}
+
+		fmt.Printf("PostFound.Comments %d\n", len(ps.PostFound.Comments))
+		for _, p := range ps.PostFound.Comments {
+			ts := time.Unix(p.TimestampNanos/1000000000, 0)
+			InsertPost(key, p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
+			if p.CommentCount > 0 {
+				LoopThruAllCommentsToInsert(tabs+"  ", p.PostHashHex)
+			}
+		}
+		offset += 20
+		time.Sleep(time.Second * 1)
+	}
+}
+
+func OldSyncLoop() {
+	pub58 := session.LoggedInPub58()
 	last := LastHash()
 	last = ""
 	fmt.Println(last)
@@ -61,7 +105,7 @@ func SyncLoop() {
 		userMap := map[string]bool{}
 		for _, p := range ps.PostsFound {
 			ts := time.Unix(p.TimestampNanos/1000000000, 0)
-			InsertPost(p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
+			InsertPost("", p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
 			userMap[p.ProfileEntryResponse.PublicKeyBase58Check] = true
 			last = p.PostHashHex
 		}

@@ -26,10 +26,16 @@ func CreateSchema() {
 	//number of holders
 	//number of board members
 	sqlStmt := `
-create table posts (reclouts integer, hash text, body text, username text, created_at datetime);
+create table posts (parent text, reclouts integer, hash text, body text, username text, created_at datetime);
 
-CREATE UNIQUE INDEX posts_idx
+CREATE UNIQUE INDEX posts_hash_idx
   ON posts (hash);
+
+CREATE INDEX posts_username_idx
+  ON posts (username);
+
+CREATE INDEX posts_parent_idx
+  ON posts (parent);
 
 create table users (market_cap text, num_hodl integer, num_board integer, points integer, hash text, username text, created_at datetime);
 

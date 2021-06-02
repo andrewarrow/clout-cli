@@ -18,8 +18,9 @@ import (
 func HandleNotifications(argMap map[string]string) {
 	if len(os.Args) > 2 {
 		username := os.Args[2]
-		m := session.ReadAccounts()
-		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(m[username]))
+		//m := session.ReadAccounts()
+		//pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(m[username]))
+		pub58 := session.UsernameToPub58(username)
 		ListNotificationsForUser(pub58)
 		return
 	}
