@@ -33,6 +33,7 @@ func ThreeEmojiWorkForAmount(s string, amount int) bool {
 
 func AwardMonies(username string, amount int) {
 	//TODO actually send the coin
+	// CREATOR_COIN_TRANSFER     artz                 0.08 TheClown
 }
 
 func CheckForValidEntry(username, body string) {

@@ -1,0 +1,4 @@
+POST
+	https://bitclout.com/api/v0/transfer-creator-coin
+
+{"SenderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","CreatorPublicKeyBase58Check":"BC1YLgKX4Ghku4uyQCJSF6FvbPznoxG4zpA6krhzjWN4sUCsuBDJKFG","ReceiverUsernameOrPublicKeyBase58Check":"defy","CreatorCoinToTransferNanos":100000000,"MinFeeRateNanosPerKB":1000}
