@@ -6,7 +6,6 @@ import (
 	"clout/network"
 	"clout/session"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -16,18 +15,20 @@ func HandleGlobal() {
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
+	fields := []string{"buyer", "coin", "amount"}
+	sizes := []int{20, 20, 10}
+	display.Header(sizes, fields...)
 	for _, p := range ps.PostsFound {
 		username := p.ProfileEntryResponse.Username
-		fmt.Println(username)
 		pub58 := p.ProfileEntryResponse.PublicKeyBase58Check
-		GetNotificationsForEachGlobalPost(pub58)
+		GetNotificationsForEachGlobalPost(sizes, username, pub58)
 	}
 }
 
-func GetNotificationsForEachGlobalPost(pub58 string) {
+func GetNotificationsForEachGlobalPost(sizes []int, target, pub58 string) {
 	offset := -1
 	for {
-		fmt.Println("offset", offset)
+		//fmt.Println("offset", offset)
 		js := network.GetNotificationsWithOffset(offset, pub58)
 		var list models.NotificationList
 		json.Unmarshal([]byte(js), &list)
@@ -36,13 +37,16 @@ func GetNotificationsForEachGlobalPost(pub58 string) {
 		}
 		for _, n := range list.Notifications {
 			username := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+			if username == "" {
+				username = "anonymous"
+			}
 			if n.Metadata.TxnType == "SUBMIT_POST" {
 			} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
 			} else if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 
 				if display.OneE9Float(cctm.BitCloutToSellNanos) >= 1.0 {
-					fmt.Println(" ", username, cctm.OperationType, display.OneE9(cctm.BitCloutToSellNanos))
+					display.Row(sizes, username, target, display.OneE9(cctm.BitCloutToSellNanos))
 				}
 			}
 		}
