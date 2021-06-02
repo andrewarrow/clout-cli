@@ -22,6 +22,19 @@ func HandleMachine() {
 	LoopThruAllComments(id)
 }
 
+func ThreeEmojiWorkForAmount(s string, amount int) bool {
+	sum := 0
+	for _, r := range []rune(s) {
+		hex := fmt.Sprintf("%x", r)
+		sum += int(SumIt(hex))
+	}
+	return sum == amount
+}
+
+func AwardMonies(username string, amount int) {
+	//TODO actually send the coin
+}
+
 func CheckForValidEntry(username, body string) {
 	tokens := strings.Split(body, "\n")
 	if len(tokens) > 1 {
@@ -29,11 +42,17 @@ func CheckForValidEntry(username, body string) {
 	} else {
 		tokens = strings.Split(tokens[0], "=")
 		if len(tokens) == 2 {
+			three := strings.TrimSpace(tokens[0])
 			amount := strings.TrimSpace(tokens[1])
 			if strings.HasPrefix(amount, "$") {
 				intAmount, _ := strconv.Atoi(amount[1:])
 				if intAmount > 0 {
-					fmt.Printf("%s %d\n", display.LeftAligned(username, 20), intAmount)
+					if ThreeEmojiWorkForAmount(three, intAmount) {
+						fmt.Printf("%s %s %d\n", display.LeftAligned(username, 20), "SUCCESS", intAmount)
+						AwardMonies(username, intAmount)
+					} else {
+						fmt.Printf("%s %s\n", display.LeftAligned(username, 20), "emoji != amount")
+					}
 				} else {
 					fmt.Printf("%s %s\n", display.LeftAligned(username, 20), "bad amount")
 				}
