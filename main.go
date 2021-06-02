@@ -89,6 +89,8 @@ func main() {
 		HandlePosts()
 	} else if command == "post" {
 		Post(argMap)
+	} else if command == "machine" {
+		HandleMachine()
 	} else if command == "messages" {
 		ListMessages()
 	} else if command == "n" || command == "notifications" || command == "notification" {
