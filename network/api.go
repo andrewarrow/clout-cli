@@ -236,6 +236,12 @@ func GetExchangeRate() string {
 	jsonString := DoGet("api/v0/get-exchange-rate")
 	return jsonString
 }
+func GetNotificationsWithOffset(offset int, pub58 string) string {
+	jsonString := `{"PublicKeyBase58Check":"%s","FetchStartIndex":%d,"NumToFetch":50}`
+	sendString := fmt.Sprintf(jsonString, pub58, offset)
+	jsonString = DoPost("api/v0/get-notifications", []byte(sendString))
+	return jsonString
+}
 func GetNotifications(pub58 string) string {
 	jsonString := `{"PublicKeyBase58Check":"%s","FetchStartIndex":-1,"NumToFetch":50}`
 	sendString := fmt.Sprintf(jsonString, pub58)
