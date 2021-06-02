@@ -1,6 +1,7 @@
 package sync
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -10,10 +11,19 @@ func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, usernam
 	tx, _ := db.Begin()
 
 	s := `insert into posts (parent, reclouts, hash, body, username, created_at) values (?, ?, ?, ?, ?, ?)`
-	thing, _ := tx.Prepare(s)
-	thing.Exec(parent, reclouts, hash, body, username, ts)
+	thing, e := tx.Prepare(s)
+	if e != nil {
+		fmt.Println(e)
+	}
+	_, e = thing.Exec(parent, reclouts, hash, body, username, ts)
+	if e != nil {
+		fmt.Println(e)
+	}
 
-	tx.Commit()
+	e = tx.Commit()
+	if e != nil {
+		fmt.Println(e)
+	}
 }
 func InsertUser(marketCap string, numUsersYouHODL int,
 	numBoardMembers int, points int64, hash, username string) {

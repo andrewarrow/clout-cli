@@ -50,7 +50,9 @@ func HandleSync(argMap map[string]string) {
 
 func SyncLoop() {
 	pub58 := session.LoggedInPub58()
-	last := ""
+	last := LastHash()
+	//last = ""
+	fmt.Println(last)
 	for {
 		js := network.GetPostsStatelessWithOptions(last, pub58)
 		var ps models.PostsStateless
