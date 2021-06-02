@@ -85,6 +85,8 @@ func main() {
 		session.Login()
 	} else if command == "logout" {
 		session.Logout()
+	} else if command == "long" {
+		HandleLongThread()
 	} else if command == "ls" {
 		HandlePosts()
 	} else if command == "post" {
