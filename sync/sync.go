@@ -79,7 +79,7 @@ func LoopThruAllCommentsToInsert(tabs, key string) {
 			break
 		}
 
-		fmt.Printf("PostFound.Comments %d\n", len(ps.PostFound.Comments))
+		fmt.Printf("%sPostFound.Comments %d\n", tabs, len(ps.PostFound.Comments))
 		for _, p := range ps.PostFound.Comments {
 			ts := time.Unix(p.TimestampNanos/1000000000, 0)
 			InsertPost(key, p.RecloutCount, ts, p.PostHashHex, p.Body, p.ProfileEntryResponse.Username)
