@@ -205,6 +205,13 @@ func GetPostsForPublicKey(key string) string {
 		[]byte(fmt.Sprintf(jsonString, key)))
 	return jsonString
 }
+func GetSinglePostWithOffset(offset int64, pub58, key string) string {
+	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","FetchParents":true,"CommentOffset":%d,"CommentLimit":20,"AddGlobalFeedBool":false}`
+	sendString := fmt.Sprintf(jsonString, key, pub58, offset)
+	jsonString = DoPost("api/v0/get-single-post",
+		[]byte(sendString))
+	return jsonString
+}
 func GetSinglePost(pub58, key string) string {
 	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","FetchParents":true,"CommentOffset":0,"CommentLimit":20,"AddGlobalFeedBool":false}`
 	sendString := fmt.Sprintf(jsonString, key, pub58)

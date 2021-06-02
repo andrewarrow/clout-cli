@@ -20,7 +20,11 @@ func HandlePosts() {
 	if argMap["hash"] != "" {
 		m := session.ReadShortMap()
 		short := argMap["hash"]
-		ShowSinglePost(m[short])
+		id := m[short]
+		if id == "" {
+			id = argMap["hash"]
+		}
+		ShowSinglePost(id)
 		return
 	}
 	if len(os.Args) == 3 && !strings.HasPrefix(os.Args[2], "--") {
