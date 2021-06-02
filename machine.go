@@ -2,6 +2,7 @@ package main
 
 import (
 	"clout/display"
+	"clout/keys"
 	"clout/models"
 	"clout/network"
 	"clout/session"
@@ -32,8 +33,26 @@ func ThreeEmojiWorkForAmount(s string, amount int) bool {
 }
 
 func AwardMonies(username string, amount int) {
-	//TODO actually send the coin
-	// CREATOR_COIN_TRANSFER     artz                 0.08 TheClown
+	mnemonic := session.ReadLoggedInWords()
+	if mnemonic == "" {
+		return
+	}
+	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
+
+	creator := session.UsernameToPub58("TheClown")
+
+	// TODO use passed in amount to make this the right amount to give
+	amountInNanos := int64(100000000)
+
+	bigString := network.SubmitTransferCoin(pub58, creator, username, amountInNanos)
+
+	var tx models.TxReady
+	json.Unmarshal([]byte(bigString), &tx)
+
+	jsonString := network.SubmitTx(tx.TransactionHex, priv)
+	if jsonString != "" {
+		fmt.Println("SubmitTx Success!")
+	}
 }
 
 func CheckForValidEntry(username, body string) {
