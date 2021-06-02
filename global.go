@@ -6,6 +6,7 @@ import (
 	"clout/network"
 	"clout/session"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -15,18 +16,24 @@ func HandleGlobal() {
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
-	fields := []string{"buyer", "coin", "amount"}
-	sizes := []int{20, 20, 10}
-	display.Header(sizes, fields...)
+	m := map[string]string{}
 	for _, p := range ps.PostsFound {
-		username := p.ProfileEntryResponse.Username
+		coin := p.ProfileEntryResponse.Username
 		pub58 := p.ProfileEntryResponse.PublicKeyBase58Check
-		GetNotificationsForEachGlobalPost(sizes, username, pub58)
+		m[coin] = pub58
+	}
+	for coin, pub58 := range m {
+		fmt.Println(coin)
+		buyers := GetNotificationsForEachGlobalPost(coin, pub58)
+		for k, _ := range buyers {
+			fmt.Println(" ", k)
+		}
 	}
 }
 
-func GetNotificationsForEachGlobalPost(sizes []int, target, pub58 string) {
+func GetNotificationsForEachGlobalPost(coin, pub58 string) map[string]bool {
 	offset := -1
+	buyers := map[string]bool{}
 	for {
 		//fmt.Println("offset", offset)
 		js := network.GetNotificationsWithOffset(offset, pub58)
@@ -36,9 +43,9 @@ func GetNotificationsForEachGlobalPost(sizes []int, target, pub58 string) {
 			break
 		}
 		for _, n := range list.Notifications {
-			username := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
-			if username == "" {
-				username = "anonymous"
+			buyer := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+			if buyer == "" {
+				continue
 			}
 			if n.Metadata.TxnType == "SUBMIT_POST" {
 			} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
@@ -46,11 +53,13 @@ func GetNotificationsForEachGlobalPost(sizes []int, target, pub58 string) {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 
 				if display.OneE9Float(cctm.BitCloutToSellNanos) >= 10.0 {
-					display.Row(sizes, username, target, display.OneE9(cctm.BitCloutToSellNanos))
+					//display.Row(sizes, username, target, display.OneE9(cctm.BitCloutToSellNanos))
+					buyers[buyer] = true
 				}
 			}
 		}
 		time.Sleep(time.Second * 1)
 		offset += 50
 	}
+	return buyers
 }
