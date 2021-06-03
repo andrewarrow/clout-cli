@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -20,7 +21,10 @@ func HandleBulk() {
 		fmt.Println(username)
 		session.WriteSelected(username)
 
-		VideoFromVimeo(username)
+		//name, url := VideoFromVimeo(username)
+		//m := map[string]string{"text": name, "video": url}
+		//Post(m)
+
 		//os.Args = []string{"", "follow", "changeme"}
 		//HandleFollow()
 		//os.Args = []string{"", "reclout", "changeme"}
@@ -43,7 +47,7 @@ type VimeoRecord struct {
 	Name string
 }
 
-func VideoFromVimeo(query string) string {
+func VideoFromVimeo(query string) (string, string) {
 	pat := os.Getenv("VIMEO_PAT")
 	url := "https://api.vimeo.com/videos?query=" + query
 	js := network.DoGetWithPat(pat, url)
@@ -53,5 +57,8 @@ func VideoFromVimeo(query string) string {
 	fmt.Println(vr.Data[0].Uri)
 	fmt.Println(vr.Data[0].Name)
 
-	return ""
+	tokens := strings.Split(vr.Data[0].Uri, "/")
+	id := tokens[len(tokens)-1]
+
+	return vr.Data[0].Name, "https://player.vimeo.com/video/" + id
 }
