@@ -7,6 +7,7 @@ import (
 	"clout/session"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -44,7 +45,7 @@ func GetNotificationsForEachGlobalPost(coin, pub58 string) map[string]string {
 		}
 		for _, n := range list.Notifications {
 			buyer := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
-			if buyer == "" {
+			if buyer == "" || strings.HasPrefix(buyer, "B1") {
 				continue
 			}
 			if n.Metadata.TxnType == "SUBMIT_POST" {
