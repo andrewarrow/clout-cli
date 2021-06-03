@@ -152,6 +152,7 @@ func ListPosts(follow bool) {
 func Post(argMap map[string]string) {
 	reply := argMap["reply"]
 	imagePath := argMap["image"]
+	videoEmbed := argMap["video"]
 
 	shortMap := session.ReadShortMap()
 
@@ -182,7 +183,12 @@ func Post(argMap map[string]string) {
 		imageUrl = "\"" + imageUrl + "\""
 	}
 
-	bigString := network.SubmitPost(pub58, text, longHash, imageUrl)
+	bigString := ""
+	if videoEmbed == "" {
+		bigString = network.SubmitPost(pub58, text, longHash, imageUrl)
+	} else {
+		bigString = network.SubmitPostWithVideo(pub58, text, longHash, videoEmbed)
+	}
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)

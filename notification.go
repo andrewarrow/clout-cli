@@ -96,7 +96,6 @@ func ListNotifications(argMap map[string]string) {
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
 		m := NotificationForPub(pub58)
 		save[username] = m
-		session.SaveBaselineNotifications(save)
 		deltaFollows := m["follows"] - baseline[username]["follows"]
 		deltaLikes := m["likes"] - baseline[username]["likes"]
 		deltaPosts := m["posts"] - baseline[username]["posts"]
@@ -110,6 +109,7 @@ func ListNotifications(argMap map[string]string) {
 		display.Row(sizes, username, deltaFollows, deltaLikes,
 			deltaPosts, deltaCoin, deltaCoinTx)
 	}
+	session.SaveBaselineNotifications(save)
 }
 func NotificationForPub(pub58 string) map[string]int {
 	js := network.GetNotifications(pub58)
