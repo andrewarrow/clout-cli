@@ -39,6 +39,7 @@ func GetNotificationsForEachGlobalPost(coin, pub58 string) map[string]string {
 		//fmt.Println("offset", offset)
 		js := network.GetNotificationsWithOffset(offset, pub58)
 		var list models.NotificationList
+		//ioutil.WriteFile(fmt.Sprintf("%s_%d.json", coin, offset), []byte(js), 0755)
 		json.Unmarshal([]byte(js), &list)
 		if len(list.Notifications) == 0 || offset > 200 {
 			break
