@@ -25,15 +25,15 @@ func HandleGlobal() {
 	for coin, pub58 := range m {
 		fmt.Println(coin)
 		buyers := GetNotificationsForEachGlobalPost(coin, pub58)
-		for k, _ := range buyers {
-			fmt.Println(" ", k)
+		for k, v := range buyers {
+			fmt.Println(" ", k, v)
 		}
 	}
 }
 
-func GetNotificationsForEachGlobalPost(coin, pub58 string) map[string]bool {
+func GetNotificationsForEachGlobalPost(coin, pub58 string) map[string]string {
 	offset := -1
-	buyers := map[string]bool{}
+	buyers := map[string]string{}
 	for {
 		//fmt.Println("offset", offset)
 		js := network.GetNotificationsWithOffset(offset, pub58)
@@ -52,9 +52,9 @@ func GetNotificationsForEachGlobalPost(coin, pub58 string) map[string]bool {
 			} else if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 
-				if display.OneE9Float(cctm.BitCloutToSellNanos) >= 10.0 {
+				if display.OneE9Float(cctm.BitCloutToSellNanos) >= 1.0 {
 					//display.Row(sizes, username, target, display.OneE9(cctm.BitCloutToSellNanos))
-					buyers[buyer] = true
+					buyers[buyer] = display.OneE9(cctm.BitCloutToSellNanos)
 				}
 			}
 		}
