@@ -59,6 +59,13 @@ func UpdateProfile(pub58, target, desc, username, percent, image string) string 
 		[]byte(send))
 	return jsonString
 }
+func CreateLike(actor, hash string) string {
+	jsonString := `{"ReaderPublicKeyBase58Check":"%s","LikedPostHashHex":"%s","IsUnlike":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, actor, hash)
+	jsonString = DoPost("api/v0/create-like-stateless",
+		[]byte(send))
+	return jsonString
+}
 func CreateFollow(follower, followed string) string {
 	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, follower, followed)

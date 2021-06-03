@@ -22,7 +22,7 @@ func PrintHelp() {
 	fmt.Println("  clout followers              # who follows you")
 	fmt.Println("  clout following              # who you follow")
 	fmt.Println("  clout help                   # this menu")
-	fmt.Println("  clout like [postHash]        # like/unlike a post")
+	fmt.Println("  clout like --hash=x          # like a post")
 	fmt.Println("  clout ls                     # list global posts")
 	fmt.Println("  clout ls --follow            # filter by follow")
 	fmt.Println("  clout ls --hash=x            # show single post")
@@ -83,6 +83,8 @@ func main() {
 		HandleGlobal()
 	} else if command == "help" {
 		PrintHelp()
+	} else if command == "like" {
+		HandleLike(argMap)
 	} else if command == "login" {
 		session.Login()
 	} else if command == "logout" {
