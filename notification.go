@@ -41,10 +41,26 @@ func NotificationsForSyncUser(to, pub58 string) {
 		flavor := n.Metadata.TxnType
 		hash := ""
 		if n.Metadata.TxnType == "SUBMIT_POST" {
+			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
+			if p.Body == "" {
+				phh := p.RecloutedPostEntryResponse.PostHashHex
+				hash = fmt.Sprintf("%s_%s_reclout_%s", from, to, phh)
+			} else {
+				phh := n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex
+				hash = fmt.Sprintf("%s_%s_mention_%s", from, to, phh)
+			}
 		} else if n.Metadata.TxnType == "LIKE" {
+			phh := n.Metadata.LikeTxindexMetadata.PostHashHex
+			hash = fmt.Sprintf("%s_%s_like_%s", from, to, phh)
 		} else if n.Metadata.TxnType == "FOLLOW" {
 			hash = fmt.Sprintf("%s_%s", from, to)
 		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
+			md := n.Metadata.CreatorCoinTransferTxindexMetadata
+			if md.PostHashHex != "" {
+				hash = fmt.Sprintf("%s_%s_%s_d_%d", from, to, md.PostHashHex, md.DiamondLevel)
+			} else {
+				hash = fmt.Sprintf("%s_%s_tx_%s_%d", from, to, md.CreatorUsername, md.CreatorCoinToTransferNanos)
+			}
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
 			cctm := n.Metadata.CreatorCoinTxindexMetadata
 			amount := int64(0)
