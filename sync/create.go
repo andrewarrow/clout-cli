@@ -10,7 +10,7 @@ func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64)
 	defer db.Close()
 	tx, _ := db.Begin()
 
-	s := `insert into notifications (to, flavor, from, hash, meta, coin, amount, created_at) values (?, ?, ?, ?, ?, ?, ?, ?)`
+	s := `insert into notifications (to_user, flavor, from_user, hash, meta, coin, amount, created_at) values (?, ?, ?, ?, ?, ?, ?, ?)`
 	thing, e := tx.Prepare(s)
 	if e != nil {
 		fmt.Println(e)

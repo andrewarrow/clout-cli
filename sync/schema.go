@@ -22,16 +22,16 @@ func CreateSchema() {
 	defer db.Close()
 
 	sqlStmt := `
-create table notifications (to text, flavor text, from text, hash text, meta text, coin text, amount integer, created_at datetime);
+create table notifications (to_user text, flavor text, from_user text, hash text, meta text, coin text, amount integer, created_at datetime);
 
 CREATE UNIQUE INDEX notifications_hash_idx
   ON notifications (hash);
 CREATE INDEX notifications_flavor_idx
   ON notifications (flavor);
 CREATE INDEX notifications_to_idx
-  ON notifications (to);
+  ON notifications (to_user);
 CREATE INDEX notifications_from_idx
-  ON notifications (from);
+  ON notifications (from_user);
 
 create table posts (parent text, reclouts integer, hash text, body text, username text, created_at datetime);
 
