@@ -21,11 +21,23 @@ func CreateSchema() {
 	db := OpenTheDB()
 	defer db.Close()
 
-	//percent
-	//cap
-	//number of holders
-	//number of board members
+	/*
+		CREATOR_COIN_TRANSFER     BeActive             [1] everyone? even m 5fb5823
+		CREATOR_COIN_TRANSFER     BeActive             0.00 BeActive
+		FOLLOW                    Lianna_jigger
+		CREATOR_COIN              Clouterry            [BUY] 0.00
+		CREATOR_COIN_TRANSFER     BeActive             [1]                  698712f
+		CREATOR_COIN_TRANSFER     BeActive             0.00 BeActive
+		LIKE                      I_LOVE_BITCLOUT      we are trying to hel 95cba16
+		LIKE                      I_LOVE_BITCLOUT      we also like @derish 6d6f293
+		SUBMIT_POST               DerishaViar          we also like @derish 6d6f293
+	*/
 	sqlStmt := `
+create table notifications (to text, flavor text, from text, hash text, amount text, meta text, created_at datetime);
+
+CREATE UNIQUE INDEX notifications_hash_idx
+  ON notifications (hash);
+
 create table posts (parent text, reclouts integer, hash text, body text, username text, created_at datetime);
 
 CREATE UNIQUE INDEX posts_hash_idx

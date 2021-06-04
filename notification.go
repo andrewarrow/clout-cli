@@ -18,6 +18,11 @@ import (
 func HandleNotifications(argMap map[string]string) {
 	if len(os.Args) > 2 {
 		username := os.Args[2]
+
+		if username == "sync" {
+			FillUpLocalDatabaseWithNotifications()
+			return
+		}
 		//m := session.ReadAccounts()
 		//pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(m[username]))
 		pub58 := session.UsernameToPub58(username)
@@ -26,61 +31,35 @@ func HandleNotifications(argMap map[string]string) {
 	}
 	ListNotifications(argMap)
 }
-func ListNotificationsForUser(pub58 string) {
-
+func NotificationsForSyncUser(pub58 string) {
 	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("foo.json", []byte(js), 0755)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
-	fields := []string{"flavor", "username", "meta", "hash"}
-	sizes := []int{25, 20, 20, 10}
-	display.Header(sizes, fields...)
-	shortMap := map[string]string{}
 	for _, n := range list.Notifications {
-		username := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
-		meta := ""
-		short := ""
+		from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+		flavor := n.Metadata.TxnType
+		fmt.Println(" ", "from", display.LeftAligned(from, 20),
+			display.LeftAligned(flavor, 30))
 		if n.Metadata.TxnType == "SUBMIT_POST" {
-			//parent := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.ParentPostHashHex]
-			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
-			short = p.PostHashHex[0:7]
-			shortMap[short] = p.PostHashHex
-			meta = BodyParse(p.Body)
-			if meta == "" {
-				meta = BodyParse(p.RecloutedPostEntryResponse.Body)
-				short = p.RecloutedPostEntryResponse.PostHashHex[0:7]
-				shortMap[short] = p.PostHashHex
-			}
 		} else if n.Metadata.TxnType == "LIKE" {
-			p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
-			short = p.PostHashHex[0:7]
-			shortMap[short] = p.PostHashHex
-			meta = BodyParse(p.Body)
 		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
-			md := n.Metadata.CreatorCoinTransferTxindexMetadata
-			if md.PostHashHex != "" {
-				p := list.PostsByHash[md.PostHashHex]
-				meta = fmt.Sprintf("[%d] %s", md.DiamondLevel, BodyParse(p.Body))
-				short = p.PostHashHex[0:7]
-				shortMap[short] = p.PostHashHex
-			} else {
-				meta = display.OneE9(md.CreatorCoinToTransferNanos) + " " +
-					md.CreatorUsername
-			}
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
-			cctm := n.Metadata.CreatorCoinTxindexMetadata
-			if cctm.OperationType == "buy" {
-				meta = fmt.Sprintf("[BUY] %s", display.OneE9(cctm.BitCloutToSellNanos))
-			} else if cctm.OperationType == "sell" {
-				meta = fmt.Sprintf("[SELL] %s", display.OneE9(cctm.CreatorCoinToSellNanos))
-			}
-			//cctm.BitCloutToAddNanos
 		}
-
-		display.Row(sizes, n.Metadata.TxnType, username, meta, short)
 	}
-	session.SaveShortMap(shortMap)
 }
+func FillUpLocalDatabaseWithNotifications() {
+	sorted := session.ReadAccountsSorted()
+	m := session.ReadAccounts()
+	for _, to := range sorted {
+		fmt.Println("to", to)
+		s := m[to]
+		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
+		NotificationsForSyncUser(pub58)
+		time.Sleep(time.Second * 1)
+	}
+}
+
 func ListNotifications(argMap map[string]string) {
 
 	sorted := session.ReadAccountsSorted()
@@ -202,4 +181,59 @@ func DisplayPostForNotification(flavor string, p models.Post) {
 	ago := timeago.FromDuration(time.Since(ts))
 	tokens := strings.Split(p.Body, "\n")
 	fmt.Println(flavor, display.LeftAligned(tokens[0], 60), "     ", ago)
+}
+func ListNotificationsForUser(pub58 string) {
+
+	js := network.GetNotifications(pub58)
+	//ioutil.WriteFile("foo.json", []byte(js), 0755)
+	var list models.NotificationList
+	json.Unmarshal([]byte(js), &list)
+	fields := []string{"flavor", "username", "meta", "hash"}
+	sizes := []int{25, 20, 20, 10}
+	display.Header(sizes, fields...)
+	shortMap := map[string]string{}
+	for _, n := range list.Notifications {
+		username := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+		meta := ""
+		short := ""
+		if n.Metadata.TxnType == "SUBMIT_POST" {
+			//parent := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.ParentPostHashHex]
+			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
+			short = p.PostHashHex[0:7]
+			shortMap[short] = p.PostHashHex
+			meta = BodyParse(p.Body)
+			if meta == "" {
+				meta = BodyParse(p.RecloutedPostEntryResponse.Body)
+				short = p.RecloutedPostEntryResponse.PostHashHex[0:7]
+				shortMap[short] = p.PostHashHex
+			}
+		} else if n.Metadata.TxnType == "LIKE" {
+			p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
+			short = p.PostHashHex[0:7]
+			shortMap[short] = p.PostHashHex
+			meta = BodyParse(p.Body)
+		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
+			md := n.Metadata.CreatorCoinTransferTxindexMetadata
+			if md.PostHashHex != "" {
+				p := list.PostsByHash[md.PostHashHex]
+				meta = fmt.Sprintf("[%d] %s", md.DiamondLevel, BodyParse(p.Body))
+				short = p.PostHashHex[0:7]
+				shortMap[short] = p.PostHashHex
+			} else {
+				meta = display.OneE9(md.CreatorCoinToTransferNanos) + " " +
+					md.CreatorUsername
+			}
+		} else if n.Metadata.TxnType == "CREATOR_COIN" {
+			cctm := n.Metadata.CreatorCoinTxindexMetadata
+			if cctm.OperationType == "buy" {
+				meta = fmt.Sprintf("[BUY] %s", display.OneE9(cctm.BitCloutToSellNanos))
+			} else if cctm.OperationType == "sell" {
+				meta = fmt.Sprintf("[SELL] %s", display.OneE9(cctm.CreatorCoinToSellNanos))
+			}
+			//cctm.BitCloutToAddNanos
+		}
+
+		display.Row(sizes, n.Metadata.TxnType, username, meta, short)
+	}
+	session.SaveShortMap(shortMap)
 }
