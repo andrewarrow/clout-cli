@@ -38,28 +38,34 @@ func NotificationsForSyncUser(to, pub58 string) {
 	json.Unmarshal([]byte(js), &list)
 	for _, n := range list.Notifications {
 		from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
-		flavor := n.Metadata.TxnType
 		hash := ""
+		meta := ""
 		if n.Metadata.TxnType == "SUBMIT_POST" {
 			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
 			if p.Body == "" {
 				phh := p.RecloutedPostEntryResponse.PostHashHex
 				hash = fmt.Sprintf("%s_%s_reclout_%s", from, to, phh)
+				meta = "reclout: " + BodyParse(p.RecloutedPostEntryResponse.Body)
 			} else {
-				phh := n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex
-				hash = fmt.Sprintf("%s_%s_mention_%s", from, to, phh)
+				hash = fmt.Sprintf("%s_%s_mention_%s", from, to, p.PostHashHex)
+				meta = "mention: " + BodyParse(p.Body)
 			}
 		} else if n.Metadata.TxnType == "LIKE" {
-			phh := n.Metadata.LikeTxindexMetadata.PostHashHex
-			hash = fmt.Sprintf("%s_%s_like_%s", from, to, phh)
+			p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
+			hash = fmt.Sprintf("%s_%s_like_%s", from, to, p.PostHashHex)
+			meta = BodyParse(p.Body)
 		} else if n.Metadata.TxnType == "FOLLOW" {
 			hash = fmt.Sprintf("%s_%s", from, to)
+			meta = "follow: " + from
 		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
 			md := n.Metadata.CreatorCoinTransferTxindexMetadata
 			if md.PostHashHex != "" {
+				p := list.PostsByHash[md.PostHashHex]
 				hash = fmt.Sprintf("%s_%s_%s_d_%d", from, to, md.PostHashHex, md.DiamondLevel)
+				meta = fmt.Sprintf("%d diamond(s): ", md.DiamondLevel) + BodyParse(p.Body)
 			} else {
 				hash = fmt.Sprintf("%s_%s_tx_%s_%d", from, to, md.CreatorUsername, md.CreatorCoinToTransferNanos)
+				meta = fmt.Sprintf("coin: %s %d", md.CreatorUsername, md.CreatorCoinToTransferNanos)
 			}
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
 			cctm := n.Metadata.CreatorCoinTxindexMetadata
@@ -70,9 +76,9 @@ func NotificationsForSyncUser(to, pub58 string) {
 				amount = cctm.CreatorCoinToSellNanos
 			}
 			hash = fmt.Sprintf("%s_%s_%s_%d", from, to, cctm.OperationType, amount)
+			meta = fmt.Sprintf("%s: %s %d", cctm.OperationType, from, amount)
 		}
-		fmt.Println(" ", "from", display.LeftAligned(from, 20),
-			display.LeftAligned(flavor, 30), hash)
+		fmt.Println(" ", meta, len(hash))
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {
