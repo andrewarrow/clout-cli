@@ -39,6 +39,9 @@ func NotificationsForSyncUser(to, pub58 string) {
 	json.Unmarshal([]byte(js), &list)
 	for _, n := range list.Notifications {
 		from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+		if from == "" {
+			from = "anonymous"
+		}
 		hash := ""
 		meta := ""
 		flavor := ""
@@ -87,11 +90,11 @@ func NotificationsForSyncUser(to, pub58 string) {
 			} else if cctm.OperationType == "sell" {
 				amount = cctm.CreatorCoinToSellNanos
 			}
-			hash = fmt.Sprintf("%s_%s_%s_%d", from, to, cctm.OperationType, amount)
+			hash = fmt.Sprintf("%s_%s_%s_%d_%s", from, to, cctm.OperationType, amount, n.Metadata.BlockHashHex)
 			meta = fmt.Sprintf("%s %d", from, amount)
 			flavor = cctm.OperationType
 		}
-		fmt.Println(" ", flavor, from, coin)
+		fmt.Printf("|%s|%s|%s|\n", flavor, from, coin)
 		sync.InsertNotification(to, from, flavor, meta, hash, coin, amount)
 	}
 }
