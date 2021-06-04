@@ -31,7 +31,7 @@ func HandleNotifications(argMap map[string]string) {
 	}
 	ListNotifications(argMap)
 }
-func NotificationsForSyncUser(pub58 string) {
+func NotificationsForSyncUser(to, pub58 string) {
 	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("foo.json", []byte(js), 0755)
 	var list models.NotificationList
@@ -39,13 +39,24 @@ func NotificationsForSyncUser(pub58 string) {
 	for _, n := range list.Notifications {
 		from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
 		flavor := n.Metadata.TxnType
-		fmt.Println(" ", "from", display.LeftAligned(from, 20),
-			display.LeftAligned(flavor, 30))
+		hash := ""
 		if n.Metadata.TxnType == "SUBMIT_POST" {
 		} else if n.Metadata.TxnType == "LIKE" {
+		} else if n.Metadata.TxnType == "FOLLOW" {
+			hash = fmt.Sprintf("%s_%s", from, to)
 		} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
+			cctm := n.Metadata.CreatorCoinTxindexMetadata
+			amount := int64(0)
+			if cctm.OperationType == "buy" {
+				amount = cctm.BitCloutToSellNanos
+			} else if cctm.OperationType == "sell" {
+				amount = cctm.CreatorCoinToSellNanos
+			}
+			hash = fmt.Sprintf("%s_%s_%s_%d", from, to, cctm.OperationType, amount)
 		}
+		fmt.Println(" ", "from", display.LeftAligned(from, 20),
+			display.LeftAligned(flavor, 30), hash)
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {
@@ -55,7 +66,7 @@ func FillUpLocalDatabaseWithNotifications() {
 		fmt.Println("to", to)
 		s := m[to]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
-		NotificationsForSyncUser(pub58)
+		NotificationsForSyncUser(to, pub58)
 		time.Sleep(time.Second * 1)
 	}
 }
