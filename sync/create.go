@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func InsertNotification(to, from, flavor, meta, hash string) {
+func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64) {
 }
 func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, username string) {
 	db := OpenTheDB()

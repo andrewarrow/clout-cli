@@ -42,6 +42,8 @@ func NotificationsForSyncUser(to, pub58 string) {
 		hash := ""
 		meta := ""
 		flavor := ""
+		coin := ""
+		amount := int64(0)
 		if n.Metadata.TxnType == "SUBMIT_POST" {
 			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
 			if p.Body == "" {
@@ -69,15 +71,17 @@ func NotificationsForSyncUser(to, pub58 string) {
 				p := list.PostsByHash[md.PostHashHex]
 				hash = fmt.Sprintf("%s_%s_%s_d_%d", from, to, md.PostHashHex, md.DiamondLevel)
 				meta = fmt.Sprintf("%d ", md.DiamondLevel) + BodyParse(p.Body)
+				amount = md.DiamondLevel
 				flavor = "diamond"
 			} else {
 				hash = fmt.Sprintf("%s_%s_tx_%s_%d", from, to, md.CreatorUsername, md.CreatorCoinToTransferNanos)
 				meta = fmt.Sprintf("%s %d", md.CreatorUsername, md.CreatorCoinToTransferNanos)
+				amount = md.CreatorCoinToTransferNanos
+				coin = md.CreatorUsername
 				flavor = "coin"
 			}
 		} else if n.Metadata.TxnType == "CREATOR_COIN" {
 			cctm := n.Metadata.CreatorCoinTxindexMetadata
-			amount := int64(0)
 			if cctm.OperationType == "buy" {
 				amount = cctm.BitCloutToSellNanos
 			} else if cctm.OperationType == "sell" {
@@ -88,7 +92,7 @@ func NotificationsForSyncUser(to, pub58 string) {
 			flavor = cctm.OperationType
 		}
 		fmt.Println(" ", flavor, meta, len(hash))
-		sync.InsertNotification(to, from, flavor, meta, hash)
+		sync.InsertNotification(to, from, flavor, meta, hash, coin, amount)
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {
