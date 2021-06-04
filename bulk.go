@@ -17,7 +17,7 @@ func HandleBulk() {
 		return
 	}
 
-	changeme := ""
+	//changeme := ""
 	for _, username := range session.GetAccountsForTag(query) {
 		fmt.Println(username)
 		session.WriteSelected(username)
