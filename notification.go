@@ -96,6 +96,7 @@ func NotificationsForSyncUser(to, pub58 string) {
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {
+	sync.CreateSchema()
 	sorted := session.ReadAccountsSorted()
 	m := session.ReadAccounts()
 	for _, to := range sorted {
