@@ -10,6 +10,7 @@ type Notification struct {
 }
 
 type Metadata struct {
+	BlockHashHex                       string
 	TxnType                            string
 	TransactorPublicKeyBase58Check     string
 	CreatorCoinTransferTxindexMetadata CreatorCoinTransferTxindexMetadata

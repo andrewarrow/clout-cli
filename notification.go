@@ -74,7 +74,7 @@ func NotificationsForSyncUser(to, pub58 string) {
 				amount = md.DiamondLevel
 				flavor = "diamond"
 			} else {
-				hash = fmt.Sprintf("%s_%s_tx_%s_%d", from, to, md.CreatorUsername, md.CreatorCoinToTransferNanos)
+				hash = fmt.Sprintf("%s_%s_tx_%s_%d_%s", from, to, md.CreatorUsername, md.CreatorCoinToTransferNanos, n.Metadata.BlockHashHex)
 				meta = fmt.Sprintf("%s %d", md.CreatorUsername, md.CreatorCoinToTransferNanos)
 				amount = md.CreatorCoinToTransferNanos
 				coin = md.CreatorUsername
