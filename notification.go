@@ -91,7 +91,7 @@ func NotificationsForSyncUser(to, pub58 string) {
 			meta = fmt.Sprintf("%s %d", from, amount)
 			flavor = cctm.OperationType
 		}
-		fmt.Println(" ", flavor, meta, len(hash))
+		fmt.Println(" ", flavor, from, coin)
 		sync.InsertNotification(to, from, flavor, meta, hash, coin, amount)
 	}
 }

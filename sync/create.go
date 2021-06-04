@@ -6,6 +6,25 @@ import (
 )
 
 func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64) {
+	db := OpenTheDB()
+	defer db.Close()
+	tx, _ := db.Begin()
+
+	s := `insert into notifications (to, flavor, from, hash, meta, coin, amount, created_at) values (?, ?, ?, ?, ?, ?, ?, ?)`
+	thing, e := tx.Prepare(s)
+	if e != nil {
+		fmt.Println(e)
+	}
+	ts := time.Now()
+	_, e = thing.Exec(to, flavor, from, hash, meta, coin, amount, ts)
+	if e != nil {
+		fmt.Println(e)
+	}
+
+	e = tx.Commit()
+	if e != nil {
+		fmt.Println(e)
+	}
 }
 func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, username string) {
 	db := OpenTheDB()
