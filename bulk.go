@@ -17,6 +17,7 @@ func HandleBulk() {
 		return
 	}
 
+	changeme := ""
 	for _, username := range session.GetAccountsForTag(query) {
 		fmt.Println(username)
 		session.WriteSelected(username)
@@ -25,11 +26,11 @@ func HandleBulk() {
 		//m := map[string]string{"text": name, "video": url}
 		//Post(m)
 
-		//os.Args = []string{"", "follow", "changeme"}
+		//os.Args = []string{"", "follow", ""}
 		//HandleFollow()
-		//os.Args = []string{"", "reclout", "changeme"}
+		//os.Args = []string{"", "reclout", changeme}
 		//HandleReclout()
-		//m := map[string]string{"text": "we also like @derishaviar", "reply": "changeme"}
+		//m := map[string]string{"text": "everyone? even me?", "reply": changeme}
 		//Post(m)
 		//m := map[string]string{"hash": "changeme"}
 		//HandleLike(m)
