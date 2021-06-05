@@ -101,7 +101,11 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 		}
 		ok := sync.InsertNotification(tx, to, from, flavor, meta, hash, coin, amount)
 		if ok {
-			fmt.Printf("|%s|%s|%s|\n", flavor, from, coin)
+			fmt.Printf("%s %s %s %s\n", display.LeftAligned(flavor, 10),
+				display.LeftAligned(from, 20),
+				display.LeftAligned(coin, 20),
+				display.LeftAligned(amount, 10))
+			fmt.Printf("\n%s\n", meta)
 		}
 	}
 	e := tx.Commit()
