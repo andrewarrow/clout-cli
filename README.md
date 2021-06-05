@@ -62,7 +62,7 @@ Backup this one file, and it can get you into all your accounts.
 
 If you don't have gcc installed [install it first](https://www.guru99.com/c-gcc-install.html).
 
-Just run `go mod vendor` and then `go build`
+Then run `go mod vendor` and then `go build`
 
 See this [blog post](https://andrewarrow.substack.com/p/how-to-clone-build-and-run-clout).
 
