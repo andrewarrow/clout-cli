@@ -66,6 +66,7 @@ func SyncLoop() {
 				LoopThruAllCommentsToInsert("", p.PostHashHex)
 			}
 		}
+		time.Sleep(time.Second * 1)
 	}
 }
 func LoopThruAllCommentsToInsert(tabs, key string) {
@@ -90,7 +91,6 @@ func LoopThruAllCommentsToInsert(tabs, key string) {
 			}
 		}
 		offset += 20
-		time.Sleep(time.Second * 1)
 	}
 }
 

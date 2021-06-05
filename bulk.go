@@ -5,12 +5,26 @@ import (
 	"clout/session"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 	"time"
 )
 
 func HandleBulk() {
+
+	file := argMap["file"]
+	if file != "" {
+		b, _ := ioutil.ReadFile(file)
+		s := string(b)
+		lines := strings.Split(s, "\n")
+		for _, line := range lines {
+			fmt.Println(line)
+			//os.Args = []string{"", "diamond", line}
+			//HandleDiamond()
+		}
+		return
+	}
 
 	query := argMap["query"]
 	if query == "" {
