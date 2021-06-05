@@ -73,6 +73,13 @@ func CreateFollow(follower, followed string) string {
 		[]byte(send))
 	return jsonString
 }
+func SendBitclout(sender, receiver string, amount int64) string {
+	jsonString := `{"SenderPublicKeyBase58Check":"%s","RecipientPublicKeyOrUsername":"%s","AmountNanos":%d,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, sender, receiver, amount)
+	jsonString = DoPost("api/v0/send-bitclout",
+		[]byte(send))
+	return jsonString
+}
 func SubmitTransferCoin(sender, creator, receiver string, amount int64) string {
 	jsonString := `{"SenderPublicKeyBase58Check":"%s","CreatorPublicKeyBase58Check":"%s","ReceiverUsernameOrPublicKeyBase58Check":"%s","CreatorCoinToTransferNanos":%d,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, sender, creator, receiver, amount)

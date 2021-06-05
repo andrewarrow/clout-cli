@@ -107,6 +107,8 @@ func main() {
 		HandleReclout()
 	} else if command == "sell" {
 		HandleSell()
+	} else if command == "send" {
+		HandleSend()
 	} else if command == "sync" {
 		sync.HandleSync(argMap)
 	} else if command == "update" {

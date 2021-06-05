@@ -2,10 +2,11 @@ package sync
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
-func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64) {
+func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64) bool {
 	db := OpenTheDB()
 	defer db.Close()
 	tx, _ := db.Begin()
@@ -18,13 +19,17 @@ func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64)
 	ts := time.Now()
 	_, e = thing.Exec(to, flavor, from, hash, meta, coin, amount, ts)
 	if e != nil {
-		fmt.Println(e)
+		if !strings.HasPrefix(e.Error(), "UNIQUE constraint failed") {
+			fmt.Println(e)
+			return false
+		}
 	}
 
 	e = tx.Commit()
 	if e != nil {
 		fmt.Println(e)
 	}
+	return true
 }
 func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, username string) {
 	db := OpenTheDB()

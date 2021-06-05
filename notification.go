@@ -38,6 +38,9 @@ func NotificationsForSyncUser(to, pub58 string) {
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
 	for _, n := range list.Notifications {
+		if n.Metadata.TxnType == "BASIC_TRANSFER" {
+			continue
+		}
 		from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
 		if from == "" {
 			from = "anonymous"
