@@ -97,8 +97,10 @@ func NotificationsForSyncUser(to, pub58 string) {
 			meta = fmt.Sprintf("%s %d", from, amount)
 			flavor = cctm.OperationType
 		}
-		fmt.Printf("|%s|%s|%s|\n", flavor, from, coin)
-		sync.InsertNotification(to, from, flavor, meta, hash, coin, amount)
+		ok := sync.InsertNotification(to, from, flavor, meta, hash, coin, amount)
+		if ok {
+			fmt.Printf("|%s|%s|%s|\n", flavor, from, coin)
+		}
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {

@@ -19,10 +19,10 @@ func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64)
 	ts := time.Now()
 	_, e = thing.Exec(to, flavor, from, hash, meta, coin, amount, ts)
 	if e != nil {
-		if !strings.HasPrefix(e.Error(), "UNIQUE constraint failed") {
-			fmt.Println(e)
+		if strings.HasPrefix(e.Error(), "UNIQUE constraint failed") {
 			return false
 		}
+		fmt.Println(e)
 	}
 
 	e = tx.Commit()
