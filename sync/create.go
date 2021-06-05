@@ -1,20 +1,18 @@
 package sync
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 	"time"
 )
 
-func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64) bool {
-	db := OpenTheDB()
-	defer db.Close()
-	tx, _ := db.Begin()
+func InsertNotification(tx *sql.Tx, to, from, flavor, meta, hash, coin string, amount int64) bool {
 
 	s := `insert into notifications (to_user, flavor, from_user, hash, meta, coin, amount, created_at) values (?, ?, ?, ?, ?, ?, ?, ?)`
 	thing, e := tx.Prepare(s)
 	if e != nil {
-		fmt.Println(e)
+		fmt.Println("1", e)
 	}
 	ts := time.Now()
 	_, e = thing.Exec(to, flavor, from, hash, meta, coin, amount, ts)
@@ -22,13 +20,9 @@ func InsertNotification(to, from, flavor, meta, hash, coin string, amount int64)
 		if strings.HasPrefix(e.Error(), "UNIQUE constraint failed") {
 			return false
 		}
-		fmt.Println(e)
+		fmt.Println("2", e)
 	}
 
-	e = tx.Commit()
-	if e != nil {
-		fmt.Println(e)
-	}
 	return true
 }
 func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, username string) {

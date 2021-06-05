@@ -52,7 +52,7 @@ CREATE UNIQUE INDEX users_idx
 
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
-		//fmt.Printf("%q\n", err)
+		fmt.Printf("%v\n", err)
 		return
 	}
 }

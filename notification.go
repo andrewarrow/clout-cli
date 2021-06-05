@@ -7,6 +7,7 @@ import (
 	"clout/network"
 	"clout/session"
 	"clout/sync"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -32,11 +33,12 @@ func HandleNotifications(argMap map[string]string) {
 	}
 	ListNotifications(argMap)
 }
-func NotificationsForSyncUser(to, pub58 string) {
+func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("foo.json", []byte(js), 0755)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
+	tx, _ := db.Begin()
 	for _, n := range list.Notifications {
 		if n.Metadata.TxnType == "BASIC_TRANSFER" {
 			continue
@@ -97,21 +99,27 @@ func NotificationsForSyncUser(to, pub58 string) {
 			meta = fmt.Sprintf("%s %d", from, amount)
 			flavor = cctm.OperationType
 		}
-		ok := sync.InsertNotification(to, from, flavor, meta, hash, coin, amount)
+		ok := sync.InsertNotification(tx, to, from, flavor, meta, hash, coin, amount)
 		if ok {
 			fmt.Printf("|%s|%s|%s|\n", flavor, from, coin)
 		}
+	}
+	e := tx.Commit()
+	if e != nil {
+		fmt.Println("3", e)
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {
 	sync.CreateSchema()
 	sorted := session.ReadAccountsSorted()
 	m := session.ReadAccounts()
+	db := sync.OpenTheDB()
+	defer db.Close()
 	for _, to := range sorted {
 		fmt.Println("to", to)
 		s := m[to]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
-		NotificationsForSyncUser(to, pub58)
+		NotificationsForSyncUser(db, to, pub58)
 		time.Sleep(time.Second * 1)
 	}
 }
