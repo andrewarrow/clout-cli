@@ -118,11 +118,17 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 	}
 }
 func FillUpLocalDatabaseWithNotifications() {
+	query := argMap["query"]
+
 	sync.CreateSchema()
 	sorted := session.ReadAccountsSorted()
 	m := session.ReadAccounts()
 	db := sync.OpenTheDB()
 	defer db.Close()
+
+	if query != "" {
+		sorted = session.GetAccountsForTag(query)
+	}
 	for _, to := range sorted {
 		fmt.Println("to", to)
 		s := m[to]
