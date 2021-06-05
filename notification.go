@@ -48,6 +48,7 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 			from = "anonymous"
 		}
 		hash := ""
+		phh := ""
 		meta := ""
 		flavor := ""
 		coin := ""
@@ -55,18 +56,20 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 		if n.Metadata.TxnType == "SUBMIT_POST" {
 			p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
 			if p.Body == "" {
-				phh := p.RecloutedPostEntryResponse.PostHashHex
+				phh = p.RecloutedPostEntryResponse.PostHashHex
 				hash = fmt.Sprintf("%s_%s_reclout_%s", from, to, phh)
 				flavor = "reclout"
 				meta = BodyParse(p.RecloutedPostEntryResponse.Body)
 			} else {
-				hash = fmt.Sprintf("%s_%s_mention_%s", from, to, p.PostHashHex)
+				phh = p.PostHashHex
+				hash = fmt.Sprintf("%s_%s_mention_%s", from, to, phh)
 				flavor = "mention"
 				meta = BodyParse(p.Body)
 			}
 		} else if n.Metadata.TxnType == "LIKE" {
 			p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
-			hash = fmt.Sprintf("%s_%s_like_%s", from, to, p.PostHashHex)
+			phh = p.PostHashHex
+			hash = fmt.Sprintf("%s_%s_like_%s", from, to, phh)
 			meta = BodyParse(p.Body)
 			flavor = "like"
 		} else if n.Metadata.TxnType == "FOLLOW" {
@@ -77,7 +80,8 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 			md := n.Metadata.CreatorCoinTransferTxindexMetadata
 			if md.PostHashHex != "" {
 				p := list.PostsByHash[md.PostHashHex]
-				hash = fmt.Sprintf("%s_%s_%s_d_%d", from, to, md.PostHashHex, md.DiamondLevel)
+				phh = p.PostHashHex
+				hash = fmt.Sprintf("%s_%s_%s_d_%d", from, to, phh, md.DiamondLevel)
 				meta = fmt.Sprintf("%d ", md.DiamondLevel) + BodyParse(p.Body)
 				amount = md.DiamondLevel
 				flavor = "diamond"
@@ -105,7 +109,7 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 				display.LeftAligned(from, 20),
 				display.LeftAligned(coin, 20),
 				display.LeftAligned(amount, 10))
-			fmt.Printf("\n%s\n", meta)
+			fmt.Printf("\n%s\n%s\n", meta, phh)
 		}
 	}
 	e := tx.Commit()
