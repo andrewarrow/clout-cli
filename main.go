@@ -123,6 +123,8 @@ func main() {
 		HandleWords(argMap)
 	} else if command == "whoami" {
 		session.Whoami(argMap)
+	} else if command == "youtube" {
+		HandleYoutube()
 	} else {
 		PostsForPublicKey(command)
 	}

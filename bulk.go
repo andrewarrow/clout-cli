@@ -40,6 +40,8 @@ func HandleBulk() {
 		//m := map[string]string{"text": name, "video": url}
 		//Post(m)
 
+		//m := map[string]string{"percent": "3333"}
+		//HandleUpdateProfile(m)
 		//os.Args = []string{"", "follow", ""}
 		//HandleFollow()
 		//os.Args = []string{"", "reclout", changeme}
