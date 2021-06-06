@@ -39,6 +39,7 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
 	tx, _ := db.Begin()
+	followed := map[string]bool{}
 	for _, n := range list.Notifications {
 		if n.Metadata.TxnType == "BASIC_TRANSFER" {
 			continue
@@ -110,6 +111,12 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 				display.LeftAligned(coin, 20),
 				display.LeftAligned(amount, 10))
 			fmt.Printf("\n%s\n%s\n", meta, phh)
+			if followed[from] == false {
+				os.Args = []string{"", "follow", from}
+				followed[from] = true
+				fmt.Println("--------", to, from)
+				HandleFollow()
+			}
 		}
 	}
 	e := tx.Commit()
@@ -131,10 +138,11 @@ func FillUpLocalDatabaseWithNotifications() {
 	}
 	for _, to := range sorted {
 		fmt.Println("to", to)
+		session.WriteSelected(to)
 		s := m[to]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
 		NotificationsForSyncUser(db, to, pub58)
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 2)
 	}
 }
 
