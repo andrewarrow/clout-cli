@@ -111,6 +111,8 @@ func main() {
 		HandleSend()
 	} else if command == "sync" {
 		sync.HandleSync(argMap)
+	} else if command == "tags" {
+		HandleTags()
 	} else if command == "update" {
 		HandleUpdateProfile(argMap)
 	} else if command == "upload" {
