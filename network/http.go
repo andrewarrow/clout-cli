@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -64,7 +65,10 @@ func DoHttpRead(verb, route string, client *http.Client, request *http.Request) 
 		if resp.StatusCode == 200 || resp.StatusCode == 201 || resp.StatusCode == 204 {
 			return string(body)
 		} else {
-			fmt.Printf("\n\nERROR: %d %s\n\n", resp.StatusCode, string(body))
+			text := string(body)
+			if strings.Contains(text, "RuleErrorFollowEntryAlreadyExists") == false {
+				fmt.Printf("\n\nERROR: %d %s\n\n", resp.StatusCode, string(body))
+			}
 			return ""
 		}
 	}
