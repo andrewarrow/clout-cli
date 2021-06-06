@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"strconv"
 )
 
 func HandleUpdateProfile(argMap map[string]string) {
@@ -18,7 +17,7 @@ func HandleUpdateProfile(argMap map[string]string) {
 		fmt.Println("")
 		fmt.Println("--desc='any desc you want'")
 		fmt.Println("--image=path_to_file.png")
-		fmt.Println("--percent=18")
+		fmt.Println("--percent=3333")
 		fmt.Println("--username=cloutcli")
 		fmt.Println("")
 		return
@@ -26,7 +25,7 @@ func HandleUpdateProfile(argMap map[string]string) {
 
 	if argMap["desc"] != "" {
 		descData := files.ReadFromIn()
-		SubmitProfileUpdate(descData, "", "300", "")
+		SubmitProfileUpdate(descData, "", "3333", "")
 		return
 	}
 
@@ -35,7 +34,7 @@ func HandleUpdateProfile(argMap map[string]string) {
 	username := argMap["username"]
 	desc := argMap["desc"]
 	imageData := ""
-	percentData := "300"
+	percentData := "3333"
 	usernameData := ""
 	descData := ""
 	if image != "" {
@@ -48,8 +47,7 @@ func HandleUpdateProfile(argMap map[string]string) {
 		imageData = "data:image/png;base64," + str
 	}
 	if percent != "" {
-		p, _ := strconv.Atoi(percent)
-		percentData = fmt.Sprintf("%d", p*100)
+		percentData = percent
 	}
 	if username != "" {
 		usernameData = username
