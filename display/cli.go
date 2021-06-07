@@ -39,8 +39,8 @@ func Row(sizes []int, items ...interface{}) {
 func LeftAligned(thing interface{}, size int) string {
 	s := fmt.Sprintf("%v", thing)
 
-	if len(s) > size {
-		return s[0:size]
+	if len(s) >= size {
+		return s[0:size-1] + " "
 	}
 	fill := size - len(s)
 	spaces := []string{}

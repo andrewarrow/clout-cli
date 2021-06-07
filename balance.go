@@ -11,8 +11,8 @@ import (
 func HandleBalances(argMap map[string]string) {
 	list := session.ReadAccountsSorted()
 	m := session.ReadAccounts()
-	fields := []string{"username", "% owned", "co-owner1", "co-owner2", "balance"}
-	sizes := []int{15, 10, 20, 20, 10}
+	fields := []string{"username", "% owned", "co-owner1", "co-owner2", "balance", "price"}
+	sizes := []int{15, 10, 15, 15, 10, 10}
 	display.Header(sizes, fields...)
 	for _, username := range list {
 		s := m[username]
@@ -20,6 +20,7 @@ func HandleBalances(argMap map[string]string) {
 		user := session.Pub58ToUser(pub58)
 		//points := user.ProfileEntryResponse.CoinEntry.CreatorBasisPoints
 		total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
+		price := user.ProfileEntryResponse.CoinPriceBitCloutNanos
 
 		holdMap := map[string]string{}
 		sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
@@ -61,6 +62,6 @@ func HandleBalances(argMap map[string]string) {
 		}
 
 		display.Row(sizes, username, holdMap[username], co1, co2,
-			display.OneE9(user.BalanceNanos))
+			display.OneE9(user.BalanceNanos), display.OneE9(price))
 	}
 }
