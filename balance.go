@@ -28,6 +28,15 @@ func HandleBalances(argMap map[string]string) {
 		fmt.Printf("  %s %.02f\n", display.LeftAligned("MarketCap", 20), user.ProfileEntryResponse.MarketCap())
 		fmt.Printf("  %s %d\n", display.LeftAligned("Points", 20), points)
 		fmt.Printf("  %s %s\n", display.LeftAligned("Price", 20), display.OneE9(user.ProfileEntryResponse.CoinPriceBitCloutNanos))
+		for _, friend := range user.UsersWhoHODLYou {
+			coins := float64(friend.BalanceNanos) / 1000000000.0
+			username := friend.ProfileEntryResponse.Username
+			if username == "" {
+				username = "anonymous"
+			}
+			fmt.Printf("  %s %0.6f\n",
+				display.LeftAligned(username, 30), coins)
+		}
 	}
 	fmt.Println("")
 }
