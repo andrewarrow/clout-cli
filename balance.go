@@ -31,7 +31,11 @@ func HandleBalances(argMap map[string]string) {
 		fmt.Printf("  %s %d\n", display.LeftAligned("Points", 20), points)
 		fmt.Printf("  %s %s\n", display.LeftAligned("Price", 20), display.OneE9(user.ProfileEntryResponse.CoinPriceBitCloutNanos))
 
-		for _, friend := range user.UsersWhoHODLYou {
+		sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
+			return user.UsersWhoHODLYou[i].BalanceNanos >
+				user.UsersWhoHODLYou[j].BalanceNanos
+		})
+		for i, friend := range user.UsersWhoHODLYou {
 			coins := float64(friend.BalanceNanos) / 1000000000.0
 			username := friend.ProfileEntryResponse.Username
 			if username == "" {
@@ -42,6 +46,10 @@ func HandleBalances(argMap map[string]string) {
 				float64(friend.BalanceNanos)/float64(total))
 			if username == "anonymous" {
 				fmt.Println(friend.HODLerPublicKeyBase58Check)
+			}
+
+			if i > 9 {
+				break
 			}
 		}
 	}
