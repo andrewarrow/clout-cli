@@ -32,19 +32,18 @@ func ThreeEmojiWorkForAmount(s string, amount int) bool {
 	return sum == amount
 }
 
-func AwardMonies(username string, amount int) {
+func AwardMonies(to, coin string, amount int) {
 	mnemonic := session.ReadLoggedInWords()
 	if mnemonic == "" {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
 
-	creator := session.UsernameToPub58("TheClown")
+	creator := session.UsernameToPub58(coin)
 
-	// TODO use passed in amount to make this the right amount to give
-	amountInNanos := int64(100000000)
+	amountInNanos := int64(amount)
 
-	bigString := network.SubmitTransferCoin(pub58, creator, username, amountInNanos)
+	bigString := network.SubmitTransferCoin(pub58, creator, to, amountInNanos)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)
@@ -69,7 +68,7 @@ func CheckForValidEntry(username, body string) {
 				if intAmount > 0 {
 					if ThreeEmojiWorkForAmount(three, intAmount) {
 						fmt.Printf("%s %s %d\n", display.LeftAligned(username, 20), "SUCCESS", intAmount)
-						AwardMonies(username, intAmount)
+						AwardMonies(username, "TheClown", intAmount) // TODO fix amnount
 					} else {
 						fmt.Printf("%s %s\n", display.LeftAligned(username, 20), "emoji != amount")
 					}

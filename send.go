@@ -20,6 +20,11 @@ func HandleSend() {
 	if dest == "" {
 		return
 	}
+	coin := argMap["coin"]
+	if coin != "" {
+		AwardMonies(dest, coin, 28551000)
+		return
+	}
 
 	amountInNanos := int64(1815567 - 1200)
 
