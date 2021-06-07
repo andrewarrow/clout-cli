@@ -35,14 +35,17 @@ func HandleYoutube() {
 
 func CutUpFile(id string) {
 	path := SetupYoutubeDirectory()
-	cmd := exec.Command("ffmpeg", "-i", path+"/"+id+".mp4", "-ss", "0", "-t", "60",
-		path+"/"+id+".60.mp4")
-
-	go cmd.Run()
-
+	seconds := 30
 	for {
-		PrintDirectoryInfo(path)
-		time.Sleep(time.Second * 5)
+		name := fmt.Sprintf("%s/%s_%d_%d.mp4", path, id, seconds-30, seconds)
+		cmd := exec.Command("ffmpeg", "-i", path+"/"+id+".mp4",
+			"-ss", fmt.Sprintf("%d", seconds-30),
+			"-t", fmt.Sprintf("%d", seconds),
+			name)
+
+		fmt.Println(name)
+		cmd.Run()
+		seconds += 10
 	}
 }
 
