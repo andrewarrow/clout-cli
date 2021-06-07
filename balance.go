@@ -36,6 +36,9 @@ func HandleBalances(argMap map[string]string) {
 			}
 			fmt.Printf("  %s %0.6f\n",
 				display.LeftAligned(username, 30), coins)
+			if username == "anonymous" {
+				fmt.Println(friend.HODLerPublicKeyBase58Check)
+			}
 		}
 	}
 	fmt.Println("")
