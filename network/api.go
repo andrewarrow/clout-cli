@@ -120,6 +120,8 @@ func UploadImage(filepath, pub58, jwt string) string {
 		imageType = "image/jpeg"
 	} else if ext == "webp" {
 		imageType = "image/webp"
+	} else if ext == "gif" {
+		imageType = "image/gif"
 	}
 	h.Set("Content-Type", imageType)
 
