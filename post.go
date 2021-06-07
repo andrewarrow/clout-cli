@@ -150,6 +150,7 @@ func ListPosts(follow bool) {
 }
 
 func Post(argMap map[string]string) {
+	reclout := argMap["reclout"]
 	reply := argMap["reply"]
 	imagePath := argMap["image"]
 	videoEmbed := argMap["video"]
@@ -184,10 +185,12 @@ func Post(argMap map[string]string) {
 	}
 
 	bigString := ""
-	if videoEmbed == "" {
-		bigString = network.SubmitPost(pub58, text, longHash, imageUrl)
-	} else {
+	if videoEmbed != "" {
 		bigString = network.SubmitPostWithVideo(pub58, text, longHash, videoEmbed)
+	} else if reclout != "" {
+		bigString = network.SubmitPostReclout(pub58, text, reclout)
+	} else {
+		bigString = network.SubmitPost(pub58, text, longHash, imageUrl)
 	}
 
 	var tx models.TxReady
