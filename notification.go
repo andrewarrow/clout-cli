@@ -15,6 +15,9 @@ import (
 	"time"
 )
 
+var GlobalListNeverAutoFollow = map[string]bool{"andrewarrow": true,
+	"yournamehere": true}
+
 func HandleNotifications(argMap map[string]string) {
 	query := argMap["query"]
 
@@ -114,7 +117,7 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 				display.LeftAligned(coin, 20),
 				display.LeftAligned(amount, 10))
 			fmt.Printf("\n%s\n%s\n", meta, phh)
-			if followed[from] == false {
+			if followed[from] == false && GlobalListNeverAutoFollow[to] == false {
 				os.Args = []string{"", "follow", from}
 				followed[from] = true
 				fmt.Println("--------", to, from)

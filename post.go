@@ -33,7 +33,7 @@ func HandlePosts() {
 		return
 	}
 	if argMap["body"] != "" {
-		ListWithBody(argMap["follow"] == "true")
+		ListWithBody(argMap["follow"] == "true", argMap["lines"])
 		return
 	}
 	ListPosts(argMap["follow"] == "true")
@@ -107,7 +107,7 @@ func LsPost(p models.Post, shortMap map[string]string) {
 		display.LeftAligned(short, 10))
 }
 
-func ListWithBody(follow bool) {
+func ListWithBody(follow bool, lines string) {
 	pub58 := session.LoggedInPub58()
 	js := network.GetPostsStateless(pub58, follow)
 	var ps models.PostsStateless
@@ -122,7 +122,11 @@ func ListWithBody(follow bool) {
 		short := p.PostHashHex[0:7]
 		shortMap[short] = p.PostHashHex
 		tokens := strings.Split(p.Body, "\n")
-		display.Row(sizes, short, username, strings.Join(tokens, " "))
+		line1 := strings.Join(tokens, " ")
+		display.Row(sizes, short, username, line1)
+		if lines == "2" && len(line1) > 50 {
+			display.Row(sizes, "", "", line1[49:])
+		}
 		if i > 20 {
 			break
 		}
