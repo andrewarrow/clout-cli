@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/webview/webview"
 )
 
 func HandleInspect() {
@@ -24,6 +27,32 @@ func HandleInspect() {
 		tokens = strings.Split(token, " ")
 		for _, token := range tokens {
 			fmt.Println(token)
+
+			if strings.Contains(token, "twitter.com/") {
+				debug := true
+				w := webview.New(debug)
+				defer w.Destroy()
+				w.SetTitle("cloutcli")
+				w.SetSize(800, 600, webview.HintNone)
+				w.Navigate(token)
+				w.Bind("foo", callback)
+
+				w.Dispatch(func() {
+					go func() {
+						time.Sleep(time.Second * 4)
+						w.Eval("foo(null,document.body.innerHTML);")
+					}()
+				})
+				w.Run()
+			}
 		}
 	}
+}
+
+func callback(w *webview.WebView, data string) {
+	tokens := strings.Split(data, "followers")
+	tokens = strings.Split(tokens[1], ">")
+	tokens = strings.Split(tokens[3], "<")
+	fmt.Println("followers:", tokens[0])
+	os.Exit(0)
 }

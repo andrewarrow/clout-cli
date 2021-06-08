@@ -12,5 +12,6 @@ require (
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/tyler-smith/go-bip32 v1.0.0 // indirect
 	github.com/tyler-smith/go-bip39 v1.1.0
+	github.com/webview/webview v0.0.0-20210330151455-f540d88dde4e
 	rogchap.com/v8go v0.6.0
 )
