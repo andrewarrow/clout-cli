@@ -54,6 +54,22 @@ func HandleAccounts(argMap map[string]string) {
 		WriteSelected(username)
 		return
 	}
+	if argMap["export"] != "" {
+		m := ReadAccounts()
+		list := []map[string]string{}
+		for _, username := range ReadAccountsSorted() {
+			words := m[username]
+			pub58, _, _ := keys.ComputeKeysFromSeedWithAddress(SeedBytes(words))
+			exportMap := map[string]string{}
+			exportMap["words"] = words
+			exportMap["address"] = pub58
+			exportMap["username"] = username
+			list = append(list, exportMap)
+		}
+		b, _ := json.Marshal(list)
+		fmt.Println(string(b))
+		return
+	}
 	if argMap["tag"] != "" {
 		m := ReadTags()
 
@@ -105,6 +121,7 @@ func ReadAccountsSorted() []string {
 	sort.Strings(buff)
 	return buff
 }
+
 func ReadAccounts() map[string]string {
 	m := map[string]string{}
 	asBytes := []byte(JustReadFile(file))
