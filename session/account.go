@@ -3,6 +3,7 @@ package session
 import (
 	"clout/files"
 	"clout/keys"
+	"clout/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -31,7 +32,12 @@ func GetAccountsForTag(tag string) []string {
 }
 
 func HandleAccounts(argMap map[string]string) {
-	if argMap["new"] != "" {
+	username := argMap["new"]
+	if username != "" {
+		if network.DoTest404(username) == "200" {
+			fmt.Printf("username `%s` is already in use.\n", username)
+			return
+		}
 		words := NewWords()
 		_, _, btc := keys.ComputeKeysFromSeedWithAddress(SeedBytes(words))
 		fmt.Println("New words added to your secrets.txt file, back it up.")
@@ -39,7 +45,6 @@ func HandleAccounts(argMap map[string]string) {
 		fmt.Println("Send >= 0.0007 BTC to", btc)
 		fmt.Println("")
 		fmt.Println("Wait a few minutes then run `clout balance`")
-		username := argMap["new"]
 		usernames := ReadAccounts()
 		usernames[username] = words
 		WriteAccounts(usernames)
@@ -83,7 +88,7 @@ func HandleAccounts(argMap map[string]string) {
 	fmt.Println("")
 	fmt.Println("To select account, run `clout account [username or i]`")
 	fmt.Println("")
-	username := SelectedAccount()
+	username = SelectedAccount()
 	if username != "" {
 		fmt.Println("SELECTED ACCOUNT:", username)
 		fmt.Println("")
