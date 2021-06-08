@@ -16,6 +16,7 @@ import (
 )
 
 var GlobalListNeverAutoFollow = map[string]bool{"andrewarrow": true,
+	"cloutcli":     true,
 	"yournamehere": true}
 
 func HandleNotifications(argMap map[string]string) {
