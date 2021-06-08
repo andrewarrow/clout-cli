@@ -1,8 +1,12 @@
 package main
 
 import (
+	"clout/models"
+	"clout/network"
+	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func HandleInspect() {
@@ -12,5 +16,14 @@ func HandleInspect() {
 	}
 
 	username := os.Args[2]
-	fmt.Println(username)
+	js := network.GetSingleProfile(username)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+	tokens := strings.Split(sp.Profile.Description, "\n")
+	for _, token := range tokens {
+		tokens = strings.Split(token, " ")
+		for _, token := range tokens {
+			fmt.Println(token)
+		}
+	}
 }
