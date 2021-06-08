@@ -83,6 +83,8 @@ func main() {
 		HandleGlobal()
 	} else if command == "help" {
 		PrintHelp()
+	} else if command == "inspect" {
+		HandleInspect()
 	} else if command == "like" {
 		HandleLike(argMap)
 	} else if command == "login" {
