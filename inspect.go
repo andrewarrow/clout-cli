@@ -35,12 +35,12 @@ func HandleInspect() {
 				w.SetTitle("cloutcli")
 				w.SetSize(800, 600, webview.HintNone)
 				w.Navigate(token)
-				w.Bind("foo", callback)
+				w.Bind("sendBackBodyInnerHTML", callback)
 
 				w.Dispatch(func() {
 					go func() {
 						time.Sleep(time.Second * 4)
-						w.Eval("foo(null,document.body.innerHTML);")
+						w.Eval("sendBackBodyInnerHTML(document.body.innerHTML);")
 					}()
 				})
 				w.Run()
@@ -49,7 +49,7 @@ func HandleInspect() {
 	}
 }
 
-func callback(w *webview.WebView, data string) {
+func callback(data string) {
 	tokens := strings.Split(data, "followers")
 	tokens = strings.Split(tokens[1], ">")
 	tokens = strings.Split(tokens[3], "<")
