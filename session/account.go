@@ -39,18 +39,19 @@ func HandleAccounts(argMap map[string]string) {
 			return
 		}
 		words := NewWords()
-		_, _, btc := keys.ComputeKeysFromSeedWithAddress(SeedBytes(words))
+		pub58, _, _ := keys.ComputeKeysFromSeedWithAddress(SeedBytes(words))
 		fmt.Println("New words added to your secrets.txt file, back it up.")
 		fmt.Println("")
-		fmt.Println("Send >= 0.0007 BTC to", btc)
+		fmt.Println("New BITCLOUT address is")
+		fmt.Println(pub58)
 		fmt.Println("")
-		fmt.Println("Wait a few minutes then run `clout balance`")
+		fmt.Println("Secure this username, send clout to that new address then run")
+		fmt.Println("")
+		fmt.Printf("./clout update --username=%s\n\n\n", username)
 		usernames := ReadAccounts()
 		usernames[username] = words
 		WriteAccounts(usernames)
 		WriteSelected(username)
-		fmt.Println("")
-		fmt.Println("")
 		return
 	}
 	if argMap["tag"] != "" {
