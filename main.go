@@ -128,7 +128,7 @@ func main() {
 	} else if command == "youtube" {
 		HandleYoutube()
 	} else {
-		PostsForPublicKey(command)
+		GuiViewUser(command)
 	}
 
 }

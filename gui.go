@@ -58,6 +58,15 @@ func ListPostsWithGui(follow bool) {
 	w.Run()
 }
 
+func GuiViewUser(username string) {
+	debug := false
+	w := webview.New(debug)
+	w.SetTitle("cloutcli")
+	w.SetSize(800, 600, webview.HintNone)
+	w.Navigate("https://bitclout.com/u/" + username)
+	w.Run()
+}
+
 func GuiMakeRow(flavor string, p *models.Post) string {
 	html := "<tr>"
 	if flavor != "" {
