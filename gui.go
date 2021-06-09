@@ -29,7 +29,7 @@ func ListPostsWithGui(follow bool) {
 		html += "<td>" + username + "</td>"
 		html += "<td>"
 		for _, image := range p.ImageURLs {
-			html += fmt.Sprintf("<img height='100' src='%s'/>", image)
+			html += fmt.Sprintf("<img width='200' src='%s'/>", image)
 		}
 		html += "</td>"
 		html += "<td><div style='width: 400px;'>" + p.Body
