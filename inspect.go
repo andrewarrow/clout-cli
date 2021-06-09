@@ -19,20 +19,26 @@ func HandleInspect() {
 	}
 
 	username := os.Args[2]
-	js := network.GetSingleProfile(username)
-	var sp models.SingleProfile
-	json.Unmarshal([]byte(js), &sp)
-	tokens := strings.Split(sp.Profile.Description, "\n")
-	for _, token := range tokens {
-		tokens = strings.Split(token, " ")
+	if argMap["scrape"] != "" {
+		js := network.GetSingleProfile(username)
+		var sp models.SingleProfile
+		json.Unmarshal([]byte(js), &sp)
+		tokens := strings.Split(sp.Profile.Description, "\n")
 		for _, token := range tokens {
-			fmt.Println(token)
+			tokens = strings.Split(token, " ")
+			for _, token := range tokens {
+				fmt.Println(token)
 
-			if strings.Contains(token, "twitter.com/") {
-				HandleTwitterGrab(token)
+				if strings.Contains(token, "twitter.com/") {
+					HandleTwitterGrab(token)
+				}
 			}
 		}
+
+		return
 	}
+
+	GuiShowNotifications(username)
 }
 
 var w webview.WebView

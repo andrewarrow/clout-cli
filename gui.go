@@ -67,6 +67,19 @@ func GuiViewUser(username string) {
 	w.Run()
 }
 
+func GuiShowNotifications(username string) {
+	pub58 := session.UsernameToPub58(username)
+	js := network.GetNotifications(pub58)
+	var list models.NotificationList
+	json.Unmarshal([]byte(js), &list)
+	for _, n := range list.Notifications {
+		if n.Metadata.TxnType == "BASIC_TRANSFER" {
+			continue
+		}
+		fmt.Println(n.Metadata.TxnType)
+	}
+}
+
 func GuiMakeRow(flavor string, p *models.Post) string {
 	html := "<tr>"
 	if flavor != "" {
