@@ -21,6 +21,7 @@ var GlobalListNeverAutoFollow = map[string]bool{"andrewarrow": true,
 
 func HandleNotifications(argMap map[string]string) {
 	query := argMap["query"]
+	autofollow := argMap["autofollow"]
 
 	sync.CreateSchema()
 	sorted := session.ReadAccountsSorted()
@@ -36,11 +37,11 @@ func HandleNotifications(argMap map[string]string) {
 		session.WriteSelected(to)
 		s := m[to]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
-		NotificationsForSyncUser(db, to, pub58)
+		NotificationsForSyncUser(autofollow, db, to, pub58)
 		time.Sleep(time.Second * 2)
 	}
 }
-func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
+func NotificationsForSyncUser(autofollow string, db *sql.DB, to, pub58 string) {
 	js := network.GetNotifications(pub58)
 	//ioutil.WriteFile("foo.json", []byte(js), 0755)
 	var list models.NotificationList
@@ -118,7 +119,7 @@ func NotificationsForSyncUser(db *sql.DB, to, pub58 string) {
 				display.LeftAligned(coin, 20),
 				display.LeftAligned(amount, 10))
 			fmt.Printf("\n%s\n%s\n", meta, phh)
-			if followed[from] == false && GlobalListNeverAutoFollow[to] == false {
+			if autofollow == "true" && followed[from] == false && GlobalListNeverAutoFollow[to] == false {
 				os.Args = []string{"", "follow", from}
 				followed[from] = true
 				fmt.Println("--------", to, from)
