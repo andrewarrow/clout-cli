@@ -137,6 +137,53 @@ func GuiMakeRowNotification(index int, list *models.NotificationList, n models.N
 	from := p.Username
 	html += fmt.Sprintf("<td><img id='i%d' src=''/></td>", index)
 	html += "<td>" + from + "</td>"
+	flavor := ""
+	meta := ""
+	amount := int64(0)
+	coin := ""
+	if n.Metadata.TxnType == "SUBMIT_POST" {
+		p := list.PostsByHash[n.Metadata.SubmitPostTxindexMetadata.PostHashBeingModifiedHex]
+		if p.Body == "" {
+			flavor = "reclout"
+			//meta = BodyParse(p.RecloutedPostEntryResponse.Body)
+		} else {
+			flavor = "mention"
+			//meta = BodyParse(p.Body)
+		}
+	} else if n.Metadata.TxnType == "LIKE" {
+		//p := list.PostsByHash[n.Metadata.LikeTxindexMetadata.PostHashHex]
+		//meta = BodyParse(p.Body)
+		flavor = "like"
+	} else if n.Metadata.TxnType == "FOLLOW" {
+		meta = from
+		flavor = "follow"
+	} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
+		md := n.Metadata.CreatorCoinTransferTxindexMetadata
+		if md.PostHashHex != "" {
+			//p := list.PostsByHash[md.PostHashHex]
+			//meta = fmt.Sprintf("%d ", md.DiamondLevel) + BodyParse(p.Body)
+			amount = md.DiamondLevel
+			flavor = "diamond"
+		} else {
+			meta = fmt.Sprintf("%s %d", md.CreatorUsername, md.CreatorCoinToTransferNanos)
+			amount = md.CreatorCoinToTransferNanos
+			coin = md.CreatorUsername
+			flavor = "coin"
+		}
+	} else if n.Metadata.TxnType == "CREATOR_COIN" {
+		cctm := n.Metadata.CreatorCoinTxindexMetadata
+		if cctm.OperationType == "buy" {
+			amount = cctm.BitCloutToSellNanos
+		} else if cctm.OperationType == "sell" {
+			amount = cctm.CreatorCoinToSellNanos
+		}
+		meta = fmt.Sprintf("%s %d", from, amount)
+		flavor = cctm.OperationType
+	}
+	html += "<td>" + flavor + "</td>"
+	html += fmt.Sprintf("<td>%d</td>", amount)
+	html += "<td>" + coin + "</td>"
+	html += "<td>" + meta + "</td>"
 	html += "</tr>"
 
 	return html
