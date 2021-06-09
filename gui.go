@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"time"
 
 	"github.com/webview/webview"
 )
@@ -39,6 +40,21 @@ func ListPostsWithGui(follow bool) {
 	w.SetTitle("cloutcli")
 	w.SetSize(800, 600, webview.HintNone)
 	w.Navigate(url)
+	w.Dispatch(func() {
+		go func() {
+			time.Sleep(time.Second * 1)
+			for _, p := range ps.PostsFound {
+				js := fmt.Sprintf("document.getElementById('p%s').innerHTML='%s';",
+					p.PostHashHex, p.Body)
+				w.Eval(js)
+				if p.RecloutedPostEntryResponse != nil {
+					js := fmt.Sprintf("document.getElementById('p%s').innerHTML='%s';",
+						p.RecloutedPostEntryResponse.PostHashHex, p.RecloutedPostEntryResponse.Body)
+					w.Eval(js)
+				}
+			}
+		}()
+	})
 	w.Run()
 }
 
@@ -60,8 +76,8 @@ func GuiMakeRow(flavor string, p *models.Post) string {
 	}
 	// todo ÿ
 	html += "</td>"
-	html += "<td><div style='width: 400px;'>" + p.Body
-	html += "</div></td>"
+	html += fmt.Sprintf("<td><div id='p%s' style='width: 400px;'></div>", p.PostHashHex)
+	html += "</td>"
 	html += "</tr>"
 
 	return html
