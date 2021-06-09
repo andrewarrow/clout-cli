@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"strings"
 
 	"github.com/webview/webview"
 )
@@ -23,15 +22,25 @@ func ListPostsWithGui(follow bool) {
 	js := network.GetPostsStateless(pub58, follow)
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
-	list := []string{}
+	html := "<table>"
 	for _, p := range ps.PostsFound {
+		html += "<tr>"
 		username := p.ProfileEntryResponse.Username
-		list = append(list, username)
+		html += "<td>" + username + "</td>"
+		html += "<td>"
+		for _, image := range p.ImageURLs {
+			html += fmt.Sprintf("<img height='100' src='%s'/>", image)
+		}
+		html += "</td>"
+		html += "<td><div style='width: 400px;'>" + p.Body
+		html += "</div></td>"
+		html += "</tr>"
 	}
-	readyHTML := fmt.Sprintf(template, strings.Join(list, "<br/>"))
+	html += "</table>"
+	readyHTML := fmt.Sprintf(template, html)
 	url := "data:text/html," + url.PathEscape(readyHTML)
 
-	debug := true
+	debug := false
 	w := webview.New(debug)
 	w.SetTitle("cloutcli")
 	w.SetSize(800, 600, webview.HintNone)
