@@ -22,18 +22,11 @@ type Post struct {
 	ProfileEntryResponse       ProfileEntryResponse
 	LikeCount                  int64
 	Comments                   []Post
-	RecloutedPostEntryResponse RecloutedPostEntryResponse
+	RecloutedPostEntryResponse *Post
 	CommentCount               int64
 	RecloutCount               int64
 }
 
 type PostExtraData struct {
 	EmbedVideoURL string
-}
-
-type RecloutedPostEntryResponse struct {
-	PostHashHex                string
-	PosterPublicKeyBase58Check string
-	Body                       string
-	ProfileEntryResponse       ProfileEntryResponse
 }

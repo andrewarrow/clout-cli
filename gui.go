@@ -24,18 +24,12 @@ func ListPostsWithGui(follow bool) {
 	json.Unmarshal([]byte(js), &ps)
 	html := "<table>"
 	for _, p := range ps.PostsFound {
-		html += "<tr>"
-		username := p.ProfileEntryResponse.Username
-		html += "<td>" + username + "</td>"
-		html += "<td>"
-		for _, image := range p.ImageURLs {
-			html += fmt.Sprintf("<img width='200' src='%s'/>", image)
+		html += GuiMakeRow("", &p)
+		if p.RecloutedPostEntryResponse != nil {
+			html += GuiMakeRow("RECLOUT", p.RecloutedPostEntryResponse)
 		}
-		html += "</td>"
-		html += "<td><div style='width: 400px;'>" + p.Body
-		html += "</div></td>"
-		html += "</tr>"
 	}
+
 	html += "</table>"
 	readyHTML := fmt.Sprintf(template, html)
 	url := "data:text/html," + url.PathEscape(readyHTML)
@@ -46,4 +40,29 @@ func ListPostsWithGui(follow bool) {
 	w.SetSize(800, 600, webview.HintNone)
 	w.Navigate(url)
 	w.Run()
+}
+
+func GuiMakeRow(flavor string, p *models.Post) string {
+	html := "<tr>"
+	if flavor != "" {
+		html = "<tr style='background-color: red;'>"
+	}
+	username := p.ProfileEntryResponse.Username
+	html += "<td>" + username + "</td>"
+	html += "<td>"
+
+	for _, image := range p.ImageURLs {
+		html += fmt.Sprintf("<img width='200' src='%s'/>", image)
+	}
+	if p.PostExtraData.EmbedVideoURL != "" {
+		src := p.PostExtraData.EmbedVideoURL
+		html += fmt.Sprintf("<a style='color: white;' href='%s'>%s</a>", src, "video")
+	}
+	// todo ÿ
+	html += "</td>"
+	html += "<td><div style='width: 400px;'>" + p.Body
+	html += "</div></td>"
+	html += "</tr>"
+
+	return html
 }
