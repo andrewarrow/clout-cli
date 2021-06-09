@@ -12,12 +12,13 @@ import (
 	"github.com/webview/webview"
 )
 
-func ListPostsWithGui(follow bool) {
-	template := `
+var template = `
   <html>
     <head><title>Hello</title></head>
 		<body style="font-family: courier; background-color: black; color: green;">%s</body>
   </html>`
+
+func ListPostsWithGui(follow bool) {
 
 	pub58 := session.LoggedInPub58()
 	js := network.GetPostsStateless(pub58, follow)
@@ -72,12 +73,24 @@ func GuiShowNotifications(username string) {
 	js := network.GetNotifications(pub58)
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
+	html := "<table>"
 	for _, n := range list.Notifications {
 		if n.Metadata.TxnType == "BASIC_TRANSFER" {
 			continue
 		}
-		fmt.Println(n.Metadata.TxnType)
+		html += GuiMakeRowNotification(&list, n)
 	}
+
+	html += "</table>"
+	readyHTML := fmt.Sprintf(template, html)
+	url := "data:text/html," + url.PathEscape(readyHTML)
+
+	debug := false
+	w := webview.New(debug)
+	w.SetTitle("cloutcli")
+	w.SetSize(800, 600, webview.HintNone)
+	w.Navigate(url)
+	w.Run()
 }
 
 func GuiMakeRow(flavor string, p *models.Post) string {
@@ -100,6 +113,15 @@ func GuiMakeRow(flavor string, p *models.Post) string {
 	html += "</td>"
 	html += fmt.Sprintf("<td><div id='p%s' style='width: 400px;'></div>", p.PostHashHex)
 	html += "</td>"
+	html += "</tr>"
+
+	return html
+}
+
+func GuiMakeRowNotification(list *models.NotificationList, n models.Notification) string {
+	html := "<tr>"
+	from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+	html += "<td>" + from + "</td>"
 	html += "</tr>"
 
 	return html
