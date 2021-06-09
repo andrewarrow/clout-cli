@@ -74,11 +74,11 @@ func GuiShowNotifications(username string) {
 	var list models.NotificationList
 	json.Unmarshal([]byte(js), &list)
 	html := "<table>"
-	for _, n := range list.Notifications {
+	for i, n := range list.Notifications {
 		if n.Metadata.TxnType == "BASIC_TRANSFER" {
 			continue
 		}
-		html += GuiMakeRowNotification(&list, n)
+		html += GuiMakeRowNotification(i, &list, n)
 	}
 
 	html += "</table>"
@@ -90,6 +90,20 @@ func GuiShowNotifications(username string) {
 	w.SetTitle("cloutcli")
 	w.SetSize(800, 600, webview.HintNone)
 	w.Navigate(url)
+	w.Dispatch(func() {
+		go func() {
+			time.Sleep(time.Second * 1)
+			for i, n := range list.Notifications {
+				if n.Metadata.TxnType == "BASIC_TRANSFER" {
+					continue
+				}
+				p := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check]
+				js := fmt.Sprintf("document.getElementById('i%d').src='%s';", i,
+					p.ProfilePic)
+				w.Eval(js)
+			}
+		}()
+	})
 	w.Run()
 }
 
@@ -109,7 +123,6 @@ func GuiMakeRow(flavor string, p *models.Post) string {
 		src := p.PostExtraData.EmbedVideoURL
 		html += fmt.Sprintf("<a style='color: white;' href='%s'>%s</a>", src, "video")
 	}
-	// todo ÿ
 	html += "</td>"
 	html += fmt.Sprintf("<td><div id='p%s' style='width: 400px;'></div>", p.PostHashHex)
 	html += "</td>"
@@ -118,9 +131,11 @@ func GuiMakeRow(flavor string, p *models.Post) string {
 	return html
 }
 
-func GuiMakeRowNotification(list *models.NotificationList, n models.Notification) string {
+func GuiMakeRowNotification(index int, list *models.NotificationList, n models.Notification) string {
 	html := "<tr>"
-	from := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check].Username
+	p := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check]
+	from := p.Username
+	html += fmt.Sprintf("<td><img id='i%d' src=''/></td>", index)
 	html += "<td>" + from + "</td>"
 	html += "</tr>"
 
