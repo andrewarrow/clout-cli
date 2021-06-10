@@ -8,9 +8,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"sort"
 	"strings"
+
+	"github.com/wcharczuk/go-chart"
 )
 
 func FindBuysSellsAndTransfers() {
@@ -53,6 +56,12 @@ func FindBuysSellsAndTransfers() {
 				return user.UsersWhoHODLYou[i].BalanceNanos >
 					user.UsersWhoHODLYou[j].BalanceNanos
 			})
+			friendMap := map[string]int{}
+			for _, friend := range user.UsersWhoHODLYou {
+				per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
+				friendMap[friend.ProfileEntryResponse.Username] = per
+			}
+			ChartIt(friendMap)
 			for _, friend := range user.UsersWhoHODLYou {
 
 				if friend.ProfileEntryResponse.Username == from {
@@ -62,10 +71,10 @@ func FindBuysSellsAndTransfers() {
 						perString := fmt.Sprintf("%0.2f", per*100)
 						text := fmt.Sprintf("@%s spends %d to buy @%s and now owns %s%%", from, sum, username, perString)
 						fmt.Println(text)
-						exec.Command("montage", "from.webp", "coin.webp", "-tile", "2x1",
+						exec.Command("montage", "from.webp", "chart.png", "coin.webp", "-tile", "3x1",
 							"-geometry", "+0+0", "out.png").CombinedOutput()
-						exec.Command("convert", "out.png", "-gravity", "center",
-							"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
+						//exec.Command("convert", "out.png", "-gravity", "center",
+						//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
 						//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out2.png"}
 						//Post(m)
@@ -75,6 +84,24 @@ func FindBuysSellsAndTransfers() {
 		}
 
 	}
+}
+
+func ChartIt(m map[string]int) {
+
+	items := []chart.Value{}
+	for k, v := range m {
+		items = append(items, chart.Value{Value: float64(v), Label: k})
+	}
+
+	pie := chart.PieChart{
+		Width:  512,
+		Height: 512,
+		Values: items,
+	}
+
+	f, _ := os.Create("chart.png")
+	defer f.Close()
+	pie.Render(chart.PNG, f)
 }
 
 func savePic(flavor, data string) {
