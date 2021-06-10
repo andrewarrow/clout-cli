@@ -51,6 +51,7 @@ func FindBuysSellsAndTransfers() {
 			if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 				if cctm.OperationType == "buy" {
+					fmt.Println("BUY", cctm.OperationType, cctm)
 					m[fromPub58] += cctm.BitCloutToSellNanos
 				} else {
 					fmt.Println("SELL", cctm.OperationType, cctm)
@@ -138,13 +139,13 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 25.0 {
+				if byUSD < 18.0 {
 					fmt.Println("price was only", byUSD)
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("anything you can tell us @%s on why you transfered %d ($%0.2f USD) of @%s to @%s and they now own %s%%? Enrich followers want to know. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
+				text := fmt.Sprintf("This just in, there was a TRANSFER! Anything you can tell us @%s on why you transfered %d ($%0.2f USD) of @%s to @%s? According to our research they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -183,13 +184,13 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, sum)
-				if byUSD < 25.0 {
+				if byUSD < 18.0 {
 					fmt.Println("price was only", byUSD)
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
+				text := fmt.Sprintf("This just in, there was a BUY! Anything you can tell us @%s on why you spent %d ($%0.2f USD) to BUY @%s? According to our research you now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
