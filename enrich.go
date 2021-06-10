@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os/exec"
 	"sort"
 	"strings"
 )
@@ -61,7 +62,12 @@ func FindBuysSellsAndTransfers() {
 						perString := fmt.Sprintf("%0.2f", per*100)
 						text := fmt.Sprintf("@%s spends %d to buy @%s and now owns %s%%", from, sum, username, perString)
 						fmt.Println(text)
-						//m := map[string]string{"text": text}
+						exec.Command("montage", "from.webp", "coin.webp", "-tile", "2x1",
+							"-geometry", "+0+0", "out.png").CombinedOutput()
+						exec.Command("convert", "out.png", "-gravity", "center",
+							"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
+
+						//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out2.png"}
 						//Post(m)
 					}
 				}
