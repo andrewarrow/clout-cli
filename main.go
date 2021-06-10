@@ -73,6 +73,8 @@ func main() {
 		HandleClown()
 	} else if command == "diamond" {
 		HandleDiamond()
+	} else if command == "enrich" {
+		FindBuysSellsAndTransfers()
 	} else if command == "follow" {
 		HandleFollow()
 	} else if command == "followers" {
