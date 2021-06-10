@@ -95,9 +95,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
-				bySatoshi := float64(r.SatoshisPerBitCloutExchangeRate) * display.OneE9Float(sum)
-				byUSD := float64(r.USDCentsPerBitcoinExchangeRate) * bySatoshi
-				byUSD = byUSD / 10000000000.0
+				byUSD := ConvertToUSD(r, sum)
 
 				perString := fmt.Sprintf("%d", int(per*100))
 				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, byUSD, username, perString)
@@ -109,12 +107,19 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 
 				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
 				//Post(m)
+				os.Exit(0)
 				return true
 			}
 		}
 	}
 
 	return false
+}
+
+func ConvertToUSD(r models.Rate, sum int64) float64 {
+	bySatoshi := float64(r.SatoshisPerBitCloutExchangeRate) * display.OneE9Float(sum)
+	byUSD := float64(r.USDCentsPerBitcoinExchangeRate) * bySatoshi
+	return byUSD / 10000000000.0
 }
 
 func LoadEnrichMessages() map[string]bool {
