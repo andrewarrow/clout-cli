@@ -73,7 +73,12 @@ func FindBuysSellsAndTransfers() {
 	}
 }
 
-func FindTopHolders(total int64, user models.User) []string {
+func FindTopHolders(total int64, user *models.User, filter []string) string {
+	filterMap := map[string]bool{}
+	for _, f := range filter {
+		filterMap[f] = true
+	}
+
 	top := []string{}
 	sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
 		return user.UsersWhoHODLYou[i].BalanceNanos >
@@ -82,14 +87,24 @@ func FindTopHolders(total int64, user models.User) []string {
 	friendMap := map[string]int{}
 	for i, friend := range user.UsersWhoHODLYou {
 		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
-		friendMap[friend.ProfileEntryResponse.Username] = per
-		top = append(top, friend.ProfileEntryResponse.Username)
+		username := friend.ProfileEntryResponse.Username
+		friendMap[username] = per
+		if filterMap[username] == false {
+			top = append(top, username)
+		}
 		if i >= 8 {
 			break
 		}
 	}
 	ChartIt(friendMap)
-	return top
+	if len(top) == 1 {
+		return "@" + top[0]
+	} else if len(top) == 2 {
+		return "@" + top[0] + " @" + top[1]
+	} else if len(top) > 2 {
+		return "@" + top[0] + " @" + top[1] + " @" + top[2]
+	}
+	return ""
 }
 
 func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string, md models.CreatorCoinTransferTxindexMetadata) bool {
@@ -113,7 +128,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	coinPic := user.ProfileEntryResponse.ProfilePic
 	savePic("coin", coinPic)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
-	FindTopHolders(total, user)
+	topMention := FindTopHolders(total, &user, []string{from, username, md.CreatorUsername})
 	for _, friend := range user.UsersWhoHODLYou {
 
 		if friend.ProfileEntryResponse.Username == username {
@@ -122,18 +137,18 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 50.0 {
+				if byUSD < 25.0 {
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("anything you can tell us @%s on why you transfered %d ($%0.2f USD) of @%s to @%s and they now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString)
+				text := fmt.Sprintf("anything you can tell us @%s on why you transfered %d ($%0.2f USD) of @%s to @%s and they now own %s%%? Enrich followers want to know. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 
-				m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
-				Post(m)
+				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
+				//Post(m)
 				os.Exit(0)
 				return true
 			}
@@ -156,7 +171,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 	savePic("from", fromPic)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
-	FindTopHolders(total, user)
+	topMention := FindTopHolders(total, &user, []string{from, username})
 	for _, friend := range user.UsersWhoHODLYou {
 
 		if friend.ProfileEntryResponse.Username == from {
@@ -164,20 +179,20 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, sum)
-				if byUSD < 50.0 {
+				if byUSD < 25.0 {
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, byUSD, username, perString)
+				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...\\n\\ncc %s your % may have changed.", from, sum, byUSD, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 				//exec.Command("convert", "out.png", "-gravity", "center",
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
-				m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
-				Post(m)
+				//m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+				//Post(m)
 				os.Exit(0)
 				return true
 			}
