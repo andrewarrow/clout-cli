@@ -100,7 +100,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 				byUSD = byUSD / 10000000000.0
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d (%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, byUSD, username, perString)
+				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, byUSD, username, perString)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "coin.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
