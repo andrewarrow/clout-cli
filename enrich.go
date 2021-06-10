@@ -4,9 +4,12 @@ import (
 	"clout/models"
 	"clout/network"
 	"clout/session"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"sort"
+	"strings"
 )
 
 func FindBuysSellsAndTransfers() {
@@ -17,6 +20,8 @@ func FindBuysSellsAndTransfers() {
 
 	for _, p := range ps.PostsFound {
 		username := p.ProfileEntryResponse.Username
+		coinPic := p.ProfileEntryResponse.ProfilePic
+		savePic("coin", coinPic)
 		fmt.Println("notifications for", username)
 		pub58 := session.UsernameToPub58(username)
 		js := network.GetNotifications(pub58)
@@ -39,6 +44,8 @@ func FindBuysSellsAndTransfers() {
 			if from == "" {
 				continue
 			}
+			fromPic := list.ProfilesByPublicKey[fromPub58].ProfilePic
+			savePic("from", fromPic)
 			total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
 			sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
@@ -62,4 +69,10 @@ func FindBuysSellsAndTransfers() {
 		}
 
 	}
+}
+
+func savePic(flavor, data string) {
+	tokens := strings.Split(data, ",")
+	decoded, _ := base64.StdEncoding.DecodeString(tokens[1])
+	ioutil.WriteFile(flavor+".webp", decoded, 0755)
 }
