@@ -138,6 +138,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
 				if byUSD < 25.0 {
+					fmt.Println("price was only", byUSD)
 					return false
 				}
 
@@ -147,8 +148,8 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 
-				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
-				//Post(m)
+				m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
+				Post(m)
 				os.Exit(0)
 				return true
 			}
@@ -180,19 +181,20 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, sum)
 				if byUSD < 25.0 {
+					fmt.Println("price was only", byUSD)
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...\\n\\ncc %s your % may have changed.", from, sum, byUSD, username, perString, topMention)
+				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 				//exec.Command("convert", "out.png", "-gravity", "center",
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
-				//m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
-				//Post(m)
+				m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+				Post(m)
 				os.Exit(0)
 				return true
 			}
