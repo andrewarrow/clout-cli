@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clout/display"
 	"clout/models"
 	"clout/network"
 	"clout/session"
@@ -17,12 +18,16 @@ import (
 )
 
 var alreadyDone map[string]bool
+var r models.Rate
 
 func FindBuysSellsAndTransfers() {
+	js := network.GetExchangeRate()
+	json.Unmarshal([]byte(js), &r)
+
 	alreadyDone = LoadEnrichMessages()
 	fmt.Println(alreadyDone)
 	pub58 := session.LoggedInPub58()
-	js := network.GetPostsStateless(pub58, false)
+	js = network.GetPostsStateless(pub58, false)
 	var ps models.PostsStateless
 	json.Unmarshal([]byte(js), &ps)
 
@@ -90,8 +95,12 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
-				perString := fmt.Sprintf("%0.2f", per*100)
-				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d to buy @%s for %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, username, perString)
+				bySatoshi := float64(r.SatoshisPerBitCloutExchangeRate) * display.OneE9Float(sum)
+				byUSD := float64(r.USDCentsPerBitcoinExchangeRate) * bySatoshi
+				byUSD = byUSD / 10000000000.0
+
+				perString := fmt.Sprintf("%d", int(per*100))
+				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d (%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, byUSD, username, perString)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "coin.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
