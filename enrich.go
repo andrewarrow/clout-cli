@@ -22,31 +22,37 @@ func FindBuysSellsAndTransfers() {
 		js := network.GetNotifications(pub58)
 		var list models.NotificationList
 		json.Unmarshal([]byte(js), &list)
+		m := map[string]int64{}
 		for _, n := range list.Notifications {
 			fromPub58 := n.Metadata.TransactorPublicKeyBase58Check
-			from := list.ProfilesByPublicKey[fromPub58].Username
-			if from == "" {
-				from = "anonymous"
-			}
 			if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 				if cctm.OperationType != "buy" {
 					continue
 				}
-				user := session.Pub58ToUser(pub58)
-				total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
+				m[fromPub58] += cctm.BitCloutToSellNanos
+			}
+		}
+		for fromPub58, sum := range m {
+			user := session.Pub58ToUser(pub58)
+			from := list.ProfilesByPublicKey[fromPub58].Username
+			if from == "" {
+				continue
+			}
+			total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
-				sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
-					return user.UsersWhoHODLYou[i].BalanceNanos >
-						user.UsersWhoHODLYou[j].BalanceNanos
-				})
-				for _, friend := range user.UsersWhoHODLYou {
+			sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
+				return user.UsersWhoHODLYou[i].BalanceNanos >
+					user.UsersWhoHODLYou[j].BalanceNanos
+			})
+			for _, friend := range user.UsersWhoHODLYou {
 
-					if friend.ProfileEntryResponse.Username == from {
+				if friend.ProfileEntryResponse.Username == from {
 
-						perString := fmt.Sprintf("%0.2f",
-							float64(friend.BalanceNanos)/float64(total))
-						fmt.Println(" ", from, cctm.OperationType, cctm.BitCloutToSellNanos,
+					per := float64(friend.BalanceNanos) / float64(total)
+					if per >= 0.01 {
+						perString := fmt.Sprintf("%0.2f", per*100)
+						fmt.Println(" ", from, "buy", sum,
 							"now owns", perString, "% of", username)
 					}
 				}
