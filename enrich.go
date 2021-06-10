@@ -50,10 +50,11 @@ func FindBuysSellsAndTransfers() {
 			fromPub58 := n.Metadata.TransactorPublicKeyBase58Check
 			if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
-				if cctm.OperationType != "buy" {
-					continue
+				if cctm.OperationType == "buy" {
+					m[fromPub58] += cctm.BitCloutToSellNanos
+				} else {
+					fmt.Println("SELL", cctm.OperationType, cctm)
 				}
-				m[fromPub58] += cctm.BitCloutToSellNanos
 			} else if n.Metadata.TxnType == "CREATOR_COIN_TRANSFER" {
 				md := n.Metadata.CreatorCoinTransferTxindexMetadata
 				if md.PostHashHex != "" {
@@ -148,8 +149,10 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 
-				m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
-				Post(m)
+				if argMap["live"] != "" {
+					m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+					Post(m)
+				}
 				os.Exit(0)
 				return true
 			}
@@ -193,8 +196,10 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 				//exec.Command("convert", "out.png", "-gravity", "center",
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
-				m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
-				Post(m)
+				if argMap["live"] != "" {
+					m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+					Post(m)
+				}
 				os.Exit(0)
 				return true
 			}
