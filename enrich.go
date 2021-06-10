@@ -81,6 +81,12 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	if from == md.CreatorUsername {
 		return false
 	}
+	if alreadyDone[from] {
+		return false
+	}
+	if alreadyDone[md.CreatorUsername] {
+		return false
+	}
 	fromPic := list.ProfilesByPublicKey[fromPub58].ProfilePic
 	savePic("from", fromPic)
 	coinPic := user.ProfileEntryResponse.ProfilePic
@@ -115,7 +121,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 
 				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
 				//Post(m)
-				//os.Exit(0)
+				os.Exit(0)
 				return true
 			}
 		}
