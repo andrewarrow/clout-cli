@@ -43,49 +43,60 @@ func FindBuysSellsAndTransfers() {
 			}
 		}
 		for fromPub58, sum := range m {
-			user := session.Pub58ToUser(pub58)
-			from := list.ProfilesByPublicKey[fromPub58].Username
-			if from == "" {
-				continue
-			}
-			fromPic := list.ProfilesByPublicKey[fromPub58].ProfilePic
-			savePic("from", fromPic)
-			total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
-
-			sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
-				return user.UsersWhoHODLYou[i].BalanceNanos >
-					user.UsersWhoHODLYou[j].BalanceNanos
-			})
-			friendMap := map[string]int{}
-			for _, friend := range user.UsersWhoHODLYou {
-				per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
-				friendMap[friend.ProfileEntryResponse.Username] = per
-			}
-			ChartIt(friendMap)
-			for _, friend := range user.UsersWhoHODLYou {
-
-				if friend.ProfileEntryResponse.Username == from {
-
-					per := float64(friend.BalanceNanos) / float64(total)
-					if per >= 0.01 {
-						perString := fmt.Sprintf("%0.2f", per*100)
-						text := fmt.Sprintf("@%s spends %d to buy @%s and now owns %s%%", from, sum, username, perString)
-						fmt.Println(text)
-						exec.Command("montage", "from.webp", "chart.png", "coin.webp", "-tile", "3x1",
-							"-geometry", "+0+0", "out.png").CombinedOutput()
-						//exec.Command("convert", "out.png", "-gravity", "center",
-						//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
-
-						//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out2.png"}
-						//Post(m)
-					}
-				}
+			if FindPercentAndPost(&list, username, pub58, fromPub58, sum) {
+				break
 			}
 		}
 
 	}
 }
 
+func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub58 string, sum int64) bool {
+	user := session.Pub58ToUser(pub58)
+	from := list.ProfilesByPublicKey[fromPub58].Username
+	if from == "" {
+		return false
+	}
+	fromPic := list.ProfilesByPublicKey[fromPub58].ProfilePic
+	savePic("from", fromPic)
+	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
+
+	sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
+		return user.UsersWhoHODLYou[i].BalanceNanos >
+			user.UsersWhoHODLYou[j].BalanceNanos
+	})
+	friendMap := map[string]int{}
+	for i, friend := range user.UsersWhoHODLYou {
+		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
+		friendMap[friend.ProfileEntryResponse.Username] = per
+		if i >= 8 {
+			break
+		}
+	}
+	ChartIt(friendMap)
+	for _, friend := range user.UsersWhoHODLYou {
+
+		if friend.ProfileEntryResponse.Username == from {
+
+			per := float64(friend.BalanceNanos) / float64(total)
+			if per >= 0.01 {
+				perString := fmt.Sprintf("%0.2f", per*100)
+				text := fmt.Sprintf("tell us @%s why did you spend %d to buy @%s for %s%%? Enrich followers want to know.", from, sum, username, perString)
+				fmt.Println(text)
+				exec.Command("montage", "from.webp", "chart.png", "coin.webp", "-tile", "3x1",
+					"-geometry", "+0+0", "out.png").CombinedOutput()
+				//exec.Command("convert", "out.png", "-gravity", "center",
+				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
+
+				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
+				//Post(m)
+				return true
+			}
+		}
+	}
+
+	return false
+}
 func ChartIt(m map[string]int) {
 
 	items := []chart.Value{}
