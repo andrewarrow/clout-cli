@@ -91,7 +91,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 				perString := fmt.Sprintf("%0.2f", per*100)
-				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d to buy @%s for %s%%? Enrich followers want to know. Re-clout and explain...", from, sum, username, perString)
+				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d to buy @%s for %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, username, perString)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "coin.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
