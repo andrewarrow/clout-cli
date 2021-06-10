@@ -25,6 +25,7 @@ func FindBuysSellsAndTransfers() {
 	json.Unmarshal([]byte(js), &r)
 
 	alreadyDone = LoadEnrichMessages()
+	alreadyDone["douglasss"] = true
 	fmt.Println(alreadyDone)
 	pub58 := session.LoggedInPub58()
 	js = network.GetPostsStateless(pub58, false)
@@ -47,7 +48,7 @@ func FindBuysSellsAndTransfers() {
 
 		for _, n := range list.Notifications {
 			fromPub58 := n.Metadata.TransactorPublicKeyBase58Check
-			if n.Metadata.TxnType == "!CREATOR_COIN" {
+			if n.Metadata.TxnType == "CREATOR_COIN" {
 				cctm := n.Metadata.CreatorCoinTxindexMetadata
 				if cctm.OperationType != "buy" {
 					continue
@@ -71,6 +72,26 @@ func FindBuysSellsAndTransfers() {
 
 	}
 }
+
+func FindTopHolders(total int64, user models.User) []string {
+	top := []string{}
+	sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
+		return user.UsersWhoHODLYou[i].BalanceNanos >
+			user.UsersWhoHODLYou[j].BalanceNanos
+	})
+	friendMap := map[string]int{}
+	for i, friend := range user.UsersWhoHODLYou {
+		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
+		friendMap[friend.ProfileEntryResponse.Username] = per
+		top = append(top, friend.ProfileEntryResponse.Username)
+		if i >= 8 {
+			break
+		}
+	}
+	ChartIt(friendMap)
+	return top
+}
+
 func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string, md models.CreatorCoinTransferTxindexMetadata) bool {
 	pub58 := session.UsernameToPub58(md.CreatorUsername)
 	user := session.Pub58ToUser(pub58)
@@ -92,19 +113,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	coinPic := user.ProfileEntryResponse.ProfilePic
 	savePic("coin", coinPic)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
-	sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
-		return user.UsersWhoHODLYou[i].BalanceNanos >
-			user.UsersWhoHODLYou[j].BalanceNanos
-	})
-	friendMap := map[string]int{}
-	for i, friend := range user.UsersWhoHODLYou {
-		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
-		friendMap[friend.ProfileEntryResponse.Username] = per
-		if i >= 8 {
-			break
-		}
-	}
-	ChartIt(friendMap)
+	FindTopHolders(total, user)
 	for _, friend := range user.UsersWhoHODLYou {
 
 		if friend.ProfileEntryResponse.Username == username {
@@ -113,14 +122,18 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
+				if byUSD < 50.0 {
+					return false
+				}
+
 				perString := fmt.Sprintf("%d", int(per*100))
 				text := fmt.Sprintf("anything you can tell us @%s on why you transfered %d ($%0.2f USD) of @%s to @%s and they now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString)
 				fmt.Println(text)
 				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 
-				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
-				//Post(m)
+				m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
+				Post(m)
 				os.Exit(0)
 				return true
 			}
@@ -143,19 +156,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 	savePic("from", fromPic)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
-	sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
-		return user.UsersWhoHODLYou[i].BalanceNanos >
-			user.UsersWhoHODLYou[j].BalanceNanos
-	})
-	friendMap := map[string]int{}
-	for i, friend := range user.UsersWhoHODLYou {
-		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
-		friendMap[friend.ProfileEntryResponse.Username] = per
-		if i >= 8 {
-			break
-		}
-	}
-	ChartIt(friendMap)
+	FindTopHolders(total, user)
 	for _, friend := range user.UsersWhoHODLYou {
 
 		if friend.ProfileEntryResponse.Username == from {
@@ -163,6 +164,9 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, sum)
+				if byUSD < 50.0 {
+					return false
+				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
 				text := fmt.Sprintf("anything you can tell us @%s on why you spent %d ($%0.2f USD) to buy @%s and now own %s%%? Enrich followers want to know. You could re-clout this and explain...", from, sum, byUSD, username, perString)
@@ -172,8 +176,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 				//exec.Command("convert", "out.png", "-gravity", "center",
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
-				//m := map[string]string{"text": text, "image": "/Users/aa/clout-cli/out.png"}
-				//Post(m)
+				m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+				Post(m)
 				os.Exit(0)
 				return true
 			}

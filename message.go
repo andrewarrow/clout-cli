@@ -1,7 +1,6 @@
 package main
 
 import (
-	"clout/keys"
 	"clout/models"
 	"clout/network"
 	"clout/session"
@@ -85,12 +84,8 @@ from https://github.com/bitclout/identity/blob/680c584e197eb086e63f0ba12e8142882
 */
 
 func ListMessages() {
-	m := session.ReadAccounts()
-	for username, s := range m {
-		fmt.Println(username)
-		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
-		ListMessagesForPub(pub58)
-	}
+	pub58 := session.LoggedInPub58()
+	ListMessagesForPub(pub58)
 }
 func ListMessagesForPub(pub58 string) {
 	js := network.GetMessagesStateless(pub58)
