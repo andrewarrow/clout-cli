@@ -52,8 +52,10 @@ func FindBuysSellsAndTransfers() {
 					per := float64(friend.BalanceNanos) / float64(total)
 					if per >= 0.01 {
 						perString := fmt.Sprintf("%0.2f", per*100)
-						fmt.Println(" ", from, "buy", sum,
-							"now owns", perString, "% of", username)
+						text := fmt.Sprintf("@%s spends %d to buy @%s and now owns %s%%", from, sum, username, perString)
+						fmt.Println(text)
+						//m := map[string]string{"text": text}
+						//Post(m)
 					}
 				}
 			}
