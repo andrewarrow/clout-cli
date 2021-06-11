@@ -170,9 +170,9 @@ func SubmitPostWithVideo(pub58, body, reply, videoURL string) string {
 		[]byte(send))
 	return jsonString
 }
-func SubmitPostReclout(pub58, body, reclout string) string {
-	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"%s","ImageURLs":[]},"RecloutedPostHashHex":"%s","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
-	send := fmt.Sprintf(jsonString, pub58, body, reclout)
+func SubmitPostReclout(pub58, body, reclout, imageURL string) string {
+	jsonString := `{"UpdaterPublicKeyBase58Check":"%s","PostHashHexToModify":"","ParentStakeID":"","Title":"","BodyObj":{"Body":"%s","ImageURLs":[%s]},"RecloutedPostHashHex":"%s","PostExtraData":{},"Sub":"","IsHidden":false,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, pub58, body, imageURL, reclout)
 	jsonString = DoPost("api/v0/submit-post",
 		[]byte(send))
 	return jsonString

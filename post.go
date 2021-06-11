@@ -196,7 +196,7 @@ func Post(argMap map[string]string) {
 	if videoEmbed != "" {
 		bigString = network.SubmitPostWithVideo(pub58, text, longHash, videoEmbed)
 	} else if reclout != "" {
-		bigString = network.SubmitPostReclout(pub58, text, reclout)
+		bigString = network.SubmitPostReclout(pub58, text, reclout, imageUrl)
 	} else {
 		bigString = network.SubmitPost(pub58, text, longHash, imageUrl)
 	}
