@@ -139,13 +139,13 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 18.0 {
+				if byUSD < 9.0 {
 					fmt.Println("price was only", byUSD)
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("This just in, there was a TRANSFER! Anything you can tell us @%s on why you transfered %d ($%0.2f USD) of @%s to @%s? According to our research they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
+				text := fmt.Sprintf("This just in, there was a TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s and, according to our research, they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -184,13 +184,13 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, sum)
-				if byUSD < 18.0 {
+				if byUSD < 9.0 {
 					fmt.Println("price was only", byUSD)
 					return false
 				}
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("This just in, there was a BUY! Anything you can tell us @%s on why you spent %d ($%0.2f USD) to BUY @%s? According to our research you now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
+				text := fmt.Sprintf("This just in, there was a BUY! @%s spent %d ($%0.2f USD) to BUY @%s and, according to our research, they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -225,7 +225,12 @@ func LoadEnrichMessages() map[string]bool {
 		tokens := strings.Split(p.Body, " ")
 		for _, token := range tokens {
 			if strings.HasPrefix(token, "@") {
-				m[token[1:]] = true
+				if strings.HasSuffix(token, "?") {
+					thing := token[1:]
+					m[thing[:len(thing)-1]] = true
+				} else {
+					m[token[1:]] = true
+				}
 			}
 		}
 	}
