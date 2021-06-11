@@ -28,6 +28,7 @@ func FindBuysSellsAndTransfers() {
 
 	alreadyDone = LoadEnrichMessages()
 	alreadyDone["douglasss"] = true
+	alreadyDone["enrich"] = true
 	fmt.Println(alreadyDone)
 	pub58 := session.LoggedInPub58()
 	js = network.GetPostsStateless(pub58, false)
