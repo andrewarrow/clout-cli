@@ -151,7 +151,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 					"-geometry", "+0+0", "out.png").CombinedOutput()
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+					m := map[string]string{"text": text, "image": "out.png"}
 					Post(m)
 				}
 				os.Exit(0)
@@ -198,7 +198,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "/Users/andrewarrow/clout-cli/out.png"}
+					m := map[string]string{"text": text, "image": "out.png"}
 					Post(m)
 				}
 				os.Exit(0)
