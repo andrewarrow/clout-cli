@@ -18,7 +18,7 @@ func ReadFromIn() string {
 		if text == "." {
 			break
 		}
-		buff = append(buff, text)
+		buff = append(buff, strings.Replace(text, "\"", "\\\"", -1))
 	}
 
 	return strings.Join(buff, "\\n")
