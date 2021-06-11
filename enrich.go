@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/wcharczuk/go-chart"
 )
@@ -41,7 +42,10 @@ func FindBuysSellsAndTransfers() {
 		savePic("actor", actorPic)
 		fmt.Println("notifications for", username)
 		pub58 := session.UsernameToPub58(username)
+		t1 := time.Now().Unix()
 		js := network.GetNotifications(pub58)
+		t2 := time.Now().Unix()
+		fmt.Println(t2 - t1)
 		var list models.NotificationList
 		json.Unmarshal([]byte(js), &list)
 		m := map[string]int64{}
@@ -61,12 +65,23 @@ func FindBuysSellsAndTransfers() {
 				if md.PostHashHex != "" {
 					continue
 				}
+				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
+
+				if byUSD < 9.0 {
+					fmt.Println("price was only", byUSD)
+					continue
+				}
 				if PostAboutTransfer(&list, username, fromPub58, md) {
 					os.Exit(0)
 				}
 			}
 		}
 		for fromPub58, sum := range m {
+			byUSD := ConvertToUSD(r, sum)
+			if byUSD < 9.0 {
+				fmt.Println("price was only", byUSD)
+				continue
+			}
 			if FindPercentAndPost(&list, username, pub58, fromPub58, sum) {
 				break
 			}
@@ -111,7 +126,11 @@ func FindTopHolders(total int64, user *models.User, filter []string) string {
 
 func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string, md models.CreatorCoinTransferTxindexMetadata) bool {
 	pub58 := session.UsernameToPub58(md.CreatorUsername)
+	t1 := time.Now().Unix()
+	fmt.Println("PostAboutTransfer", username, fromPub58, md.CreatorUsername)
 	user := session.Pub58ToUser(pub58)
+	t2 := time.Now().Unix()
+	fmt.Println("PostAboutTransfer", t2-t1)
 	from := list.ProfilesByPublicKey[fromPub58].Username
 	if from == "" {
 		return false
@@ -139,11 +158,6 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 			if per >= 0.01 {
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 9.0 {
-					fmt.Println("price was only", byUSD)
-					return false
-				}
-
 				perString := fmt.Sprintf("%d", int(per*100))
 				text := fmt.Sprintf("This just in, there was a TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s and, according to our research, they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
 				fmt.Println(text)
@@ -164,7 +178,11 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 }
 
 func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub58 string, sum int64) bool {
+	t1 := time.Now().Unix()
+	fmt.Println("FindPercentAndPost", username, pub58, fromPub58)
 	user := session.Pub58ToUser(pub58)
+	t2 := time.Now().Unix()
+	fmt.Println("FindPercentAndPost", t2-t1)
 	from := list.ProfilesByPublicKey[fromPub58].Username
 	if from == "" {
 		return false
@@ -183,12 +201,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
-				byUSD := ConvertToUSD(r, sum)
-				if byUSD < 9.0 {
-					fmt.Println("price was only", byUSD)
-					return false
-				}
 
+				byUSD := ConvertToUSD(r, sum)
 				perString := fmt.Sprintf("%d", int(per*100))
 				text := fmt.Sprintf("This just in, there was a BUY! @%s spent %d ($%0.2f USD) to BUY @%s and, according to our research, they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
 				fmt.Println(text)
