@@ -253,7 +253,17 @@ func LoadEnrichMessages() map[string]bool {
 func ChartIt(m map[string]int) {
 
 	items := []chart.Value{}
+	fixed := map[string]int{}
+	sum := 0
 	for k, v := range m {
+		if v < 5 {
+			sum += v
+		} else {
+			fixed[k] = v
+		}
+	}
+	fixed["other"] = sum
+	for k, v := range fixed {
 		items = append(items, chart.Value{Value: float64(v), Label: k})
 	}
 
