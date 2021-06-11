@@ -22,6 +22,7 @@ var alreadyDone map[string]bool
 var r models.Rate
 
 func FindBuysSellsAndTransfers() {
+	session.WriteSelected("enrich")
 	js := network.GetExchangeRate()
 	json.Unmarshal([]byte(js), &r)
 
