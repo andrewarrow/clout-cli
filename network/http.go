@@ -3,7 +3,7 @@ package network
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -49,7 +49,7 @@ func DoGet(route string) string {
 	request.Header.Set("User-Agent", agent)
 	request.Header.Set("Content-Type", "application/json")
 	//request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", pat))
-	client := &http.Client{Timeout: time.Second * 500}
+	client := &http.Client{Timeout: time.Second * 5}
 	return DoHttpRead("GET", route, client, request)
 }
 
@@ -57,7 +57,10 @@ func DoHttpRead(verb, route string, client *http.Client, request *http.Request) 
 	resp, err := client.Do(request)
 	if err == nil {
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		//body, err := ioutil.ReadAll(resp.Body)
+		var buff bytes.Buffer
+		io.Copy(&buff, resp.Body)
+		body := buff.Bytes()
 		if err != nil {
 			fmt.Printf("\n\nERROR: %d %s\n\n", resp.StatusCode, err.Error())
 			return ""
