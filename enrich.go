@@ -29,6 +29,7 @@ func FindBuysSellsAndTransfers() {
 	json.Unmarshal([]byte(js), &r)
 
 	alreadyDone = LoadEnrichMessages()
+	alreadyDone = map[string]bool{}
 	alreadyDone["douglasss"] = true
 	alreadyDone["enrich"] = true
 	fmt.Println(alreadyDone)
@@ -86,7 +87,7 @@ func FindBuysSellsAndTransfers() {
 		}
 		for fromPub58, sum := range m {
 			byUSD := ConvertToUSD(r, sum)
-			if byUSD < 1.0 {
+			if byUSD < 0.1 {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
@@ -98,19 +99,19 @@ func FindBuysSellsAndTransfers() {
 	}
 }
 
-func FindTopHolders(total int64, user *models.User, filter []string) string {
+func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string {
 	filterMap := map[string]bool{}
 	for _, f := range filter {
 		filterMap[f] = true
 	}
 
 	top := []string{}
-	sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
-		return user.UsersWhoHODLYou[i].BalanceNanos >
-			user.UsersWhoHODLYou[j].BalanceNanos
+	sort.SliceStable(hw.Hodlers, func(i, j int) bool {
+		return hw.Hodlers[i].BalanceNanos >
+			hw.Hodlers[j].BalanceNanos
 	})
 	friendMap := map[string]int{}
-	for i, friend := range user.UsersWhoHODLYou {
+	for i, friend := range hw.Hodlers {
 		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
 		username := friend.ProfileEntryResponse.Username
 		friendMap[username] = per
@@ -136,6 +137,9 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	pub58 := session.UsernameToPub58(md.CreatorUsername)
 	t1 := time.Now().Unix()
 	fmt.Println("PostAboutTransfer", username, fromPub58, md.CreatorUsername)
+	js := network.GetHodlers(username)
+	var hw models.HodlersWrap
+	json.Unmarshal([]byte(js), &hw)
 	user := session.Pub58ToUser(pub58)
 	t2 := time.Now().Unix()
 	fmt.Println("PostAboutTransfer", t2-t1)
@@ -153,7 +157,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 		return false
 	}
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
-	topMention := FindTopHolders(total, &user, []string{from, username, md.CreatorUsername})
+	topMention := FindTopHodlers(total, &hw, []string{from, username, md.CreatorUsername})
 	for _, friend := range user.UsersWhoHODLYou {
 
 		if friend.ProfileEntryResponse.Username == username {
@@ -192,10 +196,15 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 	t1 := time.Now().Unix()
 	fmt.Println("FindPercentAndPost", username, pub58, numFollowers, fromPub58)
 	user := session.Pub58ToUser(pub58)
+	js := network.GetHodlers(username)
+	var hw models.HodlersWrap
+	json.Unmarshal([]byte(js), &hw)
+
 	t2 := time.Now().Unix()
 	fmt.Println("FindPercentAndPost", t2-t1)
 	from := list.ProfilesByPublicKey[fromPub58].Username
 	if from == "" {
+		fmt.Println("no username")
 		return false
 	}
 	if alreadyDone[from] {
@@ -203,8 +212,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 	}
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
-	topMention := FindTopHolders(total, &user, []string{from, username})
-	for _, friend := range user.UsersWhoHODLYou {
+	topMention := FindTopHodlers(total, &hw, []string{from, username})
+	for _, friend := range hw.Hodlers {
 
 		if friend.ProfileEntryResponse.Username == from {
 
