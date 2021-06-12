@@ -29,7 +29,6 @@ func FindBuysSellsAndTransfers() {
 	json.Unmarshal([]byte(js), &r)
 
 	alreadyDone = LoadEnrichMessages()
-	alreadyDone = map[string]bool{}
 	alreadyDone["douglasss"] = true
 	alreadyDone["enrich"] = true
 	fmt.Println(alreadyDone)
@@ -305,7 +304,9 @@ func ChartIt(m map[string]int) {
 }
 
 func savePic(flavor string, data []byte) {
+	os.Remove(flavor + ".webp")
 	ioutil.WriteFile(flavor+".webp", data, 0755)
+	exec.Command("convert", flavor+".webp", flavor+".png").Output()
 }
 func BigImage(price, coin string, numFollowers int64, percent string) {
 	dc := gg.NewContext(600, 600)
@@ -318,7 +319,11 @@ func BigImage(price, coin string, numFollowers int64, percent string) {
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored("BUY", 275, 100, 0.5, 0.5)
 
-	im, _ := gg.LoadImage("actor.webp")
+	im, err := gg.LoadImage("actor.png")
+	if err != nil {
+		fmt.Println("1", err)
+		return
+	}
 	dc.DrawImage(im, 400, 25)
 	dc.SetLineWidth(2)
 	dc.DrawRectangle(400, 25, 100, 100)
@@ -329,12 +334,24 @@ func BigImage(price, coin string, numFollowers int64, percent string) {
 	dc.LoadFontFace(font, 18)
 	dc.DrawStringAnchored(fmt.Sprintf("%d followers", numFollowers), 450, 165, 0.5, 0.5)
 
-	im, _ = gg.LoadImage("chart.png")
+	im, err = gg.LoadImage("chart.png")
+	if err != nil {
+		fmt.Println("2", err)
+		return
+	}
 	dc.DrawImage(im, 30, 175)
-	im, _ = gg.LoadImage("logo.png")
+	im, err = gg.LoadImage("logo.png")
+	if err != nil {
+		fmt.Println("3", err)
+		return
+	}
 	dc.DrawImage(im, -40, -10)
 
-	im, _ = gg.LoadImage("from.webp")
+	im, err = gg.LoadImage("from.png")
+	if err != nil {
+		fmt.Println("4", err)
+		return
+	}
 	dc.DrawImage(im, 460, 250)
 	dc.SetLineWidth(2)
 	dc.DrawRectangle(460, 250, 100, 100)
