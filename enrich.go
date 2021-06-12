@@ -5,7 +5,6 @@ import (
 	"clout/models"
 	"clout/network"
 	"clout/session"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -42,10 +41,12 @@ func FindBuysSellsAndTransfers() {
 		if alreadyDone[username] {
 			continue
 		}
-		actorPic := p.ProfileEntryResponse.ProfilePic
-		savePic("actor", actorPic)
+
 		fmt.Println("notifications for", username)
 		pub58 := session.UsernameToPub58(username)
+		actorBytes := network.GetSingleProfilePicture(pub58)
+		savePic("actor", actorBytes)
+
 		numFollowers := GetNumFollowers(pub58, username)
 		fmt.Println(numFollowers)
 
@@ -151,10 +152,10 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	if alreadyDone[md.CreatorUsername] {
 		return false
 	}
-	fromPic := list.ProfilesByPublicKey[fromPub58].ProfilePic
-	savePic("from", fromPic)
-	coinPic := user.ProfileEntryResponse.ProfilePic
-	savePic("coin", coinPic)
+	fromBytes := network.GetSingleProfilePicture(fromPub58)
+	savePic("from", fromBytes)
+	coinBytes := network.GetSingleProfilePicture(user.PublicKeyBase58Check)
+	savePic("coin", coinBytes)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 	topMention := FindTopHolders(total, &user, []string{from, username, md.CreatorUsername})
 	for _, friend := range user.UsersWhoHODLYou {
@@ -198,8 +199,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 	if alreadyDone[from] {
 		return false
 	}
-	fromPic := list.ProfilesByPublicKey[fromPub58].ProfilePic
-	savePic("from", fromPic)
+	fromBytes := network.GetSingleProfilePicture(fromPub58)
+	savePic("from", fromBytes)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
 	topMention := FindTopHolders(total, &user, []string{from, username})
@@ -290,10 +291,8 @@ func ChartIt(m map[string]int) {
 	pie.Render(chart.PNG, f)
 }
 
-func savePic(flavor, data string) {
-	tokens := strings.Split(data, ",")
-	decoded, _ := base64.StdEncoding.DecodeString(tokens[1])
-	ioutil.WriteFile(flavor+".webp", decoded, 0755)
+func savePic(flavor string, data []byte) {
+	ioutil.WriteFile(flavor+".webp", data, 0755)
 }
 func BigImage(price, coin string, numFollowers int64, percent string) {
 	dc := gg.NewContext(600, 600)

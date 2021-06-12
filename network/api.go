@@ -206,6 +206,10 @@ func GetUsersStateless(key string) string {
 		[]byte(send))
 	return jsonString
 }
+func GetSingleProfilePicture(pub58 string) []byte {
+	jsonString := DoGet("api/v0/get-single-profile-picture?publicKeyBase58Check=" + pub58)
+	return []byte(jsonString)
+}
 
 func GetPostsStatelessWithOptions(last, pub58 string) string {
 	jsonString := `{"PostHashHex":"%s","ReaderPublicKeyBase58Check":"%s","OrderBy":"","StartTstampSecs":null,"PostContent":"","NumToFetch":50,"FetchSubcomments":false,"GetPostsForFollowFeed":false,"GetPostsForGlobalWhitelist":true,"GetPostsByClout":false,"PostsByCloutMinutesLookback":0,"AddGlobalFeedBool":false}`
