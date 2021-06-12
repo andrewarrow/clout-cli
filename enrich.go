@@ -75,7 +75,7 @@ func FindBuysSellsAndTransfers() {
 				}
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 2.0 {
+				if byUSD < 2000.0 {
 					fmt.Println("price was only", byUSD)
 					continue
 				}
@@ -86,7 +86,7 @@ func FindBuysSellsAndTransfers() {
 		}
 		for fromPub58, sum := range m {
 			byUSD := ConvertToUSD(r, sum)
-			if byUSD < 0.1 {
+			if byUSD < 50.0 {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
@@ -229,7 +229,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
 				fmt.Println(text)
 
-				BigImage(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%")
+				BigImage(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
 
 				//exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 				//"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -308,7 +308,7 @@ func savePic(flavor string, data []byte) {
 	ioutil.WriteFile(flavor+".webp", data, 0755)
 	exec.Command("convert", flavor+".webp", flavor+".png").Output()
 }
-func BigImage(price, coin string, numFollowers int64, percent string) {
+func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
@@ -359,7 +359,9 @@ func BigImage(price, coin string, numFollowers int64, percent string) {
 	dc.LoadFontFace(font, 24)
 	dc.DrawStringAnchored("purchaser", 510, 370, 0.5, 0.5)
 	dc.LoadFontFace(font, 18)
-	dc.DrawStringAnchored(fmt.Sprintf("owns %s", percent), 510, 390, 0.5, 0.5)
+	dc.DrawStringAnchored(from, 510, 390, 0.5, 0.5)
+	dc.LoadFontFace(font, 18)
+	dc.DrawStringAnchored(fmt.Sprintf("owns %s", percent), 510, 410, 0.5, 0.5)
 
 	dc.SavePNG("out.png")
 }
