@@ -122,12 +122,20 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 		}
 	}
 	ChartIt(friendMap)
-	if len(top) == 1 {
-		return "@" + top[0]
-	} else if len(top) == 2 {
-		return "@" + top[0] + " @" + top[1]
-	} else if len(top) > 2 {
-		return "@" + top[0] + " @" + top[1] + " @" + top[2]
+
+	blessed := []string{}
+	for _, t := range top {
+		if alreadyDone[t] {
+			continue
+		}
+		blessed = append(blessed, t)
+	}
+	if len(blessed) == 1 {
+		return "@" + blessed[0]
+	} else if len(blessed) == 2 {
+		return "@" + blessed[0] + " @" + blessed[1]
+	} else if len(blessed) > 2 {
+		return "@" + blessed[0] + " @" + blessed[1] + " @" + blessed[2]
 	}
 	return ""
 }
@@ -315,24 +323,24 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc.SetRGB(0, 0, 0)
 	font := "/Library/Fonts/Arial Unicode.ttf"
 	dc.LoadFontFace(font, 48)
-	dc.DrawStringAnchored(price, 275, 45, 0.5, 0.5)
+	dc.DrawStringAnchored(price, 275, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
-	dc.DrawStringAnchored("BUY", 275, 100, 0.5, 0.5)
+	dc.DrawStringAnchored("BUY", 275, 100+50, 0.5, 0.5)
 
 	im, err := gg.LoadImage("actor.png")
 	if err != nil {
 		fmt.Println("1", err)
 		return
 	}
-	dc.DrawImage(im, 400, 25)
+	dc.DrawImage(im, 400, 25+50)
 	dc.SetLineWidth(2)
-	dc.DrawRectangle(400, 25, 100, 100)
+	dc.DrawRectangle(400, 25+50, 100, 100)
 	dc.Stroke()
 
 	dc.LoadFontFace(font, 24)
-	dc.DrawStringAnchored(coin, 450, 140, 0.5, 0.5)
+	dc.DrawStringAnchored(coin, 450, 140+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 18)
-	dc.DrawStringAnchored(fmt.Sprintf("%d followers", numFollowers), 450, 165, 0.5, 0.5)
+	dc.DrawStringAnchored(fmt.Sprintf("%d followers", numFollowers), 450, 165+50, 0.5, 0.5)
 
 	im, err = gg.LoadImage("chart.png")
 	if err != nil {
@@ -345,7 +353,7 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 		fmt.Println("3", err)
 		return
 	}
-	dc.DrawImage(im, -40, -10)
+	dc.DrawImage(im, -40, -10+50)
 
 	im, err = gg.LoadImage("from.png")
 	if err != nil {
