@@ -207,7 +207,7 @@ func GetUsersStateless(key string) string {
 	return jsonString
 }
 func GetSingleProfilePicture(pub58 string) []byte {
-	jsonString := DoGet("api/v0/get-single-profile-picture?publicKeyBase58Check=" + pub58)
+	jsonString := DoGet("api/v0/get-single-profile-picture/" + pub58)
 	return []byte(jsonString)
 }
 
