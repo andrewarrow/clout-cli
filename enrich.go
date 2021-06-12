@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fogleman/gg"
+
 	"github.com/wcharczuk/go-chart"
 )
 
@@ -209,12 +211,15 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 			if per >= 0.01 {
 
 				byUSD := ConvertToUSD(r, sum)
-				usdPerFollower := byUSD / float64(numFollowers)
+				//usdPerFollower := byUSD / float64(numFollowers)
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("This just in, there was a BUY! @%s spent %d ($%0.2f USD) to BUY @%s and, according to our research, they now own %s%%. %s has %d followers so that's $%0.2f USD per follower! Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, username, numFollowers, usdPerFollower, topMention)
+				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
 				fmt.Println(text)
-				exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
-					"-geometry", "+0+0", "out.png").CombinedOutput()
+
+				BigImage(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%")
+
+				//exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
+				//"-geometry", "+0+0", "out.png").CombinedOutput()
 				//exec.Command("convert", "out.png", "-gravity", "center",
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
@@ -275,8 +280,8 @@ func ChartIt(m map[string]int) {
 	}
 
 	pie := chart.PieChart{
-		Width:  512,
-		Height: 512,
+		Width:  400,
+		Height: 400,
 		Values: items,
 	}
 
@@ -289,4 +294,43 @@ func savePic(flavor, data string) {
 	tokens := strings.Split(data, ",")
 	decoded, _ := base64.StdEncoding.DecodeString(tokens[1])
 	ioutil.WriteFile(flavor+".webp", decoded, 0755)
+}
+func BigImage(price, coin string, numFollowers int64, percent string) {
+	dc := gg.NewContext(600, 600)
+	dc.SetRGB(1, 1, 1)
+	dc.Clear()
+	dc.SetRGB(0, 0, 0)
+	font := "/Library/Fonts/Arial Unicode.ttf"
+	dc.LoadFontFace(font, 48)
+	dc.DrawStringAnchored(price, 275, 45, 0.5, 0.5)
+	dc.LoadFontFace(font, 48)
+	dc.DrawStringAnchored("BUY", 275, 100, 0.5, 0.5)
+
+	im, _ := gg.LoadImage("actor.webp")
+	dc.DrawImage(im, 400, 25)
+	dc.SetLineWidth(2)
+	dc.DrawRectangle(400, 25, 100, 100)
+	dc.Stroke()
+
+	dc.LoadFontFace(font, 24)
+	dc.DrawStringAnchored(coin, 450, 140, 0.5, 0.5)
+	dc.LoadFontFace(font, 18)
+	dc.DrawStringAnchored(fmt.Sprintf("%d followers", numFollowers), 450, 165, 0.5, 0.5)
+
+	im, _ = gg.LoadImage("chart.png")
+	dc.DrawImage(im, 30, 175)
+	im, _ = gg.LoadImage("logo.png")
+	dc.DrawImage(im, -40, -10)
+
+	im, _ = gg.LoadImage("from.webp")
+	dc.DrawImage(im, 460, 250)
+	dc.SetLineWidth(2)
+	dc.DrawRectangle(460, 250, 100, 100)
+	dc.Stroke()
+	dc.LoadFontFace(font, 24)
+	dc.DrawStringAnchored("purchaser", 510, 370, 0.5, 0.5)
+	dc.LoadFontFace(font, 18)
+	dc.DrawStringAnchored(fmt.Sprintf("owns %s", percent), 510, 390, 0.5, 0.5)
+
+	dc.SavePNG("out.png")
 }

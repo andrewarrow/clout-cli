@@ -7,6 +7,7 @@ require (
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/justincampbell/timeago v0.0.0-20160528003754-027f40306f1d
 	github.com/mattn/go-sqlite3 v1.14.7
