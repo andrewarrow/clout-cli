@@ -65,6 +65,13 @@ func RunFollowLogic(pub58, username string) {
 			display.OneE9(v.CoinPriceBitCloutNanos))
 	}
 }
+func GetNumFollowers(pub58, username string) int64 {
+	js := network.GetFollowsStateless(pub58, username, "")
+	var pktpe models.PublicKeyToProfileEntry
+	json.Unmarshal([]byte(js), &pktpe)
+	return pktpe.NumFollowers
+}
+
 func LoopThruAllFollowing(pub58, username string) []models.ProfileEntryResponse {
 	last := ""
 	js := network.GetFollowsStateless(pub58, username, last)

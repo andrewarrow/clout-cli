@@ -44,6 +44,9 @@ func FindBuysSellsAndTransfers() {
 		savePic("actor", actorPic)
 		fmt.Println("notifications for", username)
 		pub58 := session.UsernameToPub58(username)
+		numFollowers := GetNumFollowers(pub58, username)
+		fmt.Println(numFollowers)
+
 		t1 := time.Now().Unix()
 		js := network.GetNotifications(pub58)
 		t2 := time.Now().Unix()
@@ -84,7 +87,7 @@ func FindBuysSellsAndTransfers() {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
-			if FindPercentAndPost(&list, username, pub58, fromPub58, sum) {
+			if FindPercentAndPost(&list, username, pub58, numFollowers, fromPub58, sum) {
 				break
 			}
 		}
@@ -179,9 +182,10 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	return false
 }
 
-func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub58 string, sum int64) bool {
+func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
+	numFollowers int64, fromPub58 string, sum int64) bool {
 	t1 := time.Now().Unix()
-	fmt.Println("FindPercentAndPost", username, pub58, fromPub58)
+	fmt.Println("FindPercentAndPost", username, pub58, numFollowers, fromPub58)
 	user := session.Pub58ToUser(pub58)
 	t2 := time.Now().Unix()
 	fmt.Println("FindPercentAndPost", t2-t1)
@@ -205,8 +209,9 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58, fromPub5
 			if per >= 0.01 {
 
 				byUSD := ConvertToUSD(r, sum)
+				usdPerFollower := byUSD / float64(numFollowers)
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("This just in, there was a BUY! @%s spent %d ($%0.2f USD) to BUY @%s and, according to our research, they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, topMention)
+				text := fmt.Sprintf("This just in, there was a BUY! @%s spent %d ($%0.2f USD) to BUY @%s and, according to our research, they now own %s%%. %s has %d followers so that's $%0.2f USD per follower! Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, perString, username, numFollowers, usdPerFollower, topMention)
 				fmt.Println(text)
 				exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 					"-geometry", "+0+0", "out.png").CombinedOutput()
