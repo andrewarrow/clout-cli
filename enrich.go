@@ -152,10 +152,6 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	if alreadyDone[md.CreatorUsername] {
 		return false
 	}
-	fromBytes := network.GetSingleProfilePicture(fromPub58)
-	savePic("from", fromBytes)
-	coinBytes := network.GetSingleProfilePicture(user.PublicKeyBase58Check)
-	savePic("coin", coinBytes)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 	topMention := FindTopHolders(total, &user, []string{from, username, md.CreatorUsername})
 	for _, friend := range user.UsersWhoHODLYou {
@@ -164,6 +160,10 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
+				fromBytes := network.GetSingleProfilePicture(fromPub58)
+				savePic("from", fromBytes)
+				coinBytes := network.GetSingleProfilePicture(user.PublicKeyBase58Check)
+				savePic("coin", coinBytes)
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
 				perString := fmt.Sprintf("%d", int(per*100))
@@ -199,8 +199,6 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 	if alreadyDone[from] {
 		return false
 	}
-	fromBytes := network.GetSingleProfilePicture(fromPub58)
-	savePic("from", fromBytes)
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 
 	topMention := FindTopHolders(total, &user, []string{from, username})
@@ -211,6 +209,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 
+				fromBytes := network.GetSingleProfilePicture(fromPub58)
+				savePic("from", fromBytes)
 				byUSD := ConvertToUSD(r, sum)
 				//usdPerFollower := byUSD / float64(numFollowers)
 				perString := fmt.Sprintf("%d", int(per*100))
