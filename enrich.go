@@ -75,7 +75,7 @@ func FindBuysSellsAndTransfers() {
 				}
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 2000.0 {
+				if byUSD < 200000.0 {
 					fmt.Println("price was only", byUSD)
 					continue
 				}
@@ -86,7 +86,7 @@ func FindBuysSellsAndTransfers() {
 		}
 		for fromPub58, sum := range m {
 			byUSD := ConvertToUSD(r, sum)
-			if byUSD < 50.0 {
+			if byUSD < 100.0 {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
@@ -269,14 +269,17 @@ func LoadEnrichMessages() map[string]bool {
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)
 	for _, p := range ppk.Posts {
-		tokens := strings.Split(p.Body, " ")
+		tokens := strings.Split(p.Body, "\n")
 		for _, token := range tokens {
-			if strings.HasPrefix(token, "@") {
-				if strings.HasSuffix(token, "?") {
-					thing := token[1:]
-					m[thing[:len(thing)-1]] = true
-				} else {
-					m[token[1:]] = true
+			tokens = strings.Split(token, " ")
+			for _, token := range tokens {
+				if strings.HasPrefix(token, "@") {
+					if strings.HasSuffix(token, ".") {
+						thing := token[1:]
+						m[thing[:len(thing)-1]] = true
+					} else {
+						m[token[1:]] = true
+					}
 				}
 			}
 		}
