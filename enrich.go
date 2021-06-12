@@ -21,6 +21,7 @@ import (
 
 var alreadyDone map[string]bool
 var r models.Rate
+var actorPub58 string
 
 func FindBuysSellsAndTransfers() {
 	session.WriteSelected("enrich")
@@ -44,8 +45,7 @@ func FindBuysSellsAndTransfers() {
 
 		fmt.Println("notifications for", username)
 		pub58 := session.UsernameToPub58(username)
-		actorBytes := network.GetSingleProfilePicture(pub58)
-		savePic("actor", actorBytes)
+		actorPub58 = pub58
 
 		numFollowers := GetNumFollowers(pub58, username)
 		fmt.Println(numFollowers)
@@ -75,7 +75,7 @@ func FindBuysSellsAndTransfers() {
 				}
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 9.0 {
+				if byUSD < 2.0 {
 					fmt.Println("price was only", byUSD)
 					continue
 				}
@@ -86,7 +86,7 @@ func FindBuysSellsAndTransfers() {
 		}
 		for fromPub58, sum := range m {
 			byUSD := ConvertToUSD(r, sum)
-			if byUSD < 9.0 {
+			if byUSD < 1.0 {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
@@ -160,6 +160,8 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
+				actorBytes := network.GetSingleProfilePicture(actorPub58)
+				savePic("actor", actorBytes)
 				fromBytes := network.GetSingleProfilePicture(fromPub58)
 				savePic("from", fromBytes)
 				coinBytes := network.GetSingleProfilePicture(user.PublicKeyBase58Check)
@@ -208,6 +210,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
+				actorBytes := network.GetSingleProfilePicture(pub58)
+				savePic("actor", actorBytes)
 
 				fromBytes := network.GetSingleProfilePicture(fromPub58)
 				savePic("from", fromBytes)
