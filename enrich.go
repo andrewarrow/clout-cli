@@ -121,8 +121,8 @@ func TestBigImage() {
 
 	//BigImageBuy("5", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
 	BigImageTransfer("9", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
-	ImagesFromPosts("artsyminal")
-	MakeVideoFromImages()
+	//ImagesFromPosts("artsyminal")
+	//MakeVideoFromImages()
 
 	lines := []string{}
 	lines = AsciiByteAddition(lines, "11125657553")
@@ -283,9 +283,11 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				fmt.Println(text)
 				//exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1", "-geometry", "+0+0", "out.png").CombinedOutput()
 				BigImageTransfer(lines[len(lines)-1], fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", from, username)
+				//ImagesFromPosts(md.CreatorUsername)
+				//MakeVideoFromImages()
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "output.gif"}
+					m := map[string]string{"text": text, "image": "001.png"}
 					Post(m)
 				}
 				os.Exit(0)
@@ -341,6 +343,8 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				fmt.Println(text)
 
 				BigImageBuy(lines[len(lines)-1], fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
+				//ImagesFromPosts(username)
+				//MakeVideoFromImages()
 
 				//exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 				//"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -348,7 +352,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "output.gif"}
+					m := map[string]string{"text": text, "image": "001.png"}
 					Post(m)
 				}
 				os.Exit(0)
