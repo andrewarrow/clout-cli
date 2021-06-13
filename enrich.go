@@ -60,7 +60,7 @@ func TestBigImage() {
 	friendMap["ouch"] = 15
 	friendMap["other"] = 55
 	ChartIt(friendMap)
-	username := "greatguy"
+	username := "guttercatsofbitclout"
 	from := "purchaser"
 	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
 	actorBytes := network.GetSingleProfilePicture(pub58)
@@ -123,7 +123,7 @@ func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
 				}
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 10.0 {
+				if byUSD < 40.0 {
 					fmt.Println("price was only", byUSD)
 					continue
 				}
@@ -134,7 +134,7 @@ func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
 		}
 		for fromPub58, sum := range m {
 			byUSD := ConvertToUSD(r, sum)
-			if byUSD < 10.0 {
+			if byUSD < 40.0 {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
@@ -382,6 +382,9 @@ func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom str
 	dc.Stroke()
 
 	dc.LoadFontFace(font, 24)
+	if len(top) > 9 {
+		dc.LoadFontFace(font, 18)
+	}
 	dc.DrawStringAnchored(top, x+50, y+140-25, 0.5, 0.5)
 	dc.LoadFontFace(font, 18)
 	dc.DrawStringAnchored(middle, x+50, y+165-25, 0.5, 0.5)
@@ -397,12 +400,12 @@ func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
 	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored("BUY", 275+25, 100+50, 0.5, 0.5)
-	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	im, _ := gg.LoadImage("chart.png")
 	dc.DrawImage(im, 30, 175)
 	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+50)
+	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	DrawUser(dc, "from.png", 460, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
 	dc.SavePNG("out.png")
@@ -417,12 +420,12 @@ func BigImageTransfer(price, coin string, numFollowers int64, percent, from, act
 	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored("TRANSFER", 275+25, 100+50, 0.5, 0.5)
-	DrawUser(dc, "coin.png", 400+50, 50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	im, _ := gg.LoadImage("chart.png")
 	dc.DrawImage(im, 30, 175)
 	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+50)
+	DrawUser(dc, "coin.png", 400+50, 50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	DrawUser(dc, "actor.png", 460, 225, "receiver", actor, fmt.Sprintf("owns %s", percent))
 	DrawUser(dc, "from.png", 460, 250+160, "giver", from, "")
