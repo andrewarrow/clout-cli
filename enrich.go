@@ -54,6 +54,12 @@ func FindBuysSellsAndTransfers() {
 }
 
 func TestBigImage() {
+	friendMap := map[string]int{}
+	friendMap["username"] = 15
+	friendMap["testing"] = 15
+	friendMap["ouch"] = 15
+	friendMap["other"] = 55
+	ChartIt(friendMap)
 	username := "greatguy"
 	from := "purchaser"
 	topMention := ""
@@ -358,6 +364,21 @@ func savePic(flavor string, data []byte) {
 	ioutil.WriteFile(flavor+".webp", data, 0755)
 	exec.Command("convert", flavor+".webp", flavor+".png").Output()
 }
+
+func DrawUser(dc *gg.Context, file string, x, y float64, top, bottom string) {
+	font := "arial.ttf"
+	dc.LoadFontFace(font, 48)
+	im, _ := gg.LoadImage("actor.png")
+	dc.DrawImage(im, int(x), int(y))
+	dc.SetLineWidth(2)
+	dc.DrawRectangle(x, y, 100, 100)
+	dc.Stroke()
+
+	dc.LoadFontFace(font, 24)
+	dc.DrawStringAnchored(top, x+50, y+140-25, 0.5, 0.5)
+	dc.LoadFontFace(font, 18)
+	dc.DrawStringAnchored(bottom, x+50, y+165-25, 0.5, 0.5)
+}
 func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
@@ -368,40 +389,14 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored("BUY", 275+25, 100+50, 0.5, 0.5)
+	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers))
 
-	im, err := gg.LoadImage("actor.png")
-	if err != nil {
-		fmt.Println("1", err)
-		return
-	}
-	dc.DrawImage(im, 400+50, 25+50)
-	dc.SetLineWidth(2)
-	dc.DrawRectangle(400+50, 25+50, 100, 100)
-	dc.Stroke()
-
-	dc.LoadFontFace(font, 24)
-	dc.DrawStringAnchored(coin, 450+50, 140+50, 0.5, 0.5)
-	dc.LoadFontFace(font, 18)
-	dc.DrawStringAnchored(fmt.Sprintf("%d followers", numFollowers), 450+50, 165+50, 0.5, 0.5)
-
-	im, err = gg.LoadImage("chart.png")
-	if err != nil {
-		fmt.Println("2", err)
-		return
-	}
+	im, _ := gg.LoadImage("chart.png")
 	dc.DrawImage(im, 30, 175)
-	im, err = gg.LoadImage("logo.png")
-	if err != nil {
-		fmt.Println("3", err)
-		return
-	}
+	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+50)
 
-	im, err = gg.LoadImage("from.png")
-	if err != nil {
-		fmt.Println("4", err)
-		return
-	}
+	im, _ = gg.LoadImage("from.png")
 	dc.DrawImage(im, 460, 250)
 	dc.SetLineWidth(2)
 	dc.DrawRectangle(460, 250, 100, 100)
