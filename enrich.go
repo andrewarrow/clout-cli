@@ -28,6 +28,11 @@ func FindBuysSellsAndTransfers() {
 	js := network.GetExchangeRate()
 	json.Unmarshal([]byte(js), &r)
 
+	if argMap["test"] != "" {
+		TestBigImage()
+		return
+	}
+
 	alreadyDone = LoadEnrichMessages()
 	alreadyDone["douglasss"] = true
 	alreadyDone["enrich"] = true
@@ -46,6 +51,28 @@ func FindBuysSellsAndTransfers() {
 			last = p.PostHashHex
 		}
 	}
+}
+
+func TestBigImage() {
+	username := "greatguy"
+	from := "purchaser"
+	topMention := ""
+	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
+	actorBytes := network.GetSingleProfilePicture(pub58)
+	savePic("actor", actorBytes)
+
+	fromPub58 := "BC1YLj2V95AZ3kuNKC59BJ1Mj99jQiZBJy1Dz7gPG1AcLjNfZgMa2nt"
+	fromBytes := network.GetSingleProfilePicture(fromPub58)
+	savePic("from", fromBytes)
+	sum := int64(10000000000)
+	byUSD := ConvertToUSD(r, sum)
+	//usdPerFollower := byUSD / float64(numFollowers)
+	per := 0.20
+	perString := fmt.Sprintf("%d", int(per*100))
+	text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
+	fmt.Println(text)
+
+	BigImage(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
 }
 
 func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
@@ -98,7 +125,7 @@ func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
 		}
 		for fromPub58, sum := range m {
 			byUSD := ConvertToUSD(r, sum)
-			if byUSD < 100.0 {
+			if byUSD < 10.0 {
 				fmt.Println("price was only", byUSD)
 				continue
 			}
@@ -336,7 +363,7 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
-	font := "arial.ttf"
+	font := "/Library/Fonts/Arial Unicode.ttf"
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
