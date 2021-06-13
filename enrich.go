@@ -232,7 +232,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				text := fmt.Sprintf("TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, topMention)
 				fmt.Println(text)
 				//exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1", "-geometry", "+0+0", "out.png").CombinedOutput()
-				BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", username, from)
+				BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", from, username)
 
 				if argMap["live"] != "" {
 					m := map[string]string{"text": text, "image": "out.png"}
