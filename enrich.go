@@ -54,6 +54,29 @@ func FindBuysSellsAndTransfers() {
 	}
 }
 
+func SaveImagesToDisk(prefix string, urls []string) {
+	for i, url := range urls {
+		jsonString := network.DoGet(url)
+		ioutil.WriteFile(fmt.Sprintf("%s_%02d.webp", prefix, i), []byte(jsonString), 0755)
+		if i > 9 {
+			break
+		}
+	}
+}
+func ImagesFromPosts(username string) {
+	js := network.GetPostsForPublicKey(username)
+	var ppk models.PostsPublicKey
+	json.Unmarshal([]byte(js), &ppk)
+	for i, p := range ppk.Posts {
+		SaveImagesToDisk(fmt.Sprintf("1_%d_%s", i, username), p.ImageURLs)
+		if p.RecloutedPostEntryResponse != nil {
+			SaveImagesToDisk(fmt.Sprintf("2_%d_%s", i, username), p.RecloutedPostEntryResponse.ImageURLs)
+			if p.RecloutedPostEntryResponse.RecloutedPostEntryResponse != nil {
+				SaveImagesToDisk(fmt.Sprintf("3_%d_%s", i, username), p.RecloutedPostEntryResponse.RecloutedPostEntryResponse.ImageURLs)
+			}
+		}
+	}
+}
 func TestBigImage() {
 	friendMap := map[string]int{}
 	friendMap["username"] = 15
@@ -66,6 +89,7 @@ func TestBigImage() {
 	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
 	actorBytes := network.GetSingleProfilePicture(pub58)
 	savePic("actor", actorBytes)
+	ImagesFromPosts("artsyminal")
 
 	fromPub58 := "BC1YLj2V95AZ3kuNKC59BJ1Mj99jQiZBJy1Dz7gPG1AcLjNfZgMa2nt"
 	fromBytes := network.GetSingleProfilePicture(fromPub58)
@@ -81,8 +105,8 @@ func TestBigImage() {
 	per := 0.20
 	perString := fmt.Sprintf("%d", int(per*100))
 
-	BigImageBuy("5", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
-	//BigImageTransfer("5",fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
+	//BigImageBuy("5", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
+	BigImageTransfer("9", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
 
 	lines := []string{}
 	lines = AsciiByteAddition(lines, "11125657553")
