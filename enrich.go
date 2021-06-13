@@ -57,14 +57,15 @@ func FindBuysSellsAndTransfers() {
 func SaveImagesToDisk(urls []string) {
 	for i, url := range urls {
 		fmt.Println(url)
-		jsonString := network.DoGetWithPat("", url)
 		filename := fmt.Sprintf("%03d", i+2)
+		if url == "" {
+			exec.Command("cp", "001.png", filename+".png").Output()
+			continue
+		}
+		jsonString := network.DoGetWithPat("", url)
 		ioutil.WriteFile(filename+".webp", []byte(jsonString), 0755)
 		exec.Command("convert", filename+".webp", filename+".png").Output()
 		os.Remove(filename + ".webp")
-		if i > 9 {
-			break
-		}
 	}
 }
 func ImagesFromPosts(username string) {
@@ -74,18 +75,23 @@ func ImagesFromPosts(username string) {
 	urls := []string{}
 	for _, p := range ppk.Posts {
 		urls = append(urls, p.ImageURLs...)
+		urls = append(urls, "")
 		if p.RecloutedPostEntryResponse != nil {
 			urls = append(urls, p.RecloutedPostEntryResponse.ImageURLs...)
+			urls = append(urls, "")
 			if p.RecloutedPostEntryResponse.RecloutedPostEntryResponse != nil {
 				urls = append(urls, p.RecloutedPostEntryResponse.RecloutedPostEntryResponse.ImageURLs...)
+				urls = append(urls, "")
 			}
 		}
 	}
 	SaveImagesToDisk(urls)
 }
 func MakeVideoFromImages() {
-	exec.Command("ffmpeg", "-framerate", "1/2", "-i", "%03d.png", "-loop", "1", "output.gif").Output()
+	b, err := exec.Command("ffmpeg", "-y", "-framerate", "1/2", "-i", "%03d.png", "-loop", "0", "output.gif").CombinedOutput()
+	fmt.Println(string(b), err)
 }
+
 func TestBigImage() {
 	friendMap := map[string]int{}
 	friendMap["username"] = 15
@@ -279,7 +285,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				BigImageTransfer(lines[len(lines)-1], fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", from, username)
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "out.png"}
+					m := map[string]string{"text": text, "image": "output.gif"}
 					Post(m)
 				}
 				os.Exit(0)
@@ -342,7 +348,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "out.png"}
+					m := map[string]string{"text": text, "image": "output.gif"}
 					Post(m)
 				}
 				os.Exit(0)
