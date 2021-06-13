@@ -68,6 +68,12 @@ Then run `go mod vendor` and then `go build`
 
 See this [blog post](https://andrewarrow.substack.com/p/how-to-clone-build-and-run-clout).
 
+# Linux (Fedora)
+
+sudo dnf install bzr
+sudo dnf install gtk3-devel
+sudo dnf install webkit2gtk3-devel.x86_64
+
 # Examples
 
 ```
