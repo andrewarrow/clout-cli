@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -82,6 +83,10 @@ func TestBigImage() {
 
 	//BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
 	BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
+
+	lines := []string{}
+	lines = AsciiByteAddition(lines, "11125657553")
+	fmt.Println(len(lines))
 }
 
 func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
@@ -430,4 +435,24 @@ func BigImageTransfer(price, coin string, numFollowers int64, percent, from, act
 	DrawUser(dc, "actor.png", 460, 225, "receiver", actor, fmt.Sprintf("owns %s", percent))
 	DrawUser(dc, "from.png", 460, 250+160, "giver", from, "")
 	dc.SavePNG("out.png")
+}
+
+func AsciiByteAddition(lines []string, a string) []string {
+
+	sum := byte(0)
+	buff := []string{}
+	for i := range a {
+
+		word := a[i : i+1]
+		t, _ := strconv.Atoi(word)
+		buff = append(buff, fmt.Sprintf("%d", t))
+
+		sum += byte(t)
+	}
+	strSum := fmt.Sprintf("%d", sum)
+	lines = append(lines, strings.Join(buff, "+")+"="+strSum)
+	if len(strSum) > 1 {
+		return AsciiByteAddition(lines, strSum)
+	}
+	return lines
 }
