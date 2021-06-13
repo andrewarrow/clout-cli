@@ -93,14 +93,15 @@ func GuiShowNotifications(username string) {
 	w.Dispatch(func() {
 		go func() {
 			time.Sleep(time.Second * 1)
-			for i, n := range list.Notifications {
+			for _, n := range list.Notifications {
 				if n.Metadata.TxnType == "BASIC_TRANSFER" {
 					continue
 				}
-				p := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check]
-				js := fmt.Sprintf("document.getElementById('i%d').src='%s';", i,
-					p.ProfilePic)
-				w.Eval(js)
+				//TODO add back ProfilePic
+				//p := list.ProfilesByPublicKey[n.Metadata.TransactorPublicKeyBase58Check]
+				//js := fmt.Sprintf("document.getElementById('i%d').src='%s';", i,
+				//	p.ProfilePic)
+				//w.Eval(js)
 			}
 		}()
 	})

@@ -7,7 +7,6 @@ type ProfileEntryResponse struct {
 	PublicKeyBase58Check   string
 	Username               string
 	Description            string
-	ProfilePic             string
 	CoinEntry              CoinEntry
 	CoinPriceBitCloutNanos int64
 }

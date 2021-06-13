@@ -9,7 +9,6 @@ type User struct {
 	ProfileEntryResponse ProfileEntryResponse
 	BalanceNanos         int64
 	UsersYouHODL         []HODLerThing
-	UsersWhoHODLYou      []HODLerThing
 }
 type HODLerThing struct {
 	HODLerPublicKeyBase58Check  string

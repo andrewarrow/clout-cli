@@ -41,11 +41,10 @@ func Pub58ToBoards(key string) {
 		fmt.Printf("%s %0.2f\n",
 			display.LeftAligned(thing.ProfileEntryResponse.Username, 30), coins)
 
-		other := thing.ProfileEntryResponse.PublicKeyBase58Check
-		js = network.GetUsersStateless(other)
-		var us models.UsersStateless
-		json.Unmarshal([]byte(js), &us)
-		for _, friend := range us.UserList[0].UsersWhoHODLYou {
+		js := network.GetHodlers(thing.ProfileEntryResponse.Username)
+		var hw models.HodlersWrap
+		json.Unmarshal([]byte(js), &hw)
+		for _, friend := range hw.Hodlers {
 			if friend.ProfileEntryResponse.PublicKeyBase58Check == key {
 				continue
 			}
