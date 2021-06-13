@@ -58,7 +58,10 @@ func SaveImagesToDisk(prefix string, urls []string) {
 	for i, url := range urls {
 		fmt.Println(url)
 		jsonString := network.DoGetWithPat("", url)
-		ioutil.WriteFile(fmt.Sprintf("%s_%02d.webp", prefix, i), []byte(jsonString), 0755)
+		filename := fmt.Sprintf("%s_%02d", prefix, i)
+		ioutil.WriteFile(filename+".webp", []byte(jsonString), 0755)
+		exec.Command("convert", filename+".webp", filename+".png").Output()
+		os.Remove(filename + ".webp")
 		if i > 9 {
 			break
 		}

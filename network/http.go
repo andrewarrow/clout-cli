@@ -37,7 +37,9 @@ func DoTest404(word string) string {
 func DoGetWithPat(pat, url string) string {
 	request, _ := http.NewRequest("GET", url, nil)
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("bearer %s", pat))
+	if pat != "" {
+		request.Header.Set("Authorization", fmt.Sprintf("bearer %s", pat))
+	}
 	client := &http.Client{Timeout: time.Second * 500}
 	return DoHttpRead("GET", "", client, request)
 }
