@@ -33,11 +33,20 @@ func FindBuysSellsAndTransfers() {
 	alreadyDone["enrich"] = true
 	fmt.Println(alreadyDone)
 	pub58 := session.LoggedInPub58()
-	js = network.GetPostsStateless(pub58, false)
-	var ps models.PostsStateless
-	json.Unmarshal([]byte(js), &ps)
+	last := ""
+	for {
+		js := network.GetPostsStatelessWithOptions(last, pub58)
+		var ps models.PostsStateless
+		json.Unmarshal([]byte(js), &ps)
 
-	for _, p := range ps.PostsFound {
+		fmt.Printf("PostsFound %d\n", len(ps.PostsFound))
+		FindBuysSellsAndTransfersFromPosts(ps.PostsFound)
+		time.Sleep(time.Second * 1)
+	}
+}
+
+func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
+	for _, p := range found {
 		username := p.ProfileEntryResponse.Username
 		if alreadyDone[username] {
 			continue
