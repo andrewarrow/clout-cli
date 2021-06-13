@@ -123,7 +123,7 @@ func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
 				}
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
-				if byUSD < 200000.0 {
+				if byUSD < 10.0 {
 					fmt.Println("price was only", byUSD)
 					continue
 				}
@@ -213,12 +213,13 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	}
 	total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 	topMention := FindTopHodlers(total, &hw, []string{from, username, md.CreatorUsername})
-	for _, friend := range user.UsersWhoHODLYou {
+	for _, friend := range hw.Hodlers {
 
 		if friend.ProfileEntryResponse.Username == username {
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
+				numFollowers := GetNumFollowers(pub58, md.CreatorUsername)
 				actorBytes := network.GetSingleProfilePicture(actorPub58)
 				savePic("actor", actorBytes)
 				fromBytes := network.GetSingleProfilePicture(fromPub58)
@@ -228,10 +229,10 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("This just in, there was a TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s and, according to our research, they now own %s%%. Enrich followers would love to hear the back story. You could re-clout this and explain...\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, perString, topMention)
+				text := fmt.Sprintf("TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, topMention)
 				fmt.Println(text)
-				exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1",
-					"-geometry", "+0+0", "out.png").CombinedOutput()
+				//exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1", "-geometry", "+0+0", "out.png").CombinedOutput()
+				BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", username, from)
 
 				if argMap["live"] != "" {
 					m := map[string]string{"text": text, "image": "out.png"}
