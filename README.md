@@ -73,6 +73,7 @@ See this [blog post](https://andrewarrow.substack.com/p/how-to-clone-build-and-r
 sudo dnf install bzr
 sudo dnf install gtk3-devel
 sudo dnf install webkit2gtk3-devel.x86_64
+sudo dnf install ImageMagick
 
 # Examples
 
