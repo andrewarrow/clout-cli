@@ -2,6 +2,7 @@ package main
 
 import (
 	"clout/display"
+	"clout/draw"
 	"clout/models"
 	"clout/network"
 	"clout/session"
@@ -103,15 +104,15 @@ func TestBigImage() {
 	from := "purchaser"
 	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
 	actorBytes := network.GetSingleProfilePicture(pub58)
-	savePic("actor", actorBytes)
+	draw.SavePic("actor", actorBytes)
 
 	fromPub58 := "BC1YLj2V95AZ3kuNKC59BJ1Mj99jQiZBJy1Dz7gPG1AcLjNfZgMa2nt"
 	fromBytes := network.GetSingleProfilePicture(fromPub58)
-	savePic("from", fromBytes)
+	draw.SavePic("from", fromBytes)
 
 	coinPub58 := "BC1YLgdpjLNf96dCvBpa9X9eTTdMDxreTs6Z5sWC2b4vQ1L1SAsmeEP"
 	coinBytes := network.GetSingleProfilePicture(coinPub58)
-	savePic("coin", coinBytes)
+	draw.SavePic("coin", coinBytes)
 
 	sum := int64(10000000000)
 	byUSD := ConvertToUSD(r, sum)
@@ -269,11 +270,11 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 			if per >= 0.01 {
 				numFollowers := GetNumFollowers(pub58, md.CreatorUsername)
 				actorBytes := network.GetSingleProfilePicture(actorPub58)
-				savePic("actor", actorBytes)
+				draw.SavePic("actor", actorBytes)
 				fromBytes := network.GetSingleProfilePicture(fromPub58)
-				savePic("from", fromBytes)
+				draw.SavePic("from", fromBytes)
 				coinBytes := network.GetSingleProfilePicture(user.PublicKeyBase58Check)
-				savePic("coin", coinBytes)
+				draw.SavePic("coin", coinBytes)
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
 				perString := fmt.Sprintf("%d", int(per*100))
@@ -328,10 +329,10 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
 				actorBytes := network.GetSingleProfilePicture(pub58)
-				savePic("actor", actorBytes)
+				draw.SavePic("actor", actorBytes)
 
 				fromBytes := network.GetSingleProfilePicture(fromPub58)
-				savePic("from", fromBytes)
+				draw.SavePic("from", fromBytes)
 				byUSD := ConvertToUSD(r, sum)
 				//usdPerFollower := byUSD / float64(numFollowers)
 				perString := fmt.Sprintf("%d", int(per*100))
@@ -419,12 +420,6 @@ func ChartIt(m map[string]int) {
 	f, _ := os.Create("chart.png")
 	defer f.Close()
 	pie.Render(chart.PNG, f)
-}
-
-func savePic(flavor string, data []byte) {
-	os.Remove(flavor + ".webp")
-	ioutil.WriteFile(flavor+".webp", data, 0755)
-	exec.Command("convert", flavor+".webp", flavor+".png").Output()
 }
 
 func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom string) {

@@ -75,7 +75,7 @@ func main() {
 	} else if command == "diamond" {
 		HandleDiamond()
 	} else if command == "draw" {
-		draw.DrawDiamondImage()
+		draw.DrawDiamondImage(argMap)
 	} else if command == "enrich" {
 		FindBuysSellsAndTransfers()
 	} else if command == "follow" {
