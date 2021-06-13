@@ -42,6 +42,9 @@ func FindBuysSellsAndTransfers() {
 		fmt.Printf("PostsFound %d\n", len(ps.PostsFound))
 		FindBuysSellsAndTransfersFromPosts(ps.PostsFound)
 		time.Sleep(time.Second * 1)
+		for _, p := range ps.PostsFound {
+			last = p.PostHashHex
+		}
 	}
 }
 
