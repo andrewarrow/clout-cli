@@ -62,7 +62,6 @@ func TestBigImage() {
 	ChartIt(friendMap)
 	username := "greatguy"
 	from := "purchaser"
-	topMention := ""
 	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
 	actorBytes := network.GetSingleProfilePicture(pub58)
 	savePic("actor", actorBytes)
@@ -70,15 +69,19 @@ func TestBigImage() {
 	fromPub58 := "BC1YLj2V95AZ3kuNKC59BJ1Mj99jQiZBJy1Dz7gPG1AcLjNfZgMa2nt"
 	fromBytes := network.GetSingleProfilePicture(fromPub58)
 	savePic("from", fromBytes)
+
+	coinPub58 := "BC1YLgdpjLNf96dCvBpa9X9eTTdMDxreTs6Z5sWC2b4vQ1L1SAsmeEP"
+	coinBytes := network.GetSingleProfilePicture(coinPub58)
+	savePic("coin", coinBytes)
+
 	sum := int64(10000000000)
 	byUSD := ConvertToUSD(r, sum)
 	//usdPerFollower := byUSD / float64(numFollowers)
 	per := 0.20
 	perString := fmt.Sprintf("%d", int(per*100))
-	text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
-	fmt.Println(text)
 
-	BigImage(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
+	//BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
+	BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
 }
 
 func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
@@ -282,7 +285,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
 				fmt.Println(text)
 
-				BigImage(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
+				BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
 
 				//exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 				//"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -368,7 +371,7 @@ func savePic(flavor string, data []byte) {
 func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom string) {
 	font := "arial.ttf"
 	dc.LoadFontFace(font, 48)
-	im, _ := gg.LoadImage("actor.png")
+	im, _ := gg.LoadImage(file)
 	dc.DrawImage(im, int(x), int(y))
 	dc.SetLineWidth(2)
 	dc.DrawRectangle(x, y, 100, 100)
@@ -380,7 +383,7 @@ func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom str
 	dc.DrawStringAnchored(middle, x+50, y+165-25, 0.5, 0.5)
 	dc.DrawStringAnchored(bottom, x+50, y+165, 0.5, 0.5)
 }
-func BigImage(price, coin string, numFollowers int64, percent, from string) {
+func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
@@ -398,5 +401,26 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc.DrawImage(im, -40, -10+50)
 
 	DrawUser(dc, "from.png", 460, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
+	dc.SavePNG("out.png")
+}
+func BigImageTransfer(price, coin string, numFollowers int64, percent, from, actor string) {
+	dc := gg.NewContext(600, 600)
+	dc.SetRGB(1, 1, 1)
+	dc.Clear()
+	dc.SetRGB(0, 0, 0)
+	font := "arial.ttf"
+	dc.LoadFontFace(font, 48)
+	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
+	dc.LoadFontFace(font, 48)
+	dc.DrawStringAnchored("TRANSFER", 275+25, 100+50, 0.5, 0.5)
+	DrawUser(dc, "coin.png", 400+50, 50, coin, fmt.Sprintf("%d followers", numFollowers), "")
+
+	im, _ := gg.LoadImage("chart.png")
+	dc.DrawImage(im, 30, 175)
+	im, _ = gg.LoadImage("logo.png")
+	dc.DrawImage(im, -40, -10+50)
+
+	DrawUser(dc, "actor.png", 460, 225, "receiver", actor, fmt.Sprintf("owns %s", percent))
+	DrawUser(dc, "from.png", 460, 250+160, "giver", from, "")
 	dc.SavePNG("out.png")
 }
