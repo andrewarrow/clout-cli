@@ -3,7 +3,10 @@ package main
 import (
 	"clout/display"
 	"clout/keys"
+	"clout/models"
+	"clout/network"
 	"clout/session"
+	"encoding/json"
 	"fmt"
 	"sort"
 )
@@ -17,18 +20,21 @@ func HandleBalances(argMap map[string]string) {
 	for _, username := range list {
 		s := m[username]
 		pub58, _ := keys.ComputeKeysFromSeed(session.SeedBytes(s))
+		js := network.GetHodlers(username)
+		var hw models.HodlersWrap
+		json.Unmarshal([]byte(js), &hw)
 		user := session.Pub58ToUser(pub58)
 		//points := user.ProfileEntryResponse.CoinEntry.CreatorBasisPoints
 		total := user.ProfileEntryResponse.CoinEntry.CoinsInCirculationNanos
 		price := user.ProfileEntryResponse.CoinPriceBitCloutNanos
 
 		holdMap := map[string]string{}
-		sort.SliceStable(user.UsersWhoHODLYou, func(i, j int) bool {
-			return user.UsersWhoHODLYou[i].BalanceNanos >
-				user.UsersWhoHODLYou[j].BalanceNanos
+		sort.SliceStable(hw.Hodlers, func(i, j int) bool {
+			return hw.Hodlers[i].BalanceNanos >
+				hw.Hodlers[j].BalanceNanos
 		})
 		topThree := []string{}
-		for _, friend := range user.UsersWhoHODLYou {
+		for _, friend := range hw.Hodlers {
 			username := friend.ProfileEntryResponse.Username
 			if username == "" {
 				username = "anonymous" //friend.HODLerPublicKeyBase58Check
