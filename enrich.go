@@ -56,7 +56,8 @@ func FindBuysSellsAndTransfers() {
 
 func SaveImagesToDisk(prefix string, urls []string) {
 	for i, url := range urls {
-		jsonString := network.DoGet(url)
+		fmt.Println(url)
+		jsonString := network.DoGetWithPat("", url)
 		ioutil.WriteFile(fmt.Sprintf("%s_%02d.webp", prefix, i), []byte(jsonString), 0755)
 		if i > 9 {
 			break
