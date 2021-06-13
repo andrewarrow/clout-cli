@@ -161,8 +161,11 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 	for i, friend := range hw.Hodlers {
 		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
 		username := friend.ProfileEntryResponse.Username
+		if username == "" {
+			username = "anonymous"
+		}
 		friendMap[username] = per
-		if filterMap[username] == false {
+		if filterMap[username] == false && username != "anonymous" {
 			top = append(top, username)
 		}
 		if i >= 8 {
