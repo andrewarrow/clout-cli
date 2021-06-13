@@ -324,7 +324,7 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
-	font := "/Library/Fonts/Arial Unicode.ttf"
+	font := "arial.ttf"
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
