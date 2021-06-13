@@ -81,12 +81,12 @@ func TestBigImage() {
 	per := 0.20
 	perString := fmt.Sprintf("%d", int(per*100))
 
-	//BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
-	BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
+	BigImageBuy("5", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
+	//BigImageTransfer("5",fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
 
 	lines := []string{}
 	lines = AsciiByteAddition(lines, "11125657553")
-	fmt.Println(len(lines))
+	fmt.Println(lines)
 }
 
 func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
@@ -237,10 +237,12 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 				byUSD := ConvertToUSD(r, md.CreatorCoinToTransferNanos)
 
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s\\n\\ncc %s you have a new co-holder.", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, topMention)
+				lines := []string{}
+				lines = AsciiByteAddition(lines, fmt.Sprintf("%d", md.CreatorCoinToTransferNanos))
+				text := fmt.Sprintf("TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s\\n\\ncc %s you have a new co-holder.\\n\\n%s", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, topMention, strings.Join(lines, "\\n"))
 				fmt.Println(text)
 				//exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1", "-geometry", "+0+0", "out.png").CombinedOutput()
-				BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", from, username)
+				BigImageTransfer(lines[len(lines)-1], fmt.Sprintf("$%0.2f", byUSD), md.CreatorUsername, numFollowers, perString+"%", from, username)
 
 				if argMap["live"] != "" {
 					m := map[string]string{"text": text, "image": "out.png"}
@@ -291,10 +293,14 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				byUSD := ConvertToUSD(r, sum)
 				//usdPerFollower := byUSD / float64(numFollowers)
 				perString := fmt.Sprintf("%d", int(per*100))
-				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
+
+				lines := []string{}
+				lines = AsciiByteAddition(lines, fmt.Sprintf("%d", sum))
+
+				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.\\n\\n%s", from, sum, byUSD, username, topMention, strings.Join(lines, "\\n"))
 				fmt.Println(text)
 
-				BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
+				BigImageBuy(lines[len(lines)-1], fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
 
 				//exec.Command("montage", "from.webp", "chart.png", "actor.webp", "-tile", "3x1",
 				//"-geometry", "+0+0", "out.png").CombinedOutput()
@@ -395,7 +401,7 @@ func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom str
 	dc.DrawStringAnchored(middle, x+50, y+165-25, 0.5, 0.5)
 	dc.DrawStringAnchored(bottom, x+50, y+165, 0.5, 0.5)
 }
-func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
+func BigImageBuy(digit, price, coin string, numFollowers int64, percent, from string) {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
@@ -410,12 +416,13 @@ func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
 	dc.DrawImage(im, 30, 175)
 	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+50)
+	dc.DrawStringAnchored(digit, 90-3, 100, 0.5, 0.5)
 	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	DrawUser(dc, "from.png", 460, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
 	dc.SavePNG("out.png")
 }
-func BigImageTransfer(price, coin string, numFollowers int64, percent, from, actor string) {
+func BigImageTransfer(digit, price, coin string, numFollowers int64, percent, from, actor string) {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
@@ -430,6 +437,7 @@ func BigImageTransfer(price, coin string, numFollowers int64, percent, from, act
 	dc.DrawImage(im, 30, 175)
 	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+50)
+	dc.DrawStringAnchored(digit, 90-3, 100, 0.5, 0.5)
 	DrawUser(dc, "coin.png", 400+50, 50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	DrawUser(dc, "actor.png", 460, 225, "receiver", actor, fmt.Sprintf("owns %s", percent))
@@ -454,5 +462,6 @@ func AsciiByteAddition(lines []string, a string) []string {
 	if len(strSum) > 1 {
 		return AsciiByteAddition(lines, strSum)
 	}
+	lines = append(lines, strSum)
 	return lines
 }
