@@ -365,7 +365,7 @@ func savePic(flavor string, data []byte) {
 	exec.Command("convert", flavor+".webp", flavor+".png").Output()
 }
 
-func DrawUser(dc *gg.Context, file string, x, y float64, top, bottom string) {
+func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom string) {
 	font := "arial.ttf"
 	dc.LoadFontFace(font, 48)
 	im, _ := gg.LoadImage("actor.png")
@@ -377,7 +377,8 @@ func DrawUser(dc *gg.Context, file string, x, y float64, top, bottom string) {
 	dc.LoadFontFace(font, 24)
 	dc.DrawStringAnchored(top, x+50, y+140-25, 0.5, 0.5)
 	dc.LoadFontFace(font, 18)
-	dc.DrawStringAnchored(bottom, x+50, y+165-25, 0.5, 0.5)
+	dc.DrawStringAnchored(middle, x+50, y+165-25, 0.5, 0.5)
+	dc.DrawStringAnchored(bottom, x+50, y+165, 0.5, 0.5)
 }
 func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc := gg.NewContext(600, 600)
@@ -389,24 +390,13 @@ func BigImage(price, coin string, numFollowers int64, percent, from string) {
 	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored("BUY", 275+25, 100+50, 0.5, 0.5)
-	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers))
+	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	im, _ := gg.LoadImage("chart.png")
 	dc.DrawImage(im, 30, 175)
 	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+50)
 
-	im, _ = gg.LoadImage("from.png")
-	dc.DrawImage(im, 460, 250)
-	dc.SetLineWidth(2)
-	dc.DrawRectangle(460, 250, 100, 100)
-	dc.Stroke()
-	dc.LoadFontFace(font, 24)
-	dc.DrawStringAnchored("purchaser", 510, 370, 0.5, 0.5)
-	dc.LoadFontFace(font, 18)
-	dc.DrawStringAnchored(from, 510, 390, 0.5, 0.5)
-	dc.LoadFontFace(font, 18)
-	dc.DrawStringAnchored(fmt.Sprintf("owns %s", percent), 510, 410, 0.5, 0.5)
-
+	DrawUser(dc, "from.png", 460, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
 	dc.SavePNG("out.png")
 }
