@@ -81,6 +81,9 @@ func ImagesFromPosts(username string) {
 		}
 	}
 }
+func MakeVideoFromImages(username string) {
+	// ffmpeg -framerate 1/2 -i %03d.png   -loop 1 output.gif
+}
 func TestBigImage() {
 	friendMap := map[string]int{}
 	friendMap["username"] = 15
@@ -93,7 +96,6 @@ func TestBigImage() {
 	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
 	actorBytes := network.GetSingleProfilePicture(pub58)
 	savePic("actor", actorBytes)
-	ImagesFromPosts("artsyminal")
 
 	fromPub58 := "BC1YLj2V95AZ3kuNKC59BJ1Mj99jQiZBJy1Dz7gPG1AcLjNfZgMa2nt"
 	fromBytes := network.GetSingleProfilePicture(fromPub58)
@@ -111,6 +113,8 @@ func TestBigImage() {
 
 	//BigImageBuy("5", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
 	BigImageTransfer("9", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
+	ImagesFromPosts("artsyminal")
+	MakeVideoFromImages("artsyminal")
 
 	lines := []string{}
 	lines = AsciiByteAddition(lines, "11125657553")
