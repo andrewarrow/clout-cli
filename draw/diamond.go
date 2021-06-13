@@ -10,7 +10,7 @@ func DrawDiamondImage() {
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
 
-	dc.SetLineWidth(2)
+	dc.SetLineWidth(4)
 	sizeX = float64(100)
 	sizeY = float64(50)
 	DrawDiamond(dc, 25.0, 100.0+sizeY+sizeY+sizeY)
@@ -19,11 +19,6 @@ func DrawDiamondImage() {
 }
 
 func DrawDiamond(dc *gg.Context, startX, startY float64) {
-	dc.DrawLine(startX, startY, startX+sizeX, startY+sizeY)
-	dc.DrawLine(startX+sizeX, startY+sizeY, startX+sizeX+sizeX, startY)
-	dc.DrawLine(startX+sizeX+sizeX, startY, startX+sizeX, startY-sizeY)
-	dc.DrawLine(startX+sizeX, startY-sizeY, startX, startY)
-	dc.Stroke()
 
 	im, _ := gg.LoadPNG("actor.png")
 	pattern := gg.NewSurfacePattern(im, gg.RepeatBoth)
@@ -36,6 +31,21 @@ func DrawDiamond(dc *gg.Context, startX, startY float64) {
 	dc.SetFillStyle(pattern)
 	dc.Fill()
 
+	im, _ = gg.LoadPNG("white.png")
+	pattern = gg.NewSurfacePattern(im, gg.RepeatBoth)
+	dc.MoveTo(startX, startY)
+	dc.LineTo(startX+sizeX, startY+sizeY+sizeY+sizeY)
+	dc.LineTo(startX+sizeX+sizeX, startY)
+	dc.LineTo(startX+sizeX, startY+sizeY)
+	dc.LineTo(startX, startY)
+	dc.ClosePath()
+	dc.SetFillStyle(pattern)
+	dc.Fill()
+
+	dc.DrawLine(startX, startY, startX+sizeX, startY+sizeY)
+	dc.DrawLine(startX+sizeX, startY+sizeY, startX+sizeX+sizeX, startY)
+	dc.DrawLine(startX+sizeX+sizeX, startY, startX+sizeX, startY-sizeY)
+	dc.DrawLine(startX+sizeX, startY-sizeY, startX, startY)
 	dc.DrawLine(startX, startY, startX+sizeX, startY+sizeY+sizeY+sizeY)
 	dc.DrawLine(startX+sizeX, startY+sizeY+sizeY+sizeY, startX+sizeX+sizeX, startY)
 	dc.Stroke()
