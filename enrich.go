@@ -54,11 +54,11 @@ func FindBuysSellsAndTransfers() {
 	}
 }
 
-func SaveImagesToDisk(prefix string, urls []string) {
+func SaveImagesToDisk(urls []string) {
 	for i, url := range urls {
 		fmt.Println(url)
 		jsonString := network.DoGetWithPat("", url)
-		filename := fmt.Sprintf("%s_%02d", prefix, i)
+		filename := fmt.Sprintf("%03d", i+2)
 		ioutil.WriteFile(filename+".webp", []byte(jsonString), 0755)
 		exec.Command("convert", filename+".webp", filename+".png").Output()
 		os.Remove(filename + ".webp")
@@ -71,18 +71,20 @@ func ImagesFromPosts(username string) {
 	js := network.GetPostsForPublicKey(username)
 	var ppk models.PostsPublicKey
 	json.Unmarshal([]byte(js), &ppk)
-	for i, p := range ppk.Posts {
-		SaveImagesToDisk(fmt.Sprintf("1_%d_%s", i, username), p.ImageURLs)
+	urls := []string{}
+	for _, p := range ppk.Posts {
+		urls = append(urls, p.ImageURLs...)
 		if p.RecloutedPostEntryResponse != nil {
-			SaveImagesToDisk(fmt.Sprintf("2_%d_%s", i, username), p.RecloutedPostEntryResponse.ImageURLs)
+			urls = append(urls, p.RecloutedPostEntryResponse.ImageURLs...)
 			if p.RecloutedPostEntryResponse.RecloutedPostEntryResponse != nil {
-				SaveImagesToDisk(fmt.Sprintf("3_%d_%s", i, username), p.RecloutedPostEntryResponse.RecloutedPostEntryResponse.ImageURLs)
+				urls = append(urls, p.RecloutedPostEntryResponse.RecloutedPostEntryResponse.ImageURLs...)
 			}
 		}
 	}
+	SaveImagesToDisk(urls)
 }
-func MakeVideoFromImages(username string) {
-	// ffmpeg -framerate 1/2 -i %03d.png   -loop 1 output.gif
+func MakeVideoFromImages() {
+	exec.Command("ffmpeg", "-framerate", "1/2", "-i", "%03d.png", "-loop", "1", "output.gif").Output()
 }
 func TestBigImage() {
 	friendMap := map[string]int{}
@@ -114,7 +116,7 @@ func TestBigImage() {
 	//BigImageBuy("5", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
 	BigImageTransfer("9", fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
 	ImagesFromPosts("artsyminal")
-	MakeVideoFromImages("artsyminal")
+	MakeVideoFromImages()
 
 	lines := []string{}
 	lines = AsciiByteAddition(lines, "11125657553")
@@ -452,7 +454,7 @@ func BigImageBuy(digit, price, coin string, numFollowers int64, percent, from st
 	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	DrawUser(dc, "from.png", 460, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
-	dc.SavePNG("out.png")
+	dc.SavePNG("001.png")
 }
 func BigImageTransfer(digit, price, coin string, numFollowers int64, percent, from, actor string) {
 	dc := gg.NewContext(600, 600)
@@ -474,7 +476,7 @@ func BigImageTransfer(digit, price, coin string, numFollowers int64, percent, fr
 
 	DrawUser(dc, "actor.png", 460, 225, "receiver", actor, fmt.Sprintf("owns %s", percent))
 	DrawUser(dc, "from.png", 460, 250+160, "giver", from, "")
-	dc.SavePNG("out.png")
+	dc.SavePNG("001.png")
 }
 
 func AsciiByteAddition(lines []string, a string) []string {
