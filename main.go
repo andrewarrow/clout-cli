@@ -2,6 +2,7 @@ package main
 
 import (
 	"clout/args"
+	"clout/draw"
 	"clout/session"
 	"clout/sync"
 	"fmt"
@@ -73,6 +74,8 @@ func main() {
 		HandleClown()
 	} else if command == "diamond" {
 		HandleDiamond()
+	} else if command == "draw" {
+		draw.DrawDiamond()
 	} else if command == "enrich" {
 		FindBuysSellsAndTransfers()
 	} else if command == "follow" {
