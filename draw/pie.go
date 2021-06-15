@@ -11,12 +11,13 @@ type CreatorCoin struct {
 	Username string
 	Supply   int64
 	Price    int64
+	CapTable map[string]int64
 }
 
-func (cc *CreatorCoin) ToChartMap(capTable map[string]int64) map[string]int {
+func (cc *CreatorCoin) ToChartMap() map[string]int {
 	chartMap := map[string]int{}
 	sum := int64(0)
-	for k, v := range capTable {
+	for k, v := range cc.CapTable {
 		chartMap[k] = int((float64(v) / float64(cc.Supply)) * 100)
 		sum += v
 	}
@@ -38,15 +39,15 @@ func DrawPieImage() {
 	cc := CreatorCoin{}
 	cc.Username = "andrewarrow"
 	cc.Supply = 15950600000
-	capTable := map[string]int64{}
-	capTable["andrew_52"] = 8370500000
-	capTable["donhardman_12"] = 1940800000
-	capTable["Clout_Cast_10"] = 1711100000
-	capTable["JasonDevlin"] = 1523500000
-	capTable["clayoglesby"] = 663300000
-	capTable["Salvo"] = 500700000
+	cc.CapTable = map[string]int64{}
+	cc.CapTable["andrew_52"] = 8370500000
+	cc.CapTable["donhardman_12"] = 1940800000
+	cc.CapTable["Clout_Cast_10"] = 1711100000
+	cc.CapTable["JasonDevlin"] = 1523500000
+	cc.CapTable["clayoglesby"] = 663300000
+	cc.CapTable["Salvo"] = 500700000
 
-	DrawChart(cc.ToChartMap(capTable))
+	DrawChart(cc.ToChartMap())
 	dc.SavePNG("001.png")
 }
 
