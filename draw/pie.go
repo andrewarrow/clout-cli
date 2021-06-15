@@ -76,30 +76,20 @@ func DrawPieImage() {
 	cc.CapTable["clayoglesby"] = 663300000
 	cc.CapTable["Salvo"] = 500700000
 
-	fr := 0.0
+	fr := 0.50
 	cc.DrawChartWithBuys("001.png")
-	cc.Buy("Clout_Cast", 1711100000, fr)
+	val := cc.Buy("Clout_Cast", 1711100000, fr)
+	cc.BuyNoFR("andrewarrow", val)
 	cc.DrawChartWithBuys("002.png")
-	cc.Buy("Clout_Cast", 1711100000*4, fr)
+	val = cc.Buy("Clout_Cast", 1711100000*4, fr)
+	cc.BuyNoFR("andrewarrow", val)
 	cc.DrawChartWithBuys("003.png")
-	cc.Buy("Clout_Cast", 1711100000*4, fr)
+	val = cc.Buy("Clout_Cast", 1711100000*4, fr)
+	cc.BuyNoFR("andrewarrow", val)
 	cc.DrawChartWithBuys("004.png")
-	cc.Buy("Clout_Cast", 1711100000*8, fr)
+	val = cc.Buy("Clout_Cast", 1711100000*8, fr)
+	cc.BuyNoFR("andrewarrow", val)
 	cc.DrawChartWithBuys("005.png")
-
-	/*
-			c.BuyNoFR("andrewarrow", val)
-			DrawChart(cc.ToChartMap(), "002.png")
-			val = cc.Buy("Clout_Cast", 1711100000*4)
-			cc.BuyNoFR("andrewarrow", val)
-			DrawChart(cc.ToChartMap(), "003.png")
-			val = cc.Buy("Clout_Cast", 1711100000*4)
-			cc.BuyNoFR("andrewarrow", val)
-			DrawChart(cc.ToChartMap(), "004.png")
-			val = cc.Buy("Clout_Cast", 1711100000*8)
-			cc.BuyNoFR("andrewarrow", val)
-		DrawChart(cc.ToChartMap(), "005.png")
-	*/
 }
 
 func DrawChart(m map[string]int, filename string) {
