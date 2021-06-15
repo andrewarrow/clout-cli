@@ -7,6 +7,12 @@ import (
 	"github.com/wcharczuk/go-chart"
 )
 
+type CreatorCoin struct {
+	Username string
+	Supply   int64
+	Price    int64
+}
+
 func DrawPieImage() {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
@@ -18,22 +24,24 @@ func DrawPieImage() {
 	DrawDiamond(dc, 150.0, 100.0+sizeY+sizeY+(sizeY/2.0))
 	DrawDiamond(dc, 150.0, 100.0)
 
-	capTotal := 15.9506
-	capTable := map[string]float64{}
-	capTable["andrew_52"] = 8.3705
-	capTable["donhardman_12"] = 1.9408
-	capTable["Clout_Cast_10"] = 1.7111
-	capTable["JasonDevlin"] = 1.5235
-	capTable["clayoglesby"] = 0.6633
-	capTable["Salvo"] = 0.5007
+	cc := CreatorCoin{}
+	cc.Username = "andrewarrow"
+	cc.Supply = 15950600000
+	capTable := map[string]int64{}
+	capTable["andrew_52"] = 8370500000
+	capTable["donhardman_12"] = 1940800000
+	capTable["Clout_Cast_10"] = 1711100000
+	capTable["JasonDevlin"] = 1523500000
+	capTable["clayoglesby"] = 663300000
+	capTable["Salvo"] = 500700000
 
 	chartMap := map[string]int{}
-	sum := 0.0
+	sum := int64(0)
 	for k, v := range capTable {
-		chartMap[k] = int((v / capTotal) * 100)
+		chartMap[k] = int((float64(v) / float64(cc.Supply)) * 100)
 		sum += v
 	}
-	chartMap["other"] = int(((capTotal - sum) / capTotal) * 100)
+	chartMap["other"] = int((float64(cc.Supply-sum) / float64(cc.Supply)) * 100)
 	DrawChart(chartMap)
 	dc.SavePNG("001.png")
 }
