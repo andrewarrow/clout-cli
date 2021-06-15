@@ -340,7 +340,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				lines := []string{}
 				lines = AsciiByteAddition(lines, fmt.Sprintf("%d", sum))
 
-				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s.\\n\\ncc %s your %% may have changed.\\n\\n%s", from, sum, byUSD, username, topMention, strings.Join(lines, "\\n"))
+				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s\\n\\ncc %s your %% may have changed.\\n\\n%s", from, sum, byUSD, username, topMention, strings.Join(lines, "\\n"))
 				fmt.Println(text)
 
 				BigImageBuy(lines[len(lines)-1], fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
