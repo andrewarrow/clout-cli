@@ -88,10 +88,6 @@ func ImagesFromPosts(username string) {
 	}
 	SaveImagesToDisk(urls)
 }
-func MakeVideoFromImages() {
-	b, err := exec.Command("ffmpeg", "-y", "-framerate", "1/2", "-i", "%03d.png", "-loop", "0", "output.gif").CombinedOutput()
-	fmt.Println(string(b), err)
-}
 
 func TestBigImage() {
 	friendMap := map[string]int{}

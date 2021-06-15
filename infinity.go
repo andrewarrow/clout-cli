@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clout/draw"
 	"fmt"
 	"strconv"
 )
@@ -14,6 +15,7 @@ func HandleInfinity() {
 		return
 	}
 
+	draw.DrawInfinities()
 	DoubleStart(startInt)
 }
 
