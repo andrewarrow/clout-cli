@@ -23,7 +23,7 @@ func DoubleStart(start int) {
 	for i := 0; i < 10; i++ {
 		fmt.Println("start", start)
 		lines := []string{}
-		lines = AsciiByteAddition(lines, fmt.Sprintf("%d", start))
+		lines = draw.AsciiByteAddition(lines, fmt.Sprintf("%d", start))
 		//val := lines[len(lines)-1]
 		for _, line := range lines {
 			fmt.Println(line)

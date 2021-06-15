@@ -12,7 +12,6 @@ import (
 	"os"
 	"os/exec"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -122,7 +121,7 @@ func TestBigImage() {
 	//MakeVideoFromImages()
 
 	lines := []string{}
-	lines = AsciiByteAddition(lines, "11125657553")
+	lines = draw.AsciiByteAddition(lines, "11125657553")
 	fmt.Println(lines)
 }
 
@@ -275,7 +274,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 
 				perString := fmt.Sprintf("%d", int(per*100))
 				lines := []string{}
-				lines = AsciiByteAddition(lines, fmt.Sprintf("%d", md.CreatorCoinToTransferNanos))
+				lines = draw.AsciiByteAddition(lines, fmt.Sprintf("%d", md.CreatorCoinToTransferNanos))
 				text := fmt.Sprintf("TRANSFER! @%s transfered %d ($%0.2f USD) of @%s to @%s\\n\\ncc %s you have a new co-holder.\\n\\n%s", from, md.CreatorCoinToTransferNanos, byUSD, md.CreatorUsername, username, topMention, strings.Join(lines, "\\n"))
 				fmt.Println(text)
 				//exec.Command("montage", "actor.webp", "from.webp", "chart.png", "coin.webp", "-tile", "4x1", "-geometry", "+0+0", "out.png").CombinedOutput()
@@ -334,7 +333,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				perString := fmt.Sprintf("%d", int(per*100))
 
 				lines := []string{}
-				lines = AsciiByteAddition(lines, fmt.Sprintf("%d", sum))
+				lines = draw.AsciiByteAddition(lines, fmt.Sprintf("%d", sum))
 
 				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s\\n\\ncc %s your %% may have changed.\\n\\n%s", from, sum, byUSD, username, topMention, strings.Join(lines, "\\n"))
 				fmt.Println(text)
@@ -478,25 +477,4 @@ func BigImageTransfer(digit, price, coin string, numFollowers int64, percent, fr
 	DrawUser(dc, "actor.png", 460, 225, "receiver", actor, fmt.Sprintf("owns %s", percent))
 	DrawUser(dc, "from.png", 460, 250+160, "giver", from, "")
 	dc.SavePNG("001.png")
-}
-
-func AsciiByteAddition(lines []string, a string) []string {
-
-	sum := byte(0)
-	buff := []string{}
-	for i := range a {
-
-		word := a[i : i+1]
-		t, _ := strconv.Atoi(word)
-		buff = append(buff, fmt.Sprintf("%d", t))
-
-		sum += byte(t)
-	}
-	strSum := fmt.Sprintf("%d", sum)
-	lines = append(lines, strings.Join(buff, "+")+"="+strSum)
-	if len(strSum) > 1 {
-		return AsciiByteAddition(lines, strSum)
-	}
-	lines = append(lines, strSum)
-	return lines
 }
