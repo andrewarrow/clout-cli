@@ -26,9 +26,9 @@ func DrawInfinities() {
 	files := []string{}
 	for i := 1; i < 20; i++ {
 		dc := gg.NewContext(600, 400)
-		dc.SetRGB(1, 1, 1)
-		dc.Clear()
 		dc.SetRGB(0, 0, 0)
+		dc.Clear()
+		dc.SetRGB(0, 1, 0)
 		file := fmt.Sprintf("%03d.png", i)
 		DrawInfinityFrame(dc, file, one, three, nine)
 		files = append(files, "frames/"+file)
@@ -52,7 +52,23 @@ func DrawInfinityFrame(dc *gg.Context, filename string, one, three, nine int) {
 		dc.DrawStringAnchored(line, 100, float64(150+(i*25)), 0.5, 0.5)
 	}
 	dc.DrawStringAnchored("1,2,4,8,7,5", 100, float64(150+(len(lines)*25)), 0.5, 0.5)
-	//val := lines[len(lines)-1]
+
+	lines = []string{}
+	lines = AsciiByteAddition(lines, fmt.Sprintf("%d", three))
+	dc.LoadFontFace(font, 14)
+	for i, line := range lines {
+		dc.DrawStringAnchored(line, 100+200, float64(150+(i*25)), 0.5, 0.5)
+	}
+	dc.DrawStringAnchored("3,6", 100+200, float64(150+(len(lines)*25)), 0.5, 0.5)
+
+	lines = []string{}
+	lines = AsciiByteAddition(lines, fmt.Sprintf("%d", nine))
+	dc.LoadFontFace(font, 14)
+	for i, line := range lines {
+		dc.DrawStringAnchored(line, 100+400, float64(150+(i*25)), 0.5, 0.5)
+	}
+	dc.DrawStringAnchored("9", 100+400, float64(150+(len(lines)*25)), 0.5, 0.5)
+
 	dc.SavePNG("frames/" + filename)
 }
 func AsciiByteAddition(lines []string, a string) []string {
