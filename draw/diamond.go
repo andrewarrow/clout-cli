@@ -10,6 +10,10 @@ import (
 var sizeX, sizeY float64
 
 func DrawDiamondImage(argMap map[string]string) {
+	if argMap["pie"] != "" {
+		DrawPieImage()
+		return
+	}
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
