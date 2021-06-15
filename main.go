@@ -88,6 +88,8 @@ func main() {
 		HandleGlobal()
 	} else if command == "help" {
 		PrintHelp()
+	} else if command == "infinity" {
+		HandleInfinity()
 	} else if command == "inspect" {
 		HandleInspect()
 	} else if command == "like" {
