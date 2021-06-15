@@ -1,9 +1,9 @@
 package draw
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/fogleman/gg"
 	"github.com/wcharczuk/go-chart"
 )
 
@@ -18,40 +18,52 @@ func (cc *CreatorCoin) ToChartMap() map[string]int {
 	chartMap := map[string]int{}
 	sum := int64(0)
 	for k, v := range cc.CapTable {
-		chartMap[k] = int((float64(v) / float64(cc.Supply)) * 100)
+		val := int((float64(v) / float64(cc.Supply)) * 100)
+		chartMap[fmt.Sprintf("%s_%d", k, val)] = val
 		sum += v
 	}
 	chartMap["other"] = int((float64(cc.Supply-sum) / float64(cc.Supply)) * 100)
 	return chartMap
 }
+func (cc *CreatorCoin) Buy(who string, amount int64) int64 {
+	fr := int64(float64(amount) * 0.33)
+	cc.Supply += (amount - fr)
+	cc.CapTable[who] += (amount - fr)
+	return fr
+}
+func (cc *CreatorCoin) BuyNoFR(who string, amount int64) {
+	cc.Supply += amount
+	cc.CapTable[who] += amount
+}
 
 func DrawPieImage() {
-	dc := gg.NewContext(600, 600)
-	dc.SetRGB(1, 1, 1)
-	dc.Clear()
-	dc.SetRGB(0, 0, 0)
-	dc.SetLineWidth(4)
-	sizeX = float64(100)
-	sizeY = float64(50)
-	DrawDiamond(dc, 150.0, 100.0+sizeY+sizeY+(sizeY/2.0))
-	DrawDiamond(dc, 150.0, 100.0)
-
 	cc := CreatorCoin{}
 	cc.Username = "andrewarrow"
 	cc.Supply = 15950600000
 	cc.CapTable = map[string]int64{}
-	cc.CapTable["andrew_52"] = 8370500000
-	cc.CapTable["donhardman_12"] = 1940800000
-	cc.CapTable["Clout_Cast_10"] = 1711100000
+	cc.CapTable["andrew"] = 8370500000
+	cc.CapTable["donhardman"] = 1940800000
+	cc.CapTable["Clout_Cast"] = 1711100000
 	cc.CapTable["JasonDevlin"] = 1523500000
 	cc.CapTable["clayoglesby"] = 663300000
 	cc.CapTable["Salvo"] = 500700000
 
-	DrawChart(cc.ToChartMap())
-	dc.SavePNG("001.png")
+	DrawChart(cc.ToChartMap(), "001.png")
+	val := cc.Buy("Clout_Cast", 1711100000)
+	cc.BuyNoFR("andrewarrow", val)
+	DrawChart(cc.ToChartMap(), "002.png")
+	val = cc.Buy("Clout_Cast", 1711100000*4)
+	cc.BuyNoFR("andrewarrow", val)
+	DrawChart(cc.ToChartMap(), "003.png")
+	val = cc.Buy("Clout_Cast", 1711100000*4)
+	cc.BuyNoFR("andrewarrow", val)
+	DrawChart(cc.ToChartMap(), "004.png")
+	val = cc.Buy("Clout_Cast", 1711100000*8)
+	cc.BuyNoFR("andrewarrow", val)
+	DrawChart(cc.ToChartMap(), "005.png")
 }
 
-func DrawChart(m map[string]int) {
+func DrawChart(m map[string]int, filename string) {
 	items := []chart.Value{}
 	for k, v := range m {
 		items = append(items, chart.Value{Value: float64(v), Label: k})
@@ -63,7 +75,7 @@ func DrawChart(m map[string]int) {
 		Values: items,
 	}
 
-	f, _ := os.Create("chart.png")
+	f, _ := os.Create(filename)
 	defer f.Close()
 	pie.Render(chart.PNG, f)
 }
