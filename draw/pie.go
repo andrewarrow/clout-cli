@@ -13,6 +13,17 @@ type CreatorCoin struct {
 	Price    int64
 }
 
+func (cc *CreatorCoin) ToChartMap(capTable map[string]int64) map[string]int {
+	chartMap := map[string]int{}
+	sum := int64(0)
+	for k, v := range capTable {
+		chartMap[k] = int((float64(v) / float64(cc.Supply)) * 100)
+		sum += v
+	}
+	chartMap["other"] = int((float64(cc.Supply-sum) / float64(cc.Supply)) * 100)
+	return chartMap
+}
+
 func DrawPieImage() {
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
@@ -35,14 +46,7 @@ func DrawPieImage() {
 	capTable["clayoglesby"] = 663300000
 	capTable["Salvo"] = 500700000
 
-	chartMap := map[string]int{}
-	sum := int64(0)
-	for k, v := range capTable {
-		chartMap[k] = int((float64(v) / float64(cc.Supply)) * 100)
-		sum += v
-	}
-	chartMap["other"] = int((float64(cc.Supply-sum) / float64(cc.Supply)) * 100)
-	DrawChart(chartMap)
+	DrawChart(cc.ToChartMap(capTable))
 	dc.SavePNG("001.png")
 }
 
