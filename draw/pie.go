@@ -50,8 +50,15 @@ func (cc *CreatorCoin) DrawChartWithBuys(filename string) {
 	im, _ := gg.LoadPNG("chart.png")
 	dc.DrawImage(im, 0, 0)
 	font := "arial.ttf"
-	dc.LoadFontFace(font, 48)
-	dc.DrawStringAnchored("price", 25, 50, 0.5, 0.5)
+	dc.LoadFontFace(font, 18)
+	for i, buy := range cc.History {
+		dc.DrawStringAnchored(fmt.Sprintf("%d", buy), 500, float64(50+(i*50)), 0.5, 0.5)
+	}
+	for i, reward := range cc.Rewards {
+		y := len(cc.History) * 50
+		y += 50
+		dc.DrawStringAnchored(fmt.Sprintf("%d", reward), 500, float64(y+50+(i*50)), 0.5, 0.5)
+	}
 	dc.SavePNG(filename)
 }
 
@@ -73,7 +80,12 @@ func DrawPieImage() {
 	cc.DrawChartWithBuys("001.png")
 	cc.Buy("Clout_Cast", 1711100000, fr)
 	cc.DrawChartWithBuys("002.png")
-	//DrawChart(cc.ToChartMap(), "002.png")
+	cc.Buy("Clout_Cast", 1711100000*4, fr)
+	cc.DrawChartWithBuys("003.png")
+	cc.Buy("Clout_Cast", 1711100000*4, fr)
+	cc.DrawChartWithBuys("004.png")
+	cc.Buy("Clout_Cast", 1711100000*8, fr)
+	cc.DrawChartWithBuys("005.png")
 
 	/*
 			c.BuyNoFR("andrewarrow", val)
