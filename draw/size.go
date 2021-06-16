@@ -7,7 +7,7 @@ import (
 )
 
 func ResizeImage(filename string) {
-	exec.Command("magick", "convert", filename, "-resize", "50%", filename).Output()
+	exec.Command("magick", "convert", filename, "-resize", "200%", filename).Output()
 }
 func SavePic(flavor string, data []byte) {
 	os.Remove(flavor + ".webp")

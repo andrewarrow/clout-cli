@@ -89,6 +89,10 @@ func ImagesFromPosts(username string) {
 }
 
 func TestBigImage() {
+	if true {
+		draw.BuyPoster()
+		return
+	}
 	friendMap := map[string]int{}
 	friendMap["username"] = 15
 	friendMap["testing"] = 15
