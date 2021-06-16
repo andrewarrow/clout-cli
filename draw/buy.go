@@ -15,9 +15,9 @@ func BuyPoster() {
 	GetProfilePicAndEnlarge(buyer, "buyer")
 
 	coinX := -200
-	buyerX := 600
+	buyerX := 580
 	files := []string{}
-	for i := 1; i < 100; i++ {
+	for i := 1; i < 280; i++ {
 		dc := gg.NewContext(600, 400)
 		dc.SetRGB(0, 0, 0)
 		dc.Clear()
@@ -29,8 +29,24 @@ func BuyPoster() {
 		file := fmt.Sprintf("frames/%d.png", i)
 		dc.SavePNG(file)
 		files = append(files, file)
-		coinX += 20
-		buyerX -= 20
+		coinX += 1
+		buyerX -= 1
+	}
+	font := "arial.ttf"
+	for i := 1; i < 280; i++ {
+		dc := gg.NewContext(600, 400)
+		dc.SetRGB(0, 0, 0)
+		dc.Clear()
+		dc.SetRGB(0, 1, 0)
+		im, _ := gg.LoadPNG("coin.png")
+		dc.DrawImage(im, coinX, 20)
+		im, _ = gg.LoadPNG("buyer.png")
+		dc.DrawImage(im, buyerX, 20)
+		dc.LoadFontFace(font, 18)
+		dc.DrawStringAnchored("nobodygetsit", 100, 300, 0.5, 0.5)
+		file := fmt.Sprintf("frames/%d.png", i)
+		dc.SavePNG(file)
+		files = append(files, file)
 	}
 	MakeVideoFromImages(files)
 }
