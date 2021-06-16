@@ -90,7 +90,7 @@ func ImagesFromPosts(username string) {
 
 func TestBigImage() {
 	if true {
-		draw.BuyPoster()
+		draw.BuyPoster("spektr", "brockchain", 244.1)
 		return
 	}
 	friendMap := map[string]int{}
