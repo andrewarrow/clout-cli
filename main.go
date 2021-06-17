@@ -62,6 +62,8 @@ func main() {
 		session.HandleAccounts(argMap)
 	} else if command == "backup" || command == "backups" {
 		HandleBackup(argMap)
+	} else if command == "badger" {
+		HandleBadger()
 	} else if command == "balance" || command == "balances" {
 		HandleBalances(argMap)
 	} else if command == "board" || command == "boards" {
