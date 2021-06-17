@@ -2,8 +2,11 @@ package main
 
 import (
 	"bytes"
+	"clout/draw"
+	"encoding/base64"
 	"encoding/gob"
 	"fmt"
+	"strings"
 
 	badger "github.com/dgraph-io/badger/v3"
 )
@@ -30,11 +33,28 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			val, _ := nodeIterator.Item().ValueCopy(nil)
 
 			//postEntryObj := &PostEntry{}
-			profileEntryObj := &ProfileEntry{}
+			profile := &ProfileEntry{}
 			//gob.NewDecoder(bytes.NewReader(val)).Decode(postEntryObj)
-			gob.NewDecoder(bytes.NewReader(val)).Decode(profileEntryObj)
+			gob.NewDecoder(bytes.NewReader(val)).Decode(profile)
 			//fmt.Println(string(postEntryObj.Body))
-			fmt.Println(string(profileEntryObj.Username))
+			if profile.CoinEntry.NumberOfHolders > 1 &&
+				len(profile.Description) > 0 &&
+				len(profile.ProfilePic) > 0 {
+				fmt.Println(string(profile.Username))
+
+				//data:image/jpeg;base64,
+				//data:image/png;base64,
+				tokens := strings.Split(string(profile.ProfilePic), ",")
+				tokens = strings.Split(tokens[0], ";")
+				flavor := tokens[0][11:]
+				if flavor == "jpeg" {
+					flavor = "jpg"
+				}
+
+				decodedBytes, _ := base64.StdEncoding.DecodeString(tokens[1])
+
+				draw.SavePicWithPath(flavor, argMap["pic"], string(profile.Username), decodedBytes)
+			}
 		}
 		return nil
 	})
