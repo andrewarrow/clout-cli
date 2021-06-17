@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"fmt"
 
 	badger "github.com/dgraph-io/badger/v3"
@@ -10,10 +12,8 @@ func HandleBadger() {
 	db, _ := badger.Open(badger.DefaultOptions(argMap["dir"]))
 	defer db.Close()
 
-	for prefixByte := byte(0); prefixByte < byte(40); prefixByte++ {
-		fmt.Println(prefixByte)
-		EnumerateKeysForPrefix(db, []byte{prefixByte})
-	}
+	PrefixPostHashToPostEntry := byte(17)
+	EnumerateKeysForPrefix(db, []byte{PrefixPostHashToPostEntry})
 }
 
 func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
@@ -24,17 +24,48 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 		defer nodeIterator.Close()
 		prefix := dbPrefix
 
-		i := 0
 		for nodeIterator.Seek(prefix); nodeIterator.ValidForPrefix(prefix); nodeIterator.Next() {
-			key := nodeIterator.Item().Key()
+			//key := nodeIterator.Item().Key()
 			val, _ := nodeIterator.Item().ValueCopy(nil)
-			fmt.Println(len(key), len(val))
-			i++
-			if i > 9 {
-				break
-			}
+
+			postEntryObj := &PostEntry{}
+			gob.NewDecoder(bytes.NewReader(val)).Decode(postEntryObj)
+			fmt.Println(string(postEntryObj.Body))
 		}
 		return nil
 	})
 
+}
+
+type StakeEntryStats struct {
+}
+
+const HashSizeBytes = 32
+
+type BlockHash [HashSizeBytes]byte
+type StakeEntry struct {
+}
+
+type PostEntry struct {
+	PostHash                 *BlockHash
+	PosterPublicKey          []byte
+	ParentStakeID            []byte
+	Body                     []byte
+	RecloutedPostHash        *BlockHash
+	IsQuotedReclout          bool
+	CreatorBasisPoints       uint64
+	StakeMultipleBasisPoints uint64
+	ConfirmationBlockHeight  uint32
+	TimestampNanos           uint64
+	IsHidden                 bool
+	StakeEntry               *StakeEntry
+	LikeCount                uint64
+	RecloutCount             uint64
+	QuoteRecloutCount        uint64
+	DiamondCount             uint64
+	stakeStats               *StakeEntryStats
+	isDeleted                bool
+	CommentCount             uint64
+	IsPinned                 bool
+	PostExtraData            map[string][]byte
 }
