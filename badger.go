@@ -12,8 +12,9 @@ func HandleBadger() {
 	db, _ := badger.Open(badger.DefaultOptions(argMap["dir"]))
 	defer db.Close()
 
-	PrefixPostHashToPostEntry := byte(17)
-	EnumerateKeysForPrefix(db, []byte{PrefixPostHashToPostEntry})
+	//PrefixPostHashToPostEntry := byte(17)
+	PrefixPKIDToProfileEntry := byte(23)
+	EnumerateKeysForPrefix(db, []byte{PrefixPKIDToProfileEntry})
 }
 
 func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
@@ -28,9 +29,12 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			//key := nodeIterator.Item().Key()
 			val, _ := nodeIterator.Item().ValueCopy(nil)
 
-			postEntryObj := &PostEntry{}
-			gob.NewDecoder(bytes.NewReader(val)).Decode(postEntryObj)
-			fmt.Println(string(postEntryObj.Body))
+			//postEntryObj := &PostEntry{}
+			profileEntryObj := &ProfileEntry{}
+			//gob.NewDecoder(bytes.NewReader(val)).Decode(postEntryObj)
+			gob.NewDecoder(bytes.NewReader(val)).Decode(profileEntryObj)
+			//fmt.Println(string(postEntryObj.Body))
+			fmt.Println(string(profileEntryObj.Username))
 		}
 		return nil
 	})
@@ -68,4 +72,25 @@ type PostEntry struct {
 	CommentCount             uint64
 	IsPinned                 bool
 	PostExtraData            map[string][]byte
+}
+
+type CoinEntry struct {
+	CreatorBasisPoints      uint64
+	BitCloutLockedNanos     uint64
+	NumberOfHolders         uint64
+	CoinsInCirculationNanos uint64
+	CoinWatermarkNanos      uint64
+}
+
+type ProfileEntry struct {
+	PublicKey   []byte
+	Username    []byte
+	Description []byte
+	ProfilePic  []byte
+	IsHidden    bool
+	CoinEntry
+	isDeleted                bool
+	StakeMultipleBasisPoints uint64
+	StakeEntry               *StakeEntry
+	stakeStats               *StakeEntryStats
 }
