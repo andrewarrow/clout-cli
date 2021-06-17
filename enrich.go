@@ -236,7 +236,7 @@ func PostAboutTransfer(list *models.NotificationList, username, fromPub58 string
 	pub58 := session.UsernameToPub58(md.CreatorUsername)
 	t1 := time.Now().Unix()
 	fmt.Println("PostAboutTransfer", username, fromPub58, md.CreatorUsername)
-	js := network.GetHodlers(username)
+	js := network.GetHodlers(md.CreatorUsername)
 	var hw models.HodlersWrap
 	json.Unmarshal([]byte(js), &hw)
 	user := session.Pub58ToUser(pub58)
