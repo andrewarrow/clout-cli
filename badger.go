@@ -45,13 +45,14 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 				//data:image/jpeg;base64,
 				//data:image/png;base64,
 				tokens := strings.Split(string(profile.ProfilePic), ",")
+				base64data := tokens[1]
 				tokens = strings.Split(tokens[0], ";")
 				flavor := tokens[0][11:]
 				if flavor == "jpeg" {
 					flavor = "jpg"
 				}
 
-				decodedBytes, _ := base64.StdEncoding.DecodeString(tokens[1])
+				decodedBytes, _ := base64.StdEncoding.DecodeString(base64data)
 
 				draw.SavePicWithPath(flavor, argMap["pic"], string(profile.Username), decodedBytes)
 			}
