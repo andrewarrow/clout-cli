@@ -14,6 +14,10 @@ func DrawDiamondImage(argMap map[string]string) {
 		DrawPieImage()
 		return
 	}
+	if argMap["pic"] != "" {
+		UserPoster(argMap["pic"])
+		return
+	}
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
