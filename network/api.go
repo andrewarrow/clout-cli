@@ -143,6 +143,7 @@ func UploadImage(filepath, pub58, jwt string) string {
 	io.Copy(fw, rs)
 
 	w.Close()
+	fmt.Println(len(b.Bytes()))
 	jsonString := DoPostMultipart("api/v0/upload-image", w.FormDataContentType(), b.Bytes())
 	return jsonString
 }
