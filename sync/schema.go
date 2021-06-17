@@ -44,7 +44,7 @@ CREATE INDEX posts_username_idx
 CREATE INDEX posts_parent_idx
   ON posts (parent);
 
-create table users (market_cap text, num_hodl integer, num_board integer, points integer, hash text, username text, created_at datetime);
+create table users (username text, created_at datetime);
 
 CREATE UNIQUE INDEX users_idx
   ON users (username);

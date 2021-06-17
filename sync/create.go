@@ -45,15 +45,20 @@ func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, usernam
 		fmt.Println(e)
 	}
 }
-func InsertUser(marketCap string, numUsersYouHODL int,
-	numBoardMembers int, points int64, hash, username string) {
+func InsertUser(username string) bool {
 	db := OpenTheDB()
 	defer db.Close()
 	tx, _ := db.Begin()
 
-	s := `insert into users (market_cap, num_hodl, num_board, points, hash, username) values (?, ?, ?, ?, ?, ?)`
+	s := `insert into users (username, created_at) values (?, ?)`
 	thing, _ := tx.Prepare(s)
-	thing.Exec(marketCap, numUsersYouHODL, numBoardMembers, points, hash, username)
+	_, e := thing.Exec(username, time.Now())
+	if e != nil {
+		if strings.HasPrefix(e.Error(), "UNIQUE constraint failed") {
+			return false
+		}
+	}
 
 	tx.Commit()
+	return true
 }
