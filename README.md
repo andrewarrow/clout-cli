@@ -71,6 +71,7 @@ See this [blog post](https://andrewarrow.substack.com/p/how-to-clone-build-and-r
 # Linux (Fedora)
 
 sudo dnf groupinstall "Development Tools"
+sudo dnf install g++
 sudo dnf install bzr
 sudo dnf install gtk3-devel
 sudo dnf install webkit2gtk3-devel.x86_64
