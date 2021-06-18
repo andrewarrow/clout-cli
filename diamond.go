@@ -15,6 +15,10 @@ func HandleDiamond() {
 		fmt.Println("missing username")
 		return
 	}
+	level := "1"
+	if argMap["level"] != "" {
+		level = argMap["level"]
+	}
 	username := os.Args[2]
 	theirPub58 := session.UsernameToPub58(username)
 	js := network.GetPostsForPublicKey(username)
@@ -30,7 +34,7 @@ func HandleDiamond() {
 		return
 	}
 	pub58, priv := keys.ComputeKeysFromSeed(session.SeedBytes(mnemonic))
-	bigString := network.SubmitDiamond(pub58, theirPub58, lastPost)
+	bigString := network.SubmitDiamond(level, pub58, theirPub58, lastPost)
 
 	var tx models.TxReady
 	json.Unmarshal([]byte(bigString), &tx)

@@ -147,9 +147,9 @@ func UploadImage(filepath, pub58, jwt string) string {
 	jsonString := DoPostMultipart("api/v0/upload-image", w.FormDataContentType(), b.Bytes())
 	return jsonString
 }
-func SubmitDiamond(sender, receiver, post string) string {
-	jsonString := `{"SenderPublicKeyBase58Check":"%s","ReceiverPublicKeyBase58Check":"%s","DiamondPostHashHex":"%s","DiamondLevel":1,"MinFeeRateNanosPerKB":1000}`
-	send := fmt.Sprintf(jsonString, sender, receiver, post)
+func SubmitDiamond(level, sender, receiver, post string) string {
+	jsonString := `{"SenderPublicKeyBase58Check":"%s","ReceiverPublicKeyBase58Check":"%s","DiamondPostHashHex":"%s","DiamondLevel":%s,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, sender, receiver, post, level)
 	jsonString = DoPost("api/v0/send-diamonds",
 		[]byte(send))
 	return jsonString
