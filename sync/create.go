@@ -45,10 +45,7 @@ func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, usernam
 		fmt.Println(e)
 	}
 }
-func InsertUser(username, pub58 string) bool {
-	db := OpenTheDB()
-	defer db.Close()
-	tx, _ := db.Begin()
+func InsertUser(tx *sql.Tx, username, pub58 string) bool {
 
 	s := `insert into users (username, pub58, created_at, updated_at) values (?, ?, ?, ?)`
 	thing, _ := tx.Prepare(s)
@@ -59,6 +56,5 @@ func InsertUser(username, pub58 string) bool {
 		}
 	}
 
-	tx.Commit()
 	return true
 }

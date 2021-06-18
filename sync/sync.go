@@ -18,6 +18,9 @@ func HandleSync(argMap map[string]string) {
 }
 
 func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
+	sdb := OpenTheDB()
+	defer sdb.Close()
+	tx, _ := sdb.Begin()
 
 	db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
@@ -37,13 +40,13 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 
 			pub58 := base58.Encode(profile.PublicKey)
 
-			if InsertUser(string(profile.Username), pub58) {
+			if InsertUser(tx, string(profile.Username), pub58) {
 				fmt.Println(pub58, string(profile.Username))
 			}
 		}
 		return nil
 	})
-
+	tx.Commit()
 }
 
 type StakeEntryStats struct {
