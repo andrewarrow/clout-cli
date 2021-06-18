@@ -33,7 +33,7 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			//gob.NewDecoder(bytes.NewReader(val)).Decode(postEntryObj)
 			gob.NewDecoder(bytes.NewReader(val)).Decode(profile)
 			//fmt.Println(string(postEntryObj.Body))
-			if InsertUser(string(profile.Username)) {
+			if InsertUser(string(profile.Username), string(profile.PublicKey)) {
 				fmt.Println(string(profile.Username))
 			}
 		}

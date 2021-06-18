@@ -45,14 +45,14 @@ func InsertPost(parent string, reclouts int64, ts time.Time, hash, body, usernam
 		fmt.Println(e)
 	}
 }
-func InsertUser(username string) bool {
+func InsertUser(username, pub58 string) bool {
 	db := OpenTheDB()
 	defer db.Close()
 	tx, _ := db.Begin()
 
-	s := `insert into users (username, created_at) values (?, ?)`
+	s := `insert into users (username, pub58, created_at, updated_at) values (?, ?, ?, ?)`
 	thing, _ := tx.Prepare(s)
-	_, e := thing.Exec(username, time.Now())
+	_, e := thing.Exec(username, pub58, time.Now(), time.Now())
 	if e != nil {
 		if strings.HasPrefix(e.Error(), "UNIQUE constraint failed") {
 			return false
