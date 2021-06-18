@@ -9,6 +9,9 @@ import (
 func ResizeImage(filename string) {
 	exec.Command("convert", filename, "-resize", "200%", filename).Output()
 }
+func ResizeImageBy(filename, percent string) {
+	exec.Command("convert", filename, "-resize", percent+"%", filename).Output()
+}
 func SavePic(flavor string, data []byte) {
 	os.Remove(flavor + ".webp")
 	ioutil.WriteFile(flavor+".webp", data, 0755)

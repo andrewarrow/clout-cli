@@ -18,6 +18,10 @@ func DrawDiamondImage(argMap map[string]string) {
 		UserPoster(argMap["pic"])
 		return
 	}
+	if argMap["peace"] != "" {
+		DrawPeaceVideo()
+		return
+	}
 	dc := gg.NewContext(600, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
