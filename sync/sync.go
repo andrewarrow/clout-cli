@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 
+	"github.com/btcsuite/btcutil/base58"
 	"github.com/dgraph-io/badger/v3"
 )
 
@@ -33,8 +34,11 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			//gob.NewDecoder(bytes.NewReader(val)).Decode(postEntryObj)
 			gob.NewDecoder(bytes.NewReader(val)).Decode(profile)
 			//fmt.Println(string(postEntryObj.Body))
-			if InsertUser(string(profile.Username), string(profile.PublicKey)) {
-				fmt.Println(string(profile.Username))
+
+			pub58 := base58.Encode(profile.PublicKey)
+
+			if InsertUser(string(profile.Username), pub58) {
+				fmt.Println(pub58, string(profile.Username))
 			}
 		}
 		return nil
