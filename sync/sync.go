@@ -16,6 +16,11 @@ import (
 )
 
 func HandleSync(argMap map[string]string) {
+	if argMap["find"] != "" {
+		list := FindUsers()
+		fmt.Println(list)
+		return
+	}
 	CreateSchema()
 	db, _ := badger.Open(badger.DefaultOptions(argMap["dir"]))
 	defer db.Close()
@@ -47,7 +52,7 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			pub58 := base58.Encode(profile.PublicKey)
 
 			if InsertUser(tx, string(profile.Username), pub58) {
-				LoadUserAndLook(string(profile.Username))
+				fmt.Println(string(profile.Username))
 			}
 		}
 		return nil

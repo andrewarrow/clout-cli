@@ -49,22 +49,24 @@ func FindPosts(s string) {
 		}
 	}
 }
-func FindUsers() {
+func FindUsers() []string {
 	db := OpenTheDB()
 	defer db.Close()
-	rows, err := db.Query("select username from users order by username")
+	rows, err := db.Query("select username from users where STRFTIME('%Y-%m-%d %H', created_at) = '2021-06-19 22' order by username")
+
+	list := []string{}
 	if err != nil {
 		fmt.Println(err)
-		return
+		return list
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var username string
 		rows.Scan(&username)
-		fmt.Println("./clout follow", username)
-		fmt.Println("sleep 1")
+		list = append(list, username)
 	}
+	return list
 }
 func FindTopReclouted() {
 	db := OpenTheDB()
