@@ -39,7 +39,7 @@ func HandleFollowing() {
 	pub58 := session.LoggedInPub58()
 	if len(os.Args) > 2 {
 		pub58 = os.Args[2]
-		LoopThruAllFollowing(pub58, "")
+		LoopThruAllFollowing(pub58, "", 0)
 		return
 	}
 	RunFollowLogic(pub58, "")
@@ -50,7 +50,7 @@ func ListFollowers() {
 }
 func RunFollowLogic(pub58, username string) {
 
-	items := LoopThruAllFollowing(pub58, username)
+	items := LoopThruAllFollowing(pub58, username, 0)
 	//fmt.Println("NumFollowers", pktpe.NumFollowers)
 	//fmt.Println("")
 	fields := []string{"username", "cap", "price"}
@@ -72,7 +72,7 @@ func GetNumFollowers(pub58, username string) int64 {
 	return pktpe.NumFollowers
 }
 
-func LoopThruAllFollowing(pub58, username string) []models.ProfileEntryResponse {
+func LoopThruAllFollowing(pub58, username string, limit int) []models.ProfileEntryResponse {
 	last := ""
 	js := network.GetFollowsStateless(pub58, username, last)
 	var pktpe models.PublicKeyToProfileEntry
@@ -88,6 +88,9 @@ func LoopThruAllFollowing(pub58, username string) []models.ProfileEntryResponse 
 				total[v.Username] = true
 				bigList = append(bigList, v)
 			}
+		}
+		if len(bigList) >= limit && limit != 0 {
+			break
 		}
 		if len(total) >= int(NumFollowers) {
 			break

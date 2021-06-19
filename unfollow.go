@@ -43,7 +43,7 @@ func UnfollowOne(username string) {
 
 func UnfollowInMass() {
 	pub58, _, _, _ := session.LoggedInAs()
-	items := LoopThruAllFollowing(pub58, "")
+	items := LoopThruAllFollowing(pub58, "", 200)
 	for _, v := range items {
 		UnfollowOne(v.Username)
 		time.Sleep(time.Second * 1)
