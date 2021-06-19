@@ -66,6 +66,13 @@ func CreateLike(actor, hash string) string {
 		[]byte(send))
 	return jsonString
 }
+func CreateUnFollow(follower, followed string) string {
+	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":true,"MinFeeRateNanosPerKB":1000}`
+	send := fmt.Sprintf(jsonString, follower, followed)
+	jsonString = DoPost("api/v0/create-follow-txn-stateless",
+		[]byte(send))
+	return jsonString
+}
 func CreateFollow(follower, followed string) string {
 	jsonString := `{"FollowerPublicKeyBase58Check":"%s","FollowedPublicKeyBase58Check":"%s","IsUnfollow":false,"MinFeeRateNanosPerKB":1000}`
 	send := fmt.Sprintf(jsonString, follower, followed)

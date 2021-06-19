@@ -82,6 +82,8 @@ func main() {
 		FindBuysSellsAndTransfers()
 	} else if command == "follow" {
 		HandleFollow()
+	} else if command == "unfollow" {
+		HandleUnFollow()
 	} else if command == "followers" {
 		ListFollowers()
 	} else if command == "following" {
