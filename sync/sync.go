@@ -2,11 +2,17 @@ package sync
 
 import (
 	"bytes"
+	"clout/models"
+	"clout/network"
 	"encoding/gob"
+	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/dgraph-io/badger/v3"
+	"github.com/justincampbell/timeago"
 )
 
 func HandleSync(argMap map[string]string) {
@@ -41,12 +47,33 @@ func EnumerateKeysForPrefix(db *badger.DB, dbPrefix []byte) {
 			pub58 := base58.Encode(profile.PublicKey)
 
 			if InsertUser(tx, string(profile.Username), pub58) {
-				fmt.Println(pub58, string(profile.Username))
+				LoadUserAndLook(string(profile.Username))
 			}
 		}
 		return nil
 	})
 	tx.Commit()
+}
+
+func LoadUserAndLook(username string) {
+	js := network.GetSingleProfile(username)
+	var sp models.SingleProfile
+	json.Unmarshal([]byte(js), &sp)
+
+	js = network.GetPostsForPublicKey(username)
+	var ppk models.PostsPublicKey
+	json.Unmarshal([]byte(js), &ppk)
+	for _, p := range ppk.Posts {
+		fmt.Println(username)
+		ts := time.Unix(p.TimestampNanos/1000000000, 0)
+		ago := timeago.FromDuration(time.Since(ts))
+		tokens := strings.Split(p.Body, "\n")
+		fmt.Println(tokens[0])
+		fmt.Println(ago)
+		fmt.Println(sp.Profile.CoinEntry.CreatorBasisPoints, len(sp.Profile.Description))
+		fmt.Println("")
+		break
+	}
 }
 
 type StakeEntryStats struct {
