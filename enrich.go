@@ -321,11 +321,11 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 
 			per := float64(friend.BalanceNanos) / float64(total)
 			if per >= 0.01 {
-				//actorBytes := network.GetSingleProfilePicture(pub58)
-				//draw.SavePic("actor", actorBytes)
+				actorBytes := network.GetSingleProfilePicture(pub58)
+				draw.SavePic("actor", actorBytes)
 
-				//fromBytes := network.GetSingleProfilePicture(fromPub58)
-				//draw.SavePic("from", fromBytes)
+				fromBytes := network.GetSingleProfilePicture(fromPub58)
+				draw.SavePic("from", fromBytes)
 				byUSD := ConvertToUSD(r, sum)
 				//usdPerFollower := byUSD / float64(numFollowers)
 				perString := fmt.Sprintf("%d", int(per*100))
