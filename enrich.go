@@ -328,13 +328,13 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				//draw.SavePic("from", fromBytes)
 				byUSD := ConvertToUSD(r, sum)
 				//usdPerFollower := byUSD / float64(numFollowers)
-				//perString := fmt.Sprintf("%d", int(per*100))
+				perString := fmt.Sprintf("%d", int(per*100))
 
 				text := fmt.Sprintf("BUY! @%s spent %d ($%0.2f USD) to BUY @%s\\n\\ncc %s your %% may have changed.", from, sum, byUSD, username, topMention)
 				fmt.Println(text)
 
-				draw.BuyPoster(username, from, byUSD)
-				//BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
+				//draw.BuyPoster(username, from, byUSD)
+				BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, numFollowers, perString+"%", from)
 				//ImagesFromPosts(username)
 				//MakeVideoFromImages()
 
@@ -344,7 +344,7 @@ func FindPercentAndPost(list *models.NotificationList, username, pub58 string,
 				//"-background", "black", "-extent", "400x250", "out2.png").CombinedOutput()
 
 				if argMap["live"] != "" {
-					m := map[string]string{"text": text, "image": "output.gif"}
+					m := map[string]string{"text": text, "image": "001.png"}
 					Post(m)
 				}
 				os.Exit(0)
