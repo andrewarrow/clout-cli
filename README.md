@@ -4,6 +4,19 @@
 
 Welcome to the [cloutcli](https://bitclout.com/u/cloutcli) project.
 
+This repo slowly moving over to:
+
+[github.com/andrewarrow/cloutcli](https://github.com/andrewarrow/cloutcli)
+
+
+
+
+
+
+
+
+
+
 [7 Minute Video Talk About This Project](https://vimeo.com/559521458)
 
 There WAS a [bounty](https://stackoverflow.com/questions/67661276/how-do-i-properly-sign-a-bitclout-tx-in-golang-vs-typescript) for how to fix our tx signing to not need javascript. It was claimed by https://stackoverflow.com/users/589259/maarten-bodewes thanks!
