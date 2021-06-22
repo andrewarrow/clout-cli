@@ -1,0 +1,15 @@
+POST	https://bitclout.com/api/v0/send-message-stateless
+
+  {"SenderPublicKeyBase58Check":"BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v","RecipientPublicKeyBase58Check":"BC1YLjWn4ZryRMqqJG32QVBp21nnEy7gq5BY7B2MkJSjrtGVgkMw64F","MessageText":"test","MinFeeRateNanosPerKB":1000}
+
+
+----
+
+{"TstampNanos":1624320957203467757,"TotalInputNanos":85468,"ChangeAmountNanos":85119,"FeeNanos":349,"Transaction":{"TxInputs":[{"TxID":[54,240,145,212,90,110,64,221,31,229,188,21,27,151,37,222,240,11,145,91,253,213,92,226,239,3,195,75,18,252,127,189],"Index":0}],"TxOutputs":[{"PublicKey":"AqYkD7ZBALOKOtt0np7NqO8L3McWoUFXuBa/U2uabiCV","AmountNanos":85119}],"TxnMeta":{"RecipientPublicKey":"A/ojEpiiTO+I6fp0OiDRprEv+v2yJlF8zPX/YBGwdX0y","EncryptedText":"BGgOnpXdlN0Vtj2tBh32zc9P7LUJhHt1blh30qf3Ug1gMR+mw8A/xCSfp1wHarcT9lr04XXR9256ng+0XwWI69wDRbVg1n1Qu3qS8a7N7v2nMdcqdd7ext3NHuWqn7OjEE8/xA6gBcRwjfhOgBgFifrKh65o","TimestampNanos":1624320957203467757},"PublicKey":"AqYkD7ZBALOKOtt0np7NqO8L3McWoUFXuBa/U2uabiCV","ExtraData":null,"Signature":null,"TxnTypeJSON":4},"TransactionHex":"0136f091d45a6e40dd1fe5bc151b9725def00b915bfdd55ce2ef03c34b12fc7fbd000102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e2095ff980504a00103fa231298a24cef88e9fa743a20d1a6b12ffafdb226517cccf5ff6011b0757d327504680e9e95dd94dd15b63dad061df6cdcf4fecb509847b756e5877d2a7f7520d60311fa6c3c03fc4249fa75c076ab713f65af4e175d1f76e7a9e0fb45f0588ebdc0345b560d67d50bb7a92f1aecdeefda731d72a75dedec6ddcd1ee5aa9fb3a3104f3fc40ea005c4708df84e80180589faca87ae68ed9bd7badfe9afc5162102a6240fb64100b38a3adb749e9ecda8ef0bdcc716a14157b816bf536b9a6e20950000"}
+
+
+
+---
+
+{"Transaction":{"TxInputs":[{"TxID":[54,240,145,212,90,110,64,221,31,229,188,21,27,151,37,222,240,11,145,91,253,213,92,226,239,3,195,75,18,252,127,189],"Index":0}],"TxOutputs":[{"PublicKey":"AqYkD7ZBALOKOtt0np7NqO8L3McWoUFXuBa/U2uabiCV","AmountNanos":85119}],"TxnMeta":{"RecipientPublicKey":"A/ojEpiiTO+I6fp0OiDRprEv+v2yJlF8zPX/YBGwdX0y","EncryptedText":"BGgOnpXdlN0Vtj2tBh32zc9P7LUJhHt1blh30qf3Ug1gMR+mw8A/xCSfp1wHarcT9lr04XXR9256ng+0XwWI69wDRbVg1n1Qu3qS8a7N7v2nMdcqdd7ext3NHuWqn7OjEE8/xA6gBcRwjfhOgBgFifrKh65o","TimestampNanos":1624320957203467757},"PublicKey":"AqYkD7ZBALOKOtt0np7NqO8L3McWoUFXuBa/U2uabiCV","ExtraData":null,"Signature":{"R":17670781917208548765214374751290775506240417336410694046583996113160414261109,"S":54878658138818614834616443226324944049156723392588860524157365180482286695708},"TxnTypeJSON":4},"TxnHashHex":"b761a93500a5145a5ba1cbe7e4f633e55e3b660f4d149e40b8db448a89a978e9","PostEntryResponse":null}
+
