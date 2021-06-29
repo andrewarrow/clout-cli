@@ -90,18 +90,19 @@ func ImagesFromPosts(username string) {
 }
 
 func TestBigImage() {
-	if true {
+	if false {
 		//draw.BuyPoster("spektr", "brockchain", 244.1)
-		draw.DrawBuyStackedChart()
 
 		return
 	}
-	friendMap := map[string]int{}
-	friendMap["username"] = 15
-	friendMap["testing"] = 15
-	friendMap["ouch"] = 15
-	friendMap["other"] = 55
-	ChartIt(friendMap)
+	top := []string{"andrewarrow", "testing", "ouch", "ReadyPlayerOne", "other"}
+	friendMap := map[string]float64{}
+	friendMap["andrewarrow"] = 0.55
+	friendMap["testing"] = 0.28
+	friendMap["ouch"] = 0.23
+	friendMap["ReadyPlayerOne"] = 0.13
+	friendMap["other"] = 0.03
+	draw.DrawBuyStackedChart(top, friendMap)
 	username := "guttercatsofbitclout"
 	from := "purchaser"
 	pub58 := "BC1YLgw3KMdQav8w5juVRc3Ko5gzNJ7NzBHE1FfyYWGwpBEQEmnKG2v"
@@ -122,8 +123,8 @@ func TestBigImage() {
 	per := 0.20
 	perString := fmt.Sprintf("%d", int(per*100))
 
-	//BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
-	BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
+	BigImageBuy(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from)
+	//BigImageTransfer(fmt.Sprintf("$%0.2f", byUSD), username, 36, perString+"%", from, from)
 	//ImagesFromPosts("artsyminal")
 	//MakeVideoFromImages()
 }
@@ -171,9 +172,10 @@ func FindBuysSellsAndTransfersFromPosts(found []models.Post) {
 					fmt.Println("price was only", byUSD)
 					continue
 				}
-				if PostAboutTransfer(&list, username, fromPub58, md) {
-					os.Exit(0)
-				}
+				/*
+					if PostAboutTransfer(&list, username, fromPub58, md) {
+						os.Exit(0)
+					}*/
 			}
 		}
 		for fromPub58, sum := range m {
@@ -201,9 +203,9 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 		return hw.Hodlers[i].BalanceNanos >
 			hw.Hodlers[j].BalanceNanos
 	})
-	friendMap := map[string]int{}
+	friendMap := map[string]float64{}
 	for i, friend := range hw.Hodlers {
-		per := int((float64(friend.BalanceNanos) / float64(total)) * 100.0)
+		per := float64(friend.BalanceNanos) / float64(total)
 		username := friend.ProfileEntryResponse.Username
 		if username == "" {
 			username = "anonymous"
@@ -216,7 +218,7 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 			break
 		}
 	}
-	ChartIt(friendMap)
+	draw.DrawBuyStackedChart(top, friendMap)
 
 	blessed := []string{}
 	for _, t := range top {
@@ -471,7 +473,7 @@ func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom str
 	dc.DrawStringAnchored(bottom, x+50, y+165, 0.5, 0.5)
 }
 func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
-	dc := gg.NewContext(600, 600)
+	dc := gg.NewContext(700, 600)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
@@ -482,12 +484,12 @@ func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
 	dc.DrawStringAnchored("BUY", 275+25, 100+50, 0.5, 0.5)
 
 	im, _ := gg.LoadImage("chart.png")
-	dc.DrawImage(im, 30, 175)
+	dc.DrawImage(im, 10, 175)
 	im, _ = gg.LoadImage("logo.png")
-	dc.DrawImage(im, -40, -10+50)
-	DrawUser(dc, "actor.png", 400+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
+	dc.DrawImage(im, -40, -10+30)
+	DrawUser(dc, "actor.png", 400+50+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
-	DrawUser(dc, "from.png", 460, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
+	DrawUser(dc, "from.png", 460+50, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
 	dc.SavePNG("001.png")
 }
 func BigImageTransfer(price, coin string, numFollowers int64, percent, from, actor string) {

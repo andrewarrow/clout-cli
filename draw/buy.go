@@ -12,8 +12,8 @@ var files = []string{}
 var coinX = -220
 var buyerX = 600
 
-func DrawBuyStackedChart() {
-	dc := gg.NewContext(600, 400)
+func DrawBuyStackedChart(top []string, friendMap map[string]float64) {
+	dc := gg.NewContext(430, 400)
 	dc.SetRGB(0, 0, 0)
 	dc.Clear()
 	dc.SetRGB(0, 1, 0)
@@ -30,9 +30,8 @@ func DrawBuyStackedChart() {
 	dc.DrawStringAnchored("80", 330, startY-30, 0.5, 0.5)
 	dc.DrawStringAnchored("100", 400, startY-30, 0.5, 0.5)
 	dc.LoadFontFace("arial.ttf", 24)
-	items := []float64{0.55, 0.24, 0.22, 0.12, 0.03}
-	for _, item := range items {
-		perX := sizeX * item
+	for _, item := range top {
+		perX := sizeX * friendMap[item]
 		dc.SetRGB(0, 0.5, 0.5)
 		dc.MoveTo(startX, startY)
 		dc.LineTo(startX+sizeX, startY)
@@ -50,7 +49,7 @@ func DrawBuyStackedChart() {
 		dc.ClosePath()
 		dc.Fill()
 		dc.SetRGB(0, 0, 0)
-		dc.DrawStringAnchored("test", 200, startY+20, 0.5, 0.5)
+		dc.DrawStringAnchored(item, 200, startY+20, 0.5, 0.5)
 		startY += sizeY * 1.5
 	}
 	dc.SavePNG("chart.png")
