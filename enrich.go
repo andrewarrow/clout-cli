@@ -198,6 +198,7 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 		filterMap[f] = true
 	}
 
+	topForChart := []string{}
 	top := []string{}
 	sort.SliceStable(hw.Hodlers, func(i, j int) bool {
 		return hw.Hodlers[i].BalanceNanos >
@@ -211,6 +212,10 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 			username = "anonymous"
 		}
 		friendMap[username] = per
+
+		if username != "anonymous" {
+			topForChart = append(topForChart, username)
+		}
 		if filterMap[username] == false && username != "anonymous" {
 			top = append(top, username)
 		}
@@ -218,7 +223,7 @@ func FindTopHodlers(total int64, hw *models.HodlersWrap, filter []string) string
 			break
 		}
 	}
-	draw.DrawBuyStackedChart(top, friendMap)
+	draw.DrawBuyStackedChart(topForChart, friendMap)
 
 	blessed := []string{}
 	for _, t := range top {
@@ -479,14 +484,14 @@ func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
 	dc.SetRGB(0, 0, 0)
 	font := "arial.ttf"
 	dc.LoadFontFace(font, 48)
-	dc.DrawStringAnchored(price, 275+25, 45+50, 0.5, 0.5)
+	dc.DrawStringAnchored(price, 275+25, 45+30, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
-	dc.DrawStringAnchored("BUY", 275+25, 100+50, 0.5, 0.5)
+	dc.DrawStringAnchored("BUY", 275+25, 100+30, 0.5, 0.5)
 
 	im, _ := gg.LoadImage("chart.png")
 	dc.DrawImage(im, 10, 175)
 	im, _ = gg.LoadImage("logo.png")
-	dc.DrawImage(im, -40, -10+30)
+	dc.DrawImage(im, -40, -10+10)
 	DrawUser(dc, "actor.png", 400+50+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
 	DrawUser(dc, "from.png", 460+50, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
