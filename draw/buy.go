@@ -30,7 +30,10 @@ func DrawBuyStackedChart(top []string, friendMap map[string]float64) {
 	dc.DrawStringAnchored("80", 330, startY-30, 0.5, 0.5)
 	dc.DrawStringAnchored("100", 400, startY-30, 0.5, 0.5)
 	dc.LoadFontFace("arial.ttf", 24)
-	for _, item := range top {
+	for i, item := range top {
+		if i > 4 {
+			break
+		}
 		perX := sizeX * friendMap[item]
 		dc.SetRGB(0, 0.5, 0.5)
 		dc.MoveTo(startX, startY)
