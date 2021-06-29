@@ -12,6 +12,49 @@ var files = []string{}
 var coinX = -220
 var buyerX = 600
 
+func DrawBuyStackedChart() {
+	dc := gg.NewContext(600, 400)
+	dc.SetRGB(0, 0, 0)
+	dc.Clear()
+	dc.SetRGB(0, 1, 0)
+
+	startX := 10.0
+	startY := 50.0
+	sizeX := 400.0
+	sizeY := 40.0
+	dc.LoadFontFace("arial.ttf", 14)
+	dc.DrawStringAnchored("0", 20, startY-30, 0.5, 0.5)
+	dc.DrawStringAnchored("20", 90, startY-30, 0.5, 0.5)
+	dc.DrawStringAnchored("40", 170, startY-30, 0.5, 0.5)
+	dc.DrawStringAnchored("60", 250, startY-30, 0.5, 0.5)
+	dc.DrawStringAnchored("80", 330, startY-30, 0.5, 0.5)
+	dc.DrawStringAnchored("100", 400, startY-30, 0.5, 0.5)
+	dc.LoadFontFace("arial.ttf", 24)
+	items := []float64{0.55, 0.24, 0.22, 0.12, 0.03}
+	for _, item := range items {
+		perX := sizeX * item
+		dc.SetRGB(0, 0.5, 0.5)
+		dc.MoveTo(startX, startY)
+		dc.LineTo(startX+sizeX, startY)
+		dc.LineTo(startX+sizeX, startY+sizeY)
+		dc.LineTo(startX, startY+sizeY)
+		dc.MoveTo(startX, startY)
+		dc.ClosePath()
+		dc.Fill()
+		dc.SetRGB(0, 1, 0)
+		dc.MoveTo(startX, startY)
+		dc.LineTo(startX+perX, startY)
+		dc.LineTo(startX+perX, startY+sizeY)
+		dc.LineTo(startX, startY+sizeY)
+		dc.MoveTo(startX, startY)
+		dc.ClosePath()
+		dc.Fill()
+		dc.SetRGB(0, 0, 0)
+		dc.DrawStringAnchored("test", 200, startY+20, 0.5, 0.5)
+		startY += sizeY * 1.5
+	}
+	dc.SavePNG("chart.png")
+}
 func DrawBuyFrame(i int, usd float64) {
 	dc := gg.NewContext(600, 400)
 	dc.SetRGB(0, 0, 0)

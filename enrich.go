@@ -91,7 +91,9 @@ func ImagesFromPosts(username string) {
 
 func TestBigImage() {
 	if true {
-		draw.BuyPoster("spektr", "brockchain", 244.1)
+		//draw.BuyPoster("spektr", "brockchain", 244.1)
+		draw.DrawBuyStackedChart()
+
 		return
 	}
 	friendMap := map[string]int{}
