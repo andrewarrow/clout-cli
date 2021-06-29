@@ -17,7 +17,8 @@ import (
 
 	"github.com/fogleman/gg"
 
-	"github.com/wcharczuk/go-chart"
+	"github.com/wcharczuk/go-chart/v2"
+	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
 var alreadyDone map[string]bool
@@ -385,9 +386,17 @@ func LoadEnrichMessages() map[string]bool {
 	}
 	return m
 }
+
+var (
+	colorWhite          = drawing.Color{R: 241, G: 241, B: 241, A: 255}
+	colorMariner        = drawing.Color{R: 60, G: 100, B: 148, A: 255}
+	colorLightSteelBlue = drawing.Color{R: 182, G: 195, B: 220, A: 255}
+)
+
 func ChartIt(m map[string]int) {
 
 	items := []chart.Value{}
+	bars := []chart.StackedBar{}
 	fixed := map[string]int{}
 	sum := 0
 	for k, v := range m {
@@ -398,19 +407,47 @@ func ChartIt(m map[string]int) {
 		}
 	}
 	fixed["other"] = sum
+	barWidth := 80
+	style1 := chart.Style{}
+	style1.StrokeWidth = 0.01
+	style1.FillColor = colorMariner
+	style1.FontColor = colorWhite
+	style2 := chart.Style{}
+	style2.StrokeWidth = 0.01
+	style2.FillColor = colorLightSteelBlue
+	style2.FontColor = colorWhite
 	for k, v := range fixed {
 		items = append(items, chart.Value{Value: float64(v), Label: k})
+
+		sb := chart.StackedBar{}
+		sb.Width = barWidth
+
+		values := []chart.Value{}
+		value := chart.Value{}
+		value.Label = k
+		value.Value = 100.0 - float64(v)
+		value.Style = style1
+		values = append(values, value)
+		value = chart.Value{}
+		value.Label = k
+		value.Value = float64(v)
+		value.Style = style2
+		values = append(values, value)
+
+		sb.Values = values
 	}
 
-	pie := chart.PieChart{
-		Width:  400,
-		Height: 400,
-		Values: items,
-	}
+	stackedBarChart := chart.StackedBarChart{
+		Width:      800,
+		Height:     600,
+		BarSpacing: 40,
+		Bars:       bars}
+
+	stackedBarChart.IsHorizontal = true
 
 	f, _ := os.Create("chart.png")
 	defer f.Close()
-	pie.Render(chart.PNG, f)
+	stackedBarChart.Render(chart.PNG, f)
 }
 
 func DrawUser(dc *gg.Context, file string, x, y float64, top, middle, bottom string) {
