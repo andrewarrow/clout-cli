@@ -486,15 +486,15 @@ func BigImageBuy(price, coin string, numFollowers int64, percent, from string) {
 	dc.LoadFontFace(font, 48)
 	dc.DrawStringAnchored(price, 275+25, 45+30, 0.5, 0.5)
 	dc.LoadFontFace(font, 48)
-	dc.DrawStringAnchored("BUY", 275+25, 100+30, 0.5, 0.5)
+	dc.DrawStringAnchored("BUY", 275+25+260, 45+30, 0.5, 0.5)
 
 	im, _ := gg.LoadImage("chart.png")
 	dc.DrawImage(im, 10, 175)
 	im, _ = gg.LoadImage("logo.png")
 	dc.DrawImage(im, -40, -10+10)
-	DrawUser(dc, "actor.png", 400+50+50, 25+50, coin, fmt.Sprintf("%d followers", numFollowers), "")
+	DrawUser(dc, "actor.png", 460+50, 25+50+103, coin, fmt.Sprintf("%d followers", numFollowers), "")
 
-	DrawUser(dc, "from.png", 460+50, 250, "purchaser", from, fmt.Sprintf("owns %s", percent))
+	DrawUser(dc, "from.png", 460+50, 250+103, "purchaser", from, fmt.Sprintf("owns %s", percent))
 	dc.SavePNG("001.png")
 }
 func BigImageTransfer(price, coin string, numFollowers int64, percent, from, actor string) {
